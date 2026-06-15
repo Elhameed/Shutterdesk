@@ -1,0 +1,36 @@
+# Dependencies
+node_modules
+
+# Build
+dist
+dist-ssr
+*.local
+
+# Environment
+.env
+.env.*.local
+server/.env
+server/.env.test
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.cursor/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
