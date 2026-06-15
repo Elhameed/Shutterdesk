@@ -1,0 +1,430 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  photographer
+  client
+}
+
+enum ClientTier {
+  vip
+  active
+  new
+}
+
+enum ClientCategory {
+  wedding
+  commercial
+  portrait
+  editorial
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  completed
+  cancelled
+}
+
+enum BookingPaymentStatus {
+  unpaid
+  partial
+  paid
+}
+
+enum PaymentRequestType {
+  deposit
+  balance
+  full
+}
+
+enum PaymentRequestStatus {
+  unpaid
+  pending
+  approved
+  rejected
+}
+
+enum VerificationStatus {
+  pending
+  approved
+  rejected
+}
+
+enum GalleryCategory {
+  wedding
+  portrait
+  graduation
+  commercial
+}
+
+enum GalleryStatus {
+  draft
+  published
+  archived
+}
+
+enum GalleryWorkflowStatus {
+  editing
+  ready
+  delivered
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  fullName     String   @map("full_name")
+  role         UserRole
+  phone        String?
+  avatarUrl    String?  @map("avatar_url")
+  tokenVersion Int      @default(0) @map("token_version")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  studio      Studio?
+  crmProfiles StudioClient[] @relation("LinkedClientUser")
+  notifications Notification[]
+  clientSettings Json? @map("client_settings")
+  clientBookings Booking[] @relation("ClientBookings")
+  clientGalleries Gallery[] @relation("ClientGalleries")
+
+  @@map("users")
+}
+
+model Studio {
+  id             String   @id @default(uuid())
+  ownerUserId    String   @unique @map("owner_user_id")
+  name           String
+  slug           String   @unique
+  avatarAssetKey String?  @map("avatar_asset_key")
+  paymentProfile Json?    @map("payment_profile")
+  profileSettings Json?   @map("profile_settings")
+  brandSettings Json?     @map("brand_settings")
+  notificationPrefs Json? @map("notification_prefs")
+  gallerySettings Json?   @map("gallery_settings")
+  securitySettings Json?  @map("security_settings")
+  billingSettings Json?   @map("billing_settings")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  owner   User           @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  clients StudioClient[]
+  bookings Booking[]
+  paymentRequests PaymentRequest[]
+  paymentVerifications PaymentVerification[]
+  paymentRecords PaymentRecord[]
+  galleries Gallery[]
+  servicePackages ServicePackage[]
+  schedule StudioSchedule?
+  availabilityBlocks AvailabilityBlock[]
+
+  @@map("studios")
+}
+
+model StudioSchedule {
+  id                  String   @id @default(uuid())
+  studioId            String   @unique @map("studio_id")
+  timezone            String   @default("Africa/Kigali")
+  weeklyRules         Json     @map("weekly_rules")
+  slotIntervalMinutes Int      @default(30) @map("slot_interval_minutes")
+  bufferMinutes       Int      @default(15) @map("buffer_minutes")
+  minNoticeHours      Int      @default(24) @map("min_notice_hours")
+  maxDaysAhead        Int      @default(60) @map("max_days_ahead")
+  maxSessionsPerDay   Int      @default(3) @map("max_sessions_per_day")
+  requireApproval     Boolean  @default(true) @map("require_approval")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  studio Studio @relation(fields: [studioId], references: [id], onDelete: Cascade)
+
+  @@map("studio_schedules")
+}
+
+model AvailabilityBlock {
+  id        String   @id @default(uuid())
+  studioId  String   @map("studio_id")
+  startsAt  DateTime @map("starts_at")
+  endsAt    DateTime @map("ends_at")
+  reason    String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  studio Studio @relation(fields: [studioId], references: [id], onDelete: Cascade)
+
+  @@index([studioId, startsAt, endsAt])
+  @@map("availability_blocks")
+}
+
+model ServicePackage {
+  id             String         @id @default(uuid())
+  studioId       String         @map("studio_id")
+  title          String
+  description    String         @default("")
+  price          Int
+  depositPercent Int            @default(50) @map("deposit_percent")
+  category       ClientCategory
+  duration       String         @default("1hr")
+  isActive       Boolean        @default(true) @map("is_active")
+  coverAssetKey  String?        @map("cover_asset_key")
+  metadata       Json?
+  totalRevenue   Int            @default(0) @map("total_revenue")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  studio Studio @relation(fields: [studioId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@index([studioId, isActive])
+  @@map("service_packages")
+}
+
+model StudioClient {
+  id              String         @id @default(uuid())
+  studioId        String         @map("studio_id")
+  linkedUserId    String?        @map("linked_user_id")
+  name            String
+  email           String
+  phone           String
+  category        ClientCategory
+  tier            ClientTier     @default(new)
+  avatarAssetKey  String?        @map("avatar_asset_key")
+  bannerAssetKey  String?        @map("banner_asset_key")
+  location        String?
+  internalNotes   String?        @map("internal_notes")
+  sessions        Int            @default(0)
+  revenue         Int            @default(0)
+  balance         Int            @default(0)
+  reliability     Int            @default(100)
+  rating          String         @default("good")
+  memberSince     DateTime       @default(now()) @map("member_since")
+  lastBookingAt   DateTime?      @map("last_booking_at")
+  preferences     Json?
+  insights        Json?
+  timeline        Json?
+  projects        Json?
+  invoices        Json?
+  galleries       Json?
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  studio     Studio @relation(fields: [studioId], references: [id], onDelete: Cascade)
+  linkedUser User?  @relation("LinkedClientUser", fields: [linkedUserId], references: [id])
+  bookings   Booking[]
+  clientGalleries Gallery[]
+
+  @@unique([studioId, email])
+  @@unique([studioId, linkedUserId])
+  @@map("clients")
+}
+
+model Booking {
+  id                   String               @id @default(uuid())
+  studioId             String               @map("studio_id")
+  clientId             String?              @map("client_id")
+  clientUserId         String?              @map("client_user_id")
+  reference            String               @unique
+  clientName           String               @map("client_name")
+  clientEmail          String               @map("client_email")
+  clientAvatarAssetKey String?              @map("client_avatar_asset_key")
+  packageName          String               @map("package_name")
+  packageDetail        String               @map("package_detail")
+  packagePrice         Int                  @map("package_price")
+  packageIncludes      Json?                @map("package_includes")
+  servicePackageId     String?              @map("service_package_id")
+  sessionAt            DateTime             @map("session_at")
+  sessionEndAt         DateTime?            @map("session_end_at")
+  durationMinutes      Int                  @default(60) @map("duration_minutes")
+  sessionDateLabel     String               @map("session_date_label")
+  sessionTime          String               @map("session_time")
+  timeWindow           String?              @map("time_window")
+  venue                String?
+  city                 String?
+  locationNotes        String?              @map("location_notes")
+  status               BookingStatus
+  paymentStatus        BookingPaymentStatus @map("payment_status")
+  detailStatus         String               @default("pending") @map("detail_status")
+  amountPaid           Int                  @default(0) @map("amount_paid")
+  depositPercent       Int                  @default(50) @map("deposit_percent")
+  timeline             Json?
+  progressStep         Int                  @default(0) @map("progress_step")
+  galleryStep          Int                  @default(0) @map("gallery_step")
+  showVerifyPayment    Boolean              @default(false) @map("show_verify_payment")
+  paymentMeta          Json?                @map("payment_meta")
+  clientMeta           Json?                @map("client_meta")
+  internalNotes        String?              @map("internal_notes")
+  galleryId            String?              @unique @map("gallery_id")
+  requestedAt          DateTime             @default(now()) @map("requested_at")
+  createdAt            DateTime             @default(now()) @map("created_at")
+  updatedAt            DateTime             @updatedAt @map("updated_at")
+
+  studio          Studio           @relation(fields: [studioId], references: [id], onDelete: Cascade)
+  client          StudioClient?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientUser      User?            @relation("ClientBookings", fields: [clientUserId], references: [id], onDelete: SetNull)
+  paymentRequests PaymentRequest[]
+  paymentVerifications PaymentVerification[]
+  paymentRecords PaymentRecord[]
+  gallery        Gallery?         @relation(fields: [galleryId], references: [id], onDelete: SetNull)
+  servicePackage  ServicePackage? @relation(fields: [servicePackageId], references: [id], onDelete: SetNull)
+
+  @@index([studioId, sessionAt])
+  @@index([studioId, status])
+  @@index([clientUserId])
+  @@index([clientEmail])
+  @@map("bookings")
+}
+
+model PaymentRequest {
+  id               String               @id @default(uuid())
+  bookingId        String               @map("booking_id")
+  studioId         String               @map("studio_id")
+  type             PaymentRequestType
+  amount           Int
+  status           PaymentRequestStatus @default(unpaid)
+  dueDate          DateTime?            @map("due_date")
+  invoiceRef       String?              @map("invoice_ref")
+  bookingReference String?              @map("booking_reference")
+  bookingTitle     String?              @map("booking_title")
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  studio  Studio  @relation(fields: [studioId], references: [id], onDelete: Cascade)
+  verifications PaymentVerification[]
+  paymentRecords PaymentRecord[]
+
+  @@index([bookingId, status])
+  @@map("payment_requests")
+}
+
+model PaymentVerification {
+  id                   String             @id @default(uuid())
+  paymentRequestId     String?            @map("payment_request_id")
+  bookingId            String             @map("booking_id")
+  studioId             String             @map("studio_id")
+  clientName           String             @map("client_name")
+  clientEmail          String             @map("client_email")
+  clientAvatarAssetKey String?            @map("client_avatar_asset_key")
+  transactionId        String             @map("transaction_id")
+  bookingTitle         String             @map("booking_title")
+  packageName          String             @map("package_name")
+  bookingDate          String             @map("booking_date")
+  amount               Int
+  receiptAssetKey      String             @map("receipt_asset_key")
+  status               VerificationStatus @default(pending)
+  highPriority         Boolean            @default(false) @map("high_priority")
+  submittedAt          DateTime           @default(now()) @map("submitted_at")
+  verifiedAt           DateTime?          @map("verified_at")
+  createdAt            DateTime           @default(now()) @map("created_at")
+  updatedAt            DateTime           @updatedAt @map("updated_at")
+
+  paymentRequest PaymentRequest? @relation(fields: [paymentRequestId], references: [id], onDelete: SetNull)
+  booking        Booking         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  studio         Studio          @relation(fields: [studioId], references: [id], onDelete: Cascade)
+  paymentRecord  PaymentRecord?
+
+  @@index([studioId, status])
+  @@map("payment_verifications")
+}
+
+model PaymentRecord {
+  id                    String             @id @default(uuid())
+  clientEmail           String             @map("client_email")
+  bookingId             String             @map("booking_id")
+  studioId              String             @map("studio_id")
+  studioName            String             @map("studio_name")
+  paymentRequestId      String?            @map("payment_request_id")
+  paymentVerificationId String?            @unique @map("payment_verification_id")
+  bookingTitle          String             @map("booking_title")
+  amount                Int
+  paidAt                DateTime           @map("paid_at")
+  status                VerificationStatus
+  receiptAssetKey       String             @map("receipt_asset_key")
+  createdAt             DateTime           @default(now()) @map("created_at")
+
+  paymentVerification PaymentVerification? @relation(fields: [paymentVerificationId], references: [id], onDelete: SetNull)
+  paymentRequest      PaymentRequest?      @relation(fields: [paymentRequestId], references: [id], onDelete: SetNull)
+  booking             Booking              @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  studio              Studio               @relation(fields: [studioId], references: [id], onDelete: Cascade)
+
+  @@index([studioId, paidAt])
+  @@map("payment_records")
+}
+
+model Gallery {
+  id              String                @id @default(uuid())
+  studioId        String                @map("studio_id")
+  clientId        String                @map("client_id")
+  clientUserId    String?               @map("client_user_id")
+  title           String
+  description     String?
+  category        GalleryCategory
+  status          GalleryStatus         @default(draft)
+  workflowStatus  GalleryWorkflowStatus @default(editing) @map("workflow_status")
+  coverAssetKey   String?               @map("cover_asset_key")
+  photoCount      Int                   @default(0) @map("photo_count")
+  views           Int                   @default(0)
+  downloads       Int                   @default(0)
+  likes           Int                   @default(0)
+  clientName      String                @map("client_name")
+  clientEmail     String                @map("client_email")
+  storageUsedGb   Float                 @default(0) @map("storage_used_gb")
+  storageTotalGb  Float                 @default(50) @map("storage_total_gb")
+  shootDate       String?               @map("shoot_date")
+  location        String?
+  settings        Json?
+  delivery        Json?
+  analytics       Json?
+  activities      Json?
+  isNew           Boolean               @default(false) @map("is_new")
+  uploadedAt      DateTime              @default(now()) @map("uploaded_at")
+  createdAt       DateTime              @default(now()) @map("created_at")
+  updatedAt       DateTime              @updatedAt @map("updated_at")
+
+  studio  Studio       @relation(fields: [studioId], references: [id], onDelete: Cascade)
+  client  StudioClient @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientUser User?     @relation("ClientGalleries", fields: [clientUserId], references: [id], onDelete: SetNull)
+  booking Booking?
+  photos  GalleryPhoto[]
+
+  @@index([clientUserId])
+  @@index([studioId, clientId])
+  @@map("galleries")
+}
+
+model GalleryPhoto {
+  id                String   @id @default(uuid())
+  galleryId         String   @map("gallery_id")
+  assetKey          String   @map("asset_key")
+  thumbnailAssetKey String?  @map("thumbnail_asset_key")
+  alt               String   @default("")
+  sortOrder         Int      @default(0) @map("sort_order")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  gallery Gallery @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+
+  @@index([galleryId, sortOrder])
+  @@map("gallery_photos")
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  category    String
+  title       String
+  description String
+  read        Boolean  @default(false)
+  actionHref  String?  @map("action_href")
+  metadata    Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@map("notifications")
+}
