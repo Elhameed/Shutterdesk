@@ -46,7 +46,9 @@ gitignored. Full cold start:
 ```bash
 # 1. Dependencies (two separate package.json files)
 npm install
-npm install --prefix server
+cd server && npm install && cd ..
+# Install the server from INSIDE server/. Running `npm install --prefix server` from the
+# root makes npm link the root package into server/node_modules as a stray dependency.
 
 # 2. Environment
 cp .env.example .env                  # VITE_API_URL=http://localhost:5000/api
