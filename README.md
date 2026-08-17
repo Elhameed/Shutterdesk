@@ -139,9 +139,3 @@ _(Figma resolves by file key, so this link works regardless of the file's displa
 rename the file in Figma when convenient and update the slug here.)_
 
 ---
-
-## Project history
-
-Shutterdesk continues a project originally developed as **LensFlow** by Athanson
-Oluwasijibomi. It was transferred to **Abdulhameed Teniola Ajani**, who has maintained
-and developed it since August 2026.
