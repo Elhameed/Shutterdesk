@@ -1,0 +1,35 @@
+export const ANALYTICS_COPY = {
+  title: "Analytics Overview",
+  subtitle: "Track your studio performance and growth metrics.",
+  dateRange: "Last 30 Days",
+  dateRanges: {
+    "7": "Last 7 Days",
+    "30": "Last 30 Days",
+    "90": "Last 90 Days",
+    year: "This Year",
+  },
+  kpis: {
+    totalRevenue: "Total Revenue",
+    sessionsCompleted: "Sessions Completed",
+    repeatClients: "Repeat Clients",
+    conversionRate: "Conversion Rate",
+  },
+  revenueOverTime: "Revenue Over Time",
+  monthly: "Monthly",
+  weekly: "Weekly",
+  bookingsVolume: "Bookings Volume",
+  totalShoots: (total: number) => `Total: ${total} Shoots`,
+  popularServices: "Popular Services",
+  topClients: "Top Clients",
+  columns: {
+    serviceName: "Service Name",
+    bookings: "Bookings",
+    revenueShare: "Revenue Share",
+  },
+  sessions: (count: number) => `${count} sessions`,
+  clientStatus: {
+    highValue: "High Value",
+    goldStatus: "Gold Status",
+    loyalMember: "Loyal Member",
+  },
+} as const;
