@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" role="img">
+  <rect width="100%" height="100%" fill="#ececec"/>
+  <rect x="1" y="1" width="78" height="78" fill="none" stroke="#c9c9c9" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui,sans-serif" font-size="3.3333333333333335" fill="#6b6b6b">booking-elena-rodriguez-avatar.png</text>
+  <text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui,sans-serif" font-size="2.5" fill="#9ca3af">Replace with final asset</text>
+</svg>
