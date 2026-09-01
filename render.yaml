@@ -1,0 +1,39 @@
+# Render Blueprint — Shutterdesk API
+# Docs: https://render.com/docs/blueprint-spec
+#
+# After deploy, set CORS_ORIGIN to your Vercel URL(s), e.g.:
+#   https://shutterdesk.vercel.app,https://shutterdesk-*.vercel.app
+#
+# Use the same Neon DATABASE_URL as local dev (pooled connection string).
+
+services:
+  - type: web
+    name: shutterdesk-api
+    runtime: node
+    region: frankfurt
+    rootDir: server
+    plan: free
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CORS_ORIGIN
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: CLOUDINARY_FOLDER_PREFIX
+        value: shutterdesk
+      - key: SENTRY_DSN
+        sync: false
