@@ -2,9 +2,21 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// `url` is the pooled connection the running app uses — PgBouncer in
+// transaction mode, which is what keeps a small instance from exhausting
+// Postgres connections.
+//
+// `directUrl` is the unpooled connection, used only by `prisma migrate`.
+// Migrations serialise themselves with a session-scoped advisory lock
+// (`pg_advisory_lock`), and under transaction pooling each statement can land
+// on a different backend, so that lock can never be held and `migrate deploy`
+// fails with P1002. Neon's docs call for exactly this split.
+//
+// Where there is no pooler (local Postgres, CI), both point at the same URL.
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 enum UserRole {

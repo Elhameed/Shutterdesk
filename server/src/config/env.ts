@@ -12,6 +12,9 @@ const envSchema = z.object({
     .default("development"),
   PORT: z.coerce.number().int().positive().default(5000),
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  // Read by the Prisma CLI (schema.prisma `directUrl`), never by the app.
+  // Declared so it is discoverable and not flagged as stray configuration.
+  DIRECT_DATABASE_URL: z.string().optional(),
   CORS_ORIGIN: z
     .string()
     .default("http://localhost:5173")

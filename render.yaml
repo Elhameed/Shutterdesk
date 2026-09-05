@@ -4,7 +4,8 @@
 # After deploy, set CORS_ORIGIN to your Vercel URL(s), e.g.:
 #   https://shutterdesk.vercel.app,https://shutterdesk-*.vercel.app
 #
-# Use the same Neon DATABASE_URL as local dev (pooled connection string).
+# DATABASE_URL is the Neon *pooled* string; DIRECT_DATABASE_URL is the
+# *unpooled* one. Both are required — see the note on DIRECT_DATABASE_URL below.
 
 services:
   - type: web
@@ -20,6 +21,11 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
+        sync: false
+      # Unpooled Neon string (no `-pooler` in the host). Used only by
+      # `prisma migrate deploy`, which needs a session-scoped advisory lock
+      # that transaction pooling cannot hold.
+      - key: DIRECT_DATABASE_URL
         sync: false
       - key: JWT_SECRET
         sync: false

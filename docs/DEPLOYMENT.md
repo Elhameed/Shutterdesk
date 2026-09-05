@@ -42,9 +42,22 @@ needs to be written to a file or shared.
 ## Step 0 — Create the Neon database
 
 1. [neon.tech](https://neon.tech) → **New Project** (region close to Render's, e.g. EU)
-2. Copy the **Pooled connection** string — it contains `-pooler` in the host.
-   The unpooled string will exhaust connections under Render's free plan.
-3. Ensure it ends with `?sslmode=require`
+2. Copy **both** connection strings from the dashboard — you need each for a
+   different job, and the deploy fails without both:
+
+   | Variable | Neon string | Used by |
+   |---|---|---|
+   | `DATABASE_URL` | **Pooled** — host contains `-pooler` | The running app. Keeps a small instance from exhausting Postgres connections. |
+   | `DIRECT_DATABASE_URL` | **Unpooled** — same host without `-pooler` | `prisma migrate deploy` only. |
+
+3. Ensure both end with `?sslmode=require`
+
+> Migrations serialise themselves with a session-scoped Postgres advisory lock.
+> The pooled endpoint is PgBouncer in transaction mode, where consecutive
+> statements can land on different backends, so that lock can never be held and
+> `migrate deploy` fails with `P1002 ... Timed out trying to acquire a postgres
+> advisory lock`. Running migrations over the direct connection avoids it. With
+> a local Postgres there is no pooler, so both variables take the same value.
 
 You do **not** need to create tables. `start:prod` runs `prisma migrate deploy`
 on every boot, and the 11 migrations in `server/prisma/migrations` build the
@@ -92,7 +105,8 @@ DATABASE_URL="your-neon-pooled-url" npm run db:seed
 | Variable | Value |
 |----------|--------|
 | `NODE_ENV` | `production` |
-| `DATABASE_URL` | Neon pooled connection string (`?sslmode=require`) |
+| `DATABASE_URL` | Neon **pooled** connection string (host has `-pooler`) |
+| `DIRECT_DATABASE_URL` | Neon **unpooled** string — migrations only, see step 0 |
 | `JWT_SECRET` | Your generated secret (min 32 chars) |
 | `JWT_EXPIRES_IN` | `7d` |
 | `CORS_ORIGIN` | Your Vercel URL(s), comma-separated — see below |
@@ -244,5 +258,6 @@ GitHub Actions ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs 
 | 401 on all requests | Token from different `JWT_SECRET` — log out and log in again |
 | Cold start delay (Render free) | First request after idle may take ~30s. Neon also auto-suspends when idle, so the very first request after a quiet period pays both. Subsequent requests are normal. |
 | Vercel build fails: `VITE_API_URL is not set` | Working as intended — set the variable in Project Settings and redeploy. See step 2. |
-| `Too many connections` from Postgres | The `DATABASE_URL` is the unpooled Neon string. Use the pooled one (host contains `-pooler`). |
+| `Too many connections` from Postgres | `DATABASE_URL` is the unpooled Neon string. Use the pooled one (host contains `-pooler`). |
+| `P1002 ... Timed out trying to acquire a postgres advisory lock` | `DIRECT_DATABASE_URL` is unset, or set to the pooled string. Migrations need the **unpooled** connection — see step 0. |
 | Uploads fail but everything else works | Cloudinary vars are unset on Render. See [CLOUDINARY.md](./CLOUDINARY.md). |
