@@ -50,7 +50,7 @@ export function PaymentDetailDrawer({
             </Button>
             <button
               type="button"
-              className="w-full text-center text-sm font-semibold text-charcoal transition-colors hover:text-gold disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full text-center text-sm font-semibold text-ink transition-colors hover:text-accent disabled:cursor-not-allowed disabled:opacity-50"
               onClick={() => onRequestResubmission(payment.id)}
               disabled={isSubmitting}
             >
@@ -64,12 +64,12 @@ export function PaymentDetailDrawer({
         <div className="space-y-6">
           <section>
             <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <p className="text-[10px] font-medium text-ink-faint">
                 {detail.receiptEvidence}
               </p>
               <button
                 type="button"
-                className="flex items-center gap-1 text-xs font-semibold text-gold transition-colors hover:text-gold-hover"
+                className="flex items-center gap-1 text-xs font-semibold text-accent transition-colors hover:text-accent-hover"
               >
                 {detail.expand}
                 <Expand className="size-3.5" aria-hidden />
@@ -79,16 +79,16 @@ export function PaymentDetailDrawer({
             <img
               src={payment.receiptImage}
               alt="Payment receipt evidence"
-              className="mx-auto max-h-80 w-full max-w-[220px] rounded-xl border border-border object-cover shadow-sm"
+              className="mx-auto max-h-80 w-full max-w-[220px] rounded-md border border-border object-cover"
             />
           </section>
 
           <section className="space-y-4 border-t border-border pt-5">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <p className="text-[10px] font-medium text-ink-faint">
                 {detail.transactionId}
               </p>
-              <p className="text-sm font-bold text-charcoal">
+              <p className="text-sm font-bold text-ink">
                 {payment.transactionId}
               </p>
             </div>
@@ -115,10 +115,10 @@ export function PaymentDetailDrawer({
 function DetailField({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+      <p className="text-[10px] font-medium text-ink-faint">
         {label}
       </p>
-      <p className="mt-1 text-sm font-bold text-charcoal">{value}</p>
+      <p className="mt-1 text-sm font-bold text-ink">{value}</p>
     </div>
   );
 }

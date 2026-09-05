@@ -15,19 +15,19 @@ export function RoleCard({ role, selected, onSelect }: RoleCardProps) {
       type="button"
       onClick={onSelect}
       className={cn(
-        "flex w-full flex-col overflow-hidden rounded-2xl border bg-white text-left shadow-card transition-all duration-200",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2",
+        "flex w-full flex-col overflow-hidden rounded-md border bg-panel text-left transition-all duration-200",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2",
         selected
-          ? "border-gold opacity-100 ring-1 ring-gold hover:shadow-elevated"
+          ? "border-accent opacity-100 ring-1 ring-accent hover:shadow-elevated"
           : "border-border opacity-50 hover:opacity-60",
       )}
     >
       <div className="flex flex-1 flex-col p-6 sm:p-7">
-        <div className="flex size-11 items-center justify-center rounded-xl bg-[#f3f3f1] text-charcoal">
+        <div className="flex size-11 items-center justify-center rounded-md bg-[#f3f3f1] text-ink">
           <Icon className="size-5" strokeWidth={1.75} />
         </div>
-        <h3 className="mt-5 text-xl font-bold text-charcoal">{role.title}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-muted">
+        <h3 className="mt-5 text-xl font-bold text-ink">{role.title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-ink-soft">
           {role.description}
         </p>
       </div>
@@ -37,10 +37,10 @@ export function RoleCard({ role, selected, onSelect }: RoleCardProps) {
           <img
             src={role.image}
             alt={role.imageAlt}
-            className="aspect-[4/3] w-full rounded-xl object-cover grayscale"
+            className="aspect-[4/3] w-full rounded-md object-cover grayscale"
           />
         ) : (
-          <div className="flex aspect-[4/3] items-center justify-center rounded-xl bg-gray-100 text-sm text-muted">
+          <div className="flex aspect-[4/3] items-center justify-center rounded-md bg-paper-dim text-sm text-ink-soft">
             {role.imageAlt}
           </div>
         )}

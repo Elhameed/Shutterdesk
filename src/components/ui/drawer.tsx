@@ -41,7 +41,7 @@ export function Drawer({
     <div className="fixed inset-0 z-50 flex justify-end">
       <button
         type="button"
-        className="absolute inset-0 bg-charcoal/40"
+        className="bg-ink/40 absolute inset-0"
         aria-label="Close panel"
         onClick={onClose}
       />
@@ -51,21 +51,21 @@ export function Drawer({
         aria-modal="true"
         aria-labelledby="drawer-title"
         className={cn(
-          "relative z-10 flex h-full w-full max-w-md flex-col border-l border-border bg-white shadow-xl",
+          "border-border bg-panel relative z-10 flex h-full w-full max-w-md flex-col border-l",
           className,
         )}
       >
-        <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-4">
+        <div className="border-border flex items-center justify-between gap-4 border-b px-5 py-4">
           <h2
             id="drawer-title"
-            className="text-lg font-bold tracking-tight text-charcoal"
+            className="text-ink font-display text-lg"
           >
             {title}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="flex size-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-gray-100 hover:text-charcoal"
+            className="text-ink-faint hover:bg-paper-dim hover:text-ink flex size-8 items-center justify-center rounded-sm transition-colors"
             aria-label="Close"
           >
             <X className="size-4" />
@@ -75,7 +75,7 @@ export function Drawer({
         <div className="flex-1 overflow-y-auto px-5 py-5">{children}</div>
 
         {footer && (
-          <div className="border-t border-border px-5 py-4">{footer}</div>
+          <div className="border-border border-t px-5 py-4">{footer}</div>
         )}
       </aside>
     </div>

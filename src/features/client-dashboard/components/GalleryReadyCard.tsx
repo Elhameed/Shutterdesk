@@ -18,18 +18,18 @@ export function GalleryReadyCard({
   const copy = CLIENT_DASHBOARD_COPY;
 
   return (
-    <section className="relative overflow-hidden rounded-xl bg-charcoal p-6 text-white shadow-card">
+    <section className="relative overflow-hidden rounded-md bg-ink p-6 text-white">
       <Sparkles
-        className="pointer-events-none absolute -top-2 right-4 size-24 text-gold/30"
+        className="pointer-events-none absolute -top-2 right-4 size-24 text-accent/30"
         aria-hidden
       />
 
-      <p className="text-[11px] font-semibold tracking-wider text-gold uppercase">
+      <p className="text-[11px] font-medium text-accent">
         {copy.galleryReady}
       </p>
       <h2 className="mt-2 text-2xl font-bold">{title}</h2>
       <p className="mt-2 flex items-center gap-2 text-sm text-white/80">
-        <CheckCircle2 className="size-4 text-gold" aria-hidden />
+        <CheckCircle2 className="size-4 text-accent" aria-hidden />
         {copy.photosReady(photoCount)}
       </p>
 

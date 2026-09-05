@@ -61,15 +61,15 @@ export function BookingProgressBar({ currentStep }: BookingProgressBarProps) {
         : 0;
 
   return (
-    <section className="overflow-hidden rounded-xl border border-border bg-white p-4 shadow-card sm:p-5">
+    <section className="overflow-hidden rounded-md border border-border bg-panel p-4 sm:p-5">
       <div className="overflow-x-auto pb-1">
         <div className="relative min-w-[640px] px-2 sm:min-w-0">
           <div
-            className="absolute top-4 right-8 left-8 h-0.5 bg-gray-200"
+            className="absolute top-4 right-8 left-8 h-0.5 bg-border"
             aria-hidden
           />
           <div
-            className="absolute top-4 left-8 h-0.5 bg-gold transition-all"
+            className="absolute top-4 left-8 h-0.5 bg-accent transition-all"
             style={{ width: `calc((100% - 4rem) * ${progressPercent / 100})` }}
             aria-hidden
           />
@@ -88,9 +88,9 @@ export function BookingProgressBar({ currentStep }: BookingProgressBarProps) {
                   <span
                     className={cn(
                       "relative z-10 flex size-8 items-center justify-center rounded-full",
-                      state === "completed" && "bg-gold text-white",
-                      state === "current" && "bg-charcoal text-white",
-                      state === "upcoming" && "bg-gray-100 text-muted-light",
+                      state === "completed" && "bg-accent text-on-accent",
+                      state === "current" && "bg-ink text-panel",
+                      state === "upcoming" && "bg-paper-dim text-ink-faint",
                     )}
                   >
                     {state === "completed" ? (
@@ -101,10 +101,10 @@ export function BookingProgressBar({ currentStep }: BookingProgressBarProps) {
                   </span>
                   <span
                     className={cn(
-                      "mt-2 max-w-[5.5rem] text-[9px] leading-tight font-semibold tracking-wide uppercase sm:max-w-none sm:text-[10px]",
+                      "mt-2 max-w-[5.5rem] text-[9px] leading-tight font-medium sm:max-w-none sm:text-[10px]",
                       state === "upcoming"
-                        ? "text-muted-light"
-                        : "text-charcoal",
+                        ? "text-ink-faint"
+                        : "text-ink",
                     )}
                   >
                     {label}

@@ -195,7 +195,7 @@ export function AvailabilityManageForm({
       >
         <Skeleton className="h-3.5 w-3/4" />
         {Array.from({ length: 5 }, (_, index) => (
-          <Skeleton key={index} className="h-10 w-full rounded-lg" />
+          <Skeleton key={index} className="h-10 w-full rounded-sm" />
         ))}
       </div>
     );
@@ -203,15 +203,15 @@ export function AvailabilityManageForm({
 
   return (
     <div className="min-w-0">
-      <p className="text-sm text-muted">{copy.manageAvailabilityHint}</p>
+      <p className="text-sm text-ink-soft">{copy.manageAvailabilityHint}</p>
 
       <ul className="mt-4 space-y-2">
         {weeklyRules.map((rule) => (
           <li
             key={rule.dow}
-            className="rounded-lg border border-border bg-gray-50/50 p-3"
+            className="rounded-sm border border-border bg-paper-dim/50 p-3"
           >
-            <label className="flex items-center gap-2 text-sm font-medium text-charcoal">
+            <label className="flex items-center gap-2 text-sm font-medium text-ink">
               <input
                 type="checkbox"
                 checked={rule.enabled}
@@ -225,7 +225,7 @@ export function AvailabilityManageForm({
             {rule.enabled ? (
               <div className="mt-2 grid min-w-0 grid-cols-2 gap-2">
                 <div className="min-w-0">
-                  <span className="text-[10px] font-semibold tracking-wide text-muted uppercase">
+                  <span className="text-[10px] font-medium text-ink-soft">
                     {copy.dayStart}
                   </span>
                   <Input
@@ -238,7 +238,7 @@ export function AvailabilityManageForm({
                   />
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[10px] font-semibold tracking-wide text-muted uppercase">
+                  <span className="text-[10px] font-medium text-ink-soft">
                     {copy.dayEnd}
                   </span>
                   <Input
@@ -332,19 +332,19 @@ export function AvailabilityManageForm({
       </div>
 
       <div className="mt-6">
-        <h3 className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+        <h3 className="text-[11px] font-medium text-ink-faint">
           {copy.upcomingBlockedDays}
         </h3>
         {upcomingBlockedDays.length === 0 ? (
-          <p className="mt-2 text-xs text-muted">{copy.noBlockedDays}</p>
+          <p className="mt-2 text-xs text-ink-soft">{copy.noBlockedDays}</p>
         ) : (
           <ul className="mt-2 space-y-2">
             {upcomingBlockedDays.map(({ block, dateKey, date }) => (
               <li
                 key={block.id}
-                className="flex items-center justify-between gap-2 rounded-lg border border-border bg-gray-50/50 px-3 py-2"
+                className="flex items-center justify-between gap-2 rounded-sm border border-border bg-paper-dim/50 px-3 py-2"
               >
-                <span className="text-sm font-medium text-charcoal">
+                <span className="text-sm font-medium text-ink">
                   {date.toLocaleDateString("en-US", {
                     weekday: "short",
                     month: "short",
@@ -368,14 +368,14 @@ export function AvailabilityManageForm({
       </div>
 
       {!focusDate ? (
-        <p className="mt-4 text-xs text-muted">{copy.noDaySelected}</p>
+        <p className="mt-4 text-xs text-ink-soft">{copy.noDaySelected}</p>
       ) : (
-        <div className="mt-4 rounded-lg border border-border bg-gray-50/50 p-3">
-          <p className="text-xs font-medium text-charcoal">
+        <div className="mt-4 rounded-sm border border-border bg-paper-dim/50 p-3">
+          <p className="text-xs font-medium text-ink">
             {formatPeriodLabel(focusDate, "day")}
           </p>
           {focusDateBlocked ? (
-            <p className="mt-1 text-xs text-muted">{copy.dayBlockedHint}</p>
+            <p className="mt-1 text-xs text-ink-soft">{copy.dayBlockedHint}</p>
           ) : null}
         </div>
       )}

@@ -89,10 +89,10 @@ export function ClientBookingsView() {
             type="button"
             onClick={() => setFilter(key)}
             className={cn(
-              "rounded-full px-4 py-2 text-xs font-semibold transition-colors",
+              "rounded-full border px-4 py-2 text-xs font-medium transition-colors",
               filter === key
-                ? "bg-charcoal text-white"
-                : "bg-white text-muted ring-1 ring-border hover:text-charcoal",
+                ? "border-accent bg-accent-tint text-accent-fg"
+                : "border-border bg-panel text-ink-soft hover:bg-paper-dim hover:text-ink",
             )}
           >
             {copy.filters[key]}
@@ -101,7 +101,7 @@ export function ClientBookingsView() {
       </div>
 
       {errorMessage && (
-        <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="mt-4 rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
           {errorMessage}
         </p>
       )}
@@ -132,11 +132,11 @@ function ClientBookingsTable({
 
   if (bookings.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-white p-8 text-center shadow-card">
-        <p className="text-sm font-semibold text-charcoal">
+      <div className="rounded-md border border-border bg-panel p-8 text-center">
+        <p className="text-sm font-semibold text-ink">
           {isFiltered ? copy.noResults : copy.emptyTitle}
         </p>
-        <p className="mt-2 text-sm text-muted">
+        <p className="mt-2 text-sm text-ink-soft">
           {isFiltered ? "Try a different search or filter." : copy.emptyBody}
         </p>
       </div>
@@ -144,10 +144,10 @@ function ClientBookingsTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-white">
+    <div className="overflow-hidden rounded-md border border-border bg-panel">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="border-b border-border bg-gray-50 text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+          <thead className="border-b border-border bg-paper-dim text-[11px] font-medium text-ink-faint">
             <tr>
               <th className="px-4 py-3">{copy.columns.package}</th>
               <th className="px-4 py-3">{copy.columns.date}</th>
@@ -160,10 +160,10 @@ function ClientBookingsTable({
             {bookings.map((booking) => (
               <tr key={booking.id} className="border-b border-border last:border-0">
                 <td className="px-4 py-4">
-                  <p className="font-semibold text-charcoal">{booking.packageName}</p>
-                  <p className="text-xs text-muted">{booking.packageDetail}</p>
+                  <p className="font-semibold text-ink">{booking.packageName}</p>
+                  <p className="text-xs text-ink-soft">{booking.packageDetail}</p>
                 </td>
-                <td className="px-4 py-4 text-muted">
+                <td className="px-4 py-4 text-ink-soft">
                   {booking.date}
                   <br />
                   {booking.time}
@@ -171,7 +171,7 @@ function ClientBookingsTable({
                 <td className="px-4 py-4">
                   <span
                     className={cn(
-                      "inline-flex rounded px-2 py-0.5 text-[10px] font-bold uppercase",
+                      "inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium",
                       BOOKING_STATUS_BADGE_STYLES[booking.status],
                     )}
                   >
@@ -181,7 +181,7 @@ function ClientBookingsTable({
                 <td className="px-4 py-4">
                   <span
                     className={cn(
-                      "inline-flex rounded px-2 py-0.5 text-[10px] font-bold uppercase",
+                      "inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium",
                       PAYMENT_BADGE_STYLES[booking.payment],
                     )}
                   >

@@ -63,16 +63,16 @@ export function SelectedSessionCard({
 
   if (daySessions.length === 0) {
     return (
-      <section className="rounded-xl border border-dashed border-border bg-white p-5 text-center shadow-card">
-        <h2 className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+      <section className="rounded-md border border-dashed border-border bg-panel p-5 text-center">
+        <h2 className="text-[11px] font-medium text-ink-faint">
           {copy.selectedSession}
         </h2>
         {isBlocked ? (
           <>
-            <p className="mt-2 text-sm font-medium text-charcoal">
+            <p className="mt-2 text-sm font-medium text-ink">
               {copy.dayBlockedLabel}
             </p>
-            <p className="mt-1 text-xs text-muted">{copy.dayBlockedHint}</p>
+            <p className="mt-1 text-xs text-ink-soft">{copy.dayBlockedHint}</p>
             <Button
               type="button"
               variant="outline"
@@ -85,9 +85,9 @@ export function SelectedSessionCard({
             </Button>
           </>
         ) : (
-          <p className="mt-2 text-sm text-muted">{copy.noSessionsOnDay}</p>
+          <p className="mt-2 text-sm text-ink-soft">{copy.noSessionsOnDay}</p>
         )}
-        <p className="mt-2 text-xs text-muted-light">{dayLabel}</p>
+        <p className="mt-2 text-xs text-ink-faint">{dayLabel}</p>
       </section>
     );
   }
@@ -95,10 +95,10 @@ export function SelectedSessionCard({
   return (
     <section>
       <div className="mb-3 flex items-center justify-between gap-2">
-        <h2 className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+        <h2 className="text-[11px] font-medium text-ink-faint">
           {copy.selectedSession}
         </h2>
-        <span className="text-[10px] font-medium text-muted">
+        <span className="text-[10px] font-medium text-ink-soft">
           {daySessions.length === 1
             ? dayLabel
             : `${daySessions.length} sessions`}
@@ -106,9 +106,9 @@ export function SelectedSessionCard({
       </div>
 
       {isBlocked ? (
-        <div className="mb-3 rounded-lg border border-border bg-charcoal/5 p-3">
-          <p className="text-xs font-medium text-charcoal">{copy.dayBlockedLabel}</p>
-          <p className="mt-1 text-xs text-muted">{copy.dayBlockedHint}</p>
+        <div className="mb-3 rounded-sm border border-border bg-ink/5 p-3">
+          <p className="text-xs font-medium text-ink">{copy.dayBlockedLabel}</p>
+          <p className="mt-1 text-xs text-ink-soft">{copy.dayBlockedHint}</p>
           <Button
             type="button"
             variant="outline"
@@ -140,20 +140,20 @@ export function SelectedSessionCard({
             <Link
               key={session.id}
               to={ROUTES.photographer.bookingDetail(session.id)}
-              className="block rounded-xl border border-border bg-white p-4 transition-colors hover:border-gold/40 hover:bg-gold-light/20"
+              className="block rounded-md border border-border bg-panel p-4 transition-colors hover:border-accent/40 hover:bg-accent-tint/20"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-bold text-charcoal">
+                  <p className="truncate text-sm font-bold text-ink">
                     {session.clientNames}
                   </p>
-                  <p className="mt-0.5 truncate text-xs text-muted">
+                  <p className="mt-0.5 truncate text-xs text-ink-soft">
                     {session.category}
                   </p>
                 </div>
                 <span
                   className={cn(
-                    "shrink-0 rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                    "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium",
                     statusStyle,
                   )}
                 >
@@ -161,7 +161,7 @@ export function SelectedSessionCard({
                 </span>
               </div>
 
-              <div className="mt-3 hidden overflow-hidden rounded-lg xl:block">
+              <div className="mt-3 hidden overflow-hidden rounded-sm xl:block">
                 <img
                   src={image}
                   alt={`${session.clientNames} session`}
@@ -171,20 +171,20 @@ export function SelectedSessionCard({
 
               <dl className="mt-3 space-y-2">
                 <div>
-                  <dt className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+                  <dt className="text-[10px] font-medium text-ink-faint">
                     {copy.time}
                   </dt>
-                  <dd className="mt-0.5 text-sm font-medium text-charcoal">
+                  <dd className="mt-0.5 text-sm font-medium text-ink">
                     {session.time}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+                  <dt className="text-[10px] font-medium text-ink-faint">
                     {copy.location}
                   </dt>
-                  <dd className="mt-0.5 flex items-start gap-1.5 text-sm font-medium text-charcoal">
+                  <dd className="mt-0.5 flex items-start gap-1.5 text-sm font-medium text-ink">
                     <MapPin
-                      className="mt-0.5 size-3.5 shrink-0 text-muted"
+                      className="mt-0.5 size-3.5 shrink-0 text-ink-soft"
                       aria-hidden
                     />
                     <span className="line-clamp-2">{session.location}</span>

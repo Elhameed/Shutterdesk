@@ -136,7 +136,7 @@ export function GallerySettingsTab({
                   placeholder={panel.accessPinPlaceholder}
                   inputMode="numeric"
                 />
-                <p className="text-xs text-muted">{panel.accessPinHint}</p>
+                <p className="text-xs text-ink-soft">{panel.accessPinHint}</p>
               </div>
             ) : null}
           </div>
@@ -183,8 +183,8 @@ export function GallerySettingsTab({
       <GalleryTabSection title={panel.urlTitle}>
         <div className="space-y-2">
           <Label>{panel.customSlug}</Label>
-          <div className="flex overflow-hidden rounded-lg border border-border bg-gray-50">
-            <span className="flex items-center border-r border-border px-3 text-sm text-muted">
+          <div className="flex overflow-hidden rounded-sm border border-border bg-paper-dim">
+            <span className="flex items-center border-r border-border px-3 text-sm text-ink-soft">
               shutterdesk.rw/g/
             </span>
             <Input
@@ -197,9 +197,9 @@ export function GallerySettingsTab({
       </GalleryTabSection>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-muted">
+        <p className="text-xs text-ink-soft">
           {saveError ? (
-            <span className="text-red-700" role="alert">
+            <span className="text-bad-fg" role="alert">
               {saveError}
             </span>
           ) : saved ? (

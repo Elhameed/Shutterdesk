@@ -4,7 +4,7 @@ export type ActivityTypeFilter = RecentActivityType | "all";
 export type ActivityRangeFilter = "all" | "7d" | "30d";
 
 export const PHOTOGRAPHER_ACTIVITY_COPY = {
-  title: "Activity History",
+  title: "Activity history",
   subtitle: "A chronological record of studio bookings, payments, galleries, and more.",
   backToDashboard: "Dashboard",
   empty: "No activity matches your filters yet.",

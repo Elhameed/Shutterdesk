@@ -6,19 +6,19 @@ export function AvailabilityOverview() {
   const { availability } = useCalendarData();
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <section className="rounded-md border border-border bg-panel p-5">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-[10px] font-bold tracking-wider text-muted-light uppercase">
+          <p className="text-[10px] font-medium text-ink-faint">
             {copy.availabilityOverview}
           </p>
-          <p className="mt-1 text-lg font-bold text-charcoal">
+          <p className="mt-1 text-lg font-bold text-ink">
             {availability.percent}%
           </p>
-          <p className="text-xs text-muted">{availability.label}</p>
+          <p className="text-xs text-ink-soft">{availability.label}</p>
         </div>
         <div className="text-right">
-          <p className="text-xs text-muted">
+          <p className="text-xs text-ink-soft">
             {copy.slotsRemaining(availability.slotsRemaining, availability.month)}
           </p>
         </div>

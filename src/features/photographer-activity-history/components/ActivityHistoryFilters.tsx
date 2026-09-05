@@ -30,8 +30,8 @@ function FilterChip({
       className={cn(
         "rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors",
         active
-          ? "border-gold bg-gold-light text-charcoal"
-          : "border-border bg-white text-muted hover:border-gold/40 hover:text-charcoal",
+          ? "border-accent bg-accent-tint text-ink"
+          : "border-border bg-panel text-ink-soft hover:border-accent/40 hover:text-ink",
       )}
     >
       {label}
@@ -48,9 +48,9 @@ export function ActivityHistoryFilters({
   const copy = PHOTOGRAPHER_ACTIVITY_COPY;
 
   return (
-    <div className="space-y-4 rounded-xl border border-border bg-white p-5">
+    <div className="space-y-4 rounded-md border border-border bg-panel p-5">
       <div>
-        <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+        <p className="text-[10px] font-medium text-ink-faint">
           {copy.typeFilterLabel}
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
@@ -66,7 +66,7 @@ export function ActivityHistoryFilters({
       </div>
 
       <div>
-        <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+        <p className="text-[10px] font-medium text-ink-faint">
           {copy.rangeFilterLabel}
         </p>
         <div className="mt-3 flex flex-wrap gap-2">

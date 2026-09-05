@@ -27,15 +27,15 @@ export function GalleryCard({ gallery }: GalleryCardProps) {
   const copy = GALLERIES_COPY;
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl border border-border bg-white shadow-card transition-shadow hover:shadow-md">
-      <div className="relative aspect-[5/4] overflow-hidden bg-gray-100">
+    <article className="group flex flex-col overflow-hidden rounded-md border border-border bg-panel transition-colors hover:border-border-strong">
+      <div className="relative aspect-[5/4] overflow-hidden bg-paper-dim">
         <Link
           to={ROUTES.photographer.galleryDetail(gallery.id)}
           className="block size-full"
         >
           {gallery.isPlaceholder ? (
-            <div className="flex size-full items-center justify-center bg-gray-100">
-              <ImageIcon className="size-10 text-muted-light" aria-hidden />
+            <div className="flex size-full items-center justify-center bg-paper-dim">
+              <ImageIcon className="size-10 text-ink-faint" aria-hidden />
             </div>
           ) : (
             <AppImage
@@ -48,7 +48,7 @@ export function GalleryCard({ gallery }: GalleryCardProps) {
 
         <span
           className={cn(
-            "absolute top-3 left-3 rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+            "absolute top-3 left-3 rounded-full px-2 py-0.5 text-[10px] font-medium",
             GALLERY_WORKFLOW_BADGE_STYLES[gallery.workflowStatus],
           )}
         >
@@ -56,7 +56,7 @@ export function GalleryCard({ gallery }: GalleryCardProps) {
         </span>
 
         {!gallery.isPlaceholder && (
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-2 bg-charcoal/0 opacity-0 transition-all group-hover:bg-charcoal/25 group-hover:opacity-100">
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-2 bg-ink/0 opacity-0 transition-all group-hover:bg-ink/25 group-hover:opacity-100">
             <HoverAction icon={Share2} label={copy.share} />
             {!gallery.isPlaceholder && (
               <Link
@@ -64,7 +64,7 @@ export function GalleryCard({ gallery }: GalleryCardProps) {
                 className="pointer-events-auto"
                 aria-label={copy.edit}
               >
-                <span className="flex size-9 items-center justify-center rounded-full bg-white text-charcoal shadow-sm">
+                <span className="flex size-9 items-center justify-center rounded-full bg-panel text-ink">
                   <Pencil className="size-4" />
                 </span>
               </Link>
@@ -82,26 +82,26 @@ export function GalleryCard({ gallery }: GalleryCardProps) {
         <div className="flex items-start justify-between gap-2">
           <Link
             to={ROUTES.photographer.galleryDetail(gallery.id)}
-            className="text-sm font-bold text-charcoal hover:text-gold"
+            className="text-sm font-bold text-ink hover:text-accent"
           >
             {gallery.title}
           </Link>
           <button
             type="button"
-            className="shrink-0 rounded p-0.5 text-muted transition-colors hover:bg-gray-100 hover:text-charcoal"
+            className="shrink-0 rounded p-0.5 text-ink-soft transition-colors hover:bg-paper-dim hover:text-ink"
             aria-label={copy.moreActions}
           >
             <MoreVertical className="size-4" />
           </button>
         </div>
 
-        <p className="mt-1 text-xs text-muted">{copy.client(gallery.clientName)}</p>
-        <p className="mt-1 text-xs text-muted">
+        <p className="mt-1 text-xs text-ink-soft">{copy.client(gallery.clientName)}</p>
+        <p className="mt-1 text-xs text-ink-soft">
           {copy.uploaded}: {gallery.uploadedDate}
         </p>
 
         <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-          <div className="flex items-center gap-3 text-xs text-muted">
+          <div className="flex items-center gap-3 text-xs text-ink-soft">
             <Stat icon={Eye} value={gallery.views} />
             <Stat icon={Download} value={gallery.downloads} />
             <Stat icon={Heart} value={gallery.likes} />
@@ -130,7 +130,7 @@ function HoverAction({
   to?: string;
 }) {
   const content = (
-    <span className="flex size-9 items-center justify-center rounded-full bg-white text-charcoal shadow-sm">
+    <span className="flex size-9 items-center justify-center rounded-full bg-panel text-ink">
       <Icon className="size-4" />
     </span>
   );
@@ -147,7 +147,7 @@ function HoverAction({
         </Link>
       ) : (
         <span
-          className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-white text-charcoal shadow-sm"
+          className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-panel text-ink"
           aria-hidden
         >
           <Icon className="size-4" />

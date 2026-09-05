@@ -11,7 +11,7 @@ export function ClientsSearch({ value, onChange }: ClientsSearchProps) {
   return (
     <div className="relative">
       <Search
-        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-light"
+        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-faint"
         aria-hidden
       />
       <Input
@@ -19,7 +19,7 @@ export function ClientsSearch({ value, onChange }: ClientsSearchProps) {
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={CLIENTS_COPY.searchPlaceholder}
-        className="h-11 bg-gray-50 pl-10"
+        className="h-11 bg-paper-dim pl-10"
         aria-label={CLIENTS_COPY.searchPlaceholder}
       />
     </div>

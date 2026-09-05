@@ -50,20 +50,20 @@ export function ProfileSettingsPanel({
     <div>
       <div className="space-y-8 p-5 sm:p-6 lg:p-8">
         <div>
-          <h2 className="text-lg font-bold text-charcoal">{copy.title}</h2>
-          <p className="mt-1 text-sm text-muted">{copy.subtitle}</p>
+          <h2 className="text-lg font-bold text-ink">{copy.title}</h2>
+          <p className="mt-1 text-sm text-ink-soft">{copy.subtitle}</p>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[minmax(140px,180px)_minmax(0,1fr)] lg:gap-10">
         <div>
-          <Label className="text-[10px] tracking-wider text-muted-light uppercase">
+          <Label className="text-[10px] text-ink-faint">
             {copy.avatar}
           </Label>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploadingAvatar}
-            className="group relative mt-3 block w-full overflow-hidden rounded-xl border border-border disabled:opacity-60"
+            className="group relative mt-3 block w-full overflow-hidden rounded-md border border-border disabled:opacity-60"
             aria-label="Upload profile photo"
           >
             <img
@@ -74,13 +74,13 @@ export function ProfileSettingsPanel({
             <span
               className={cn(
                 "absolute inset-0 flex items-center justify-center",
-                "bg-charcoal/0 transition-colors group-hover:bg-charcoal/35",
-                "group-focus-visible:bg-charcoal/35",
+                "bg-ink/0 transition-colors group-hover:bg-ink/35",
+                "group-focus-visible:bg-ink/35",
               )}
             >
               <span
                 className={cn(
-                  "flex size-10 items-center justify-center rounded-lg border-2 border-white bg-white/10",
+                  "flex size-10 items-center justify-center rounded-sm border-2 border-white bg-panel/10",
                   "opacity-0 transition-opacity group-hover:opacity-100",
                   "group-focus-visible:opacity-100",
                   isUploadingAvatar && "opacity-100",
@@ -103,7 +103,7 @@ export function ProfileSettingsPanel({
             />
           </button>
           {uploadError ? (
-            <p className="mt-2 text-xs text-red-600">{uploadError}</p>
+            <p className="mt-2 text-xs text-bad-fg">{uploadError}</p>
           ) : null}
         </div>
 
@@ -150,7 +150,7 @@ export function ProfileSettingsPanel({
 
       <div className="border-t border-border">
         <div className="space-y-4 p-5 sm:p-6 lg:p-8">
-          <Label className="text-[10px] tracking-wider text-muted-light uppercase">
+          <Label className="text-[10px] text-ink-faint">
             {copy.socialLinks}
           </Label>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -183,7 +183,7 @@ function SocialInput({
   return (
     <div className="relative">
       <Link2
-        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted"
+        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-soft"
         aria-hidden
       />
       <Input

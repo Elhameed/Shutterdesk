@@ -20,10 +20,10 @@ export function ClientsHeader({
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
           {copy.title}
         </h1>
-        <p className="mt-1 max-w-xl text-sm text-muted">{copy.subtitle}</p>
+        <p className="mt-1 max-w-xl text-sm text-ink-soft">{copy.subtitle}</p>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">

@@ -21,12 +21,12 @@ export function DashboardGreeting({ user, actions }: DashboardGreetingProps) {
   const timeOfDay = getTimeOfDay();
 
   return (
-    <div className="mb-10 flex flex-col gap-4 sm:mb-12 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mb-6 flex flex-col gap-4 sm:mb-7 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+        <h1 className="font-display text-ink text-2xl">
           {copy[timeOfDay]}, {user.firstName}
         </h1>
-        <p className="mt-1 text-sm text-muted sm:text-base">{copy.subtitle}</p>
+        <p className="text-ink-soft mt-1 text-sm">{copy.subtitle}</p>
       </div>
       {actions}
     </div>

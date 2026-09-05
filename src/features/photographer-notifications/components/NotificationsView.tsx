@@ -48,7 +48,7 @@ export function NotificationsView() {
   }
 
   return (
-    <div className="min-w-0 max-w-full bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+    <div className="min-w-0 max-w-full bg-paper-dim/50 p-4 sm:p-6 lg:p-8">
       <NotificationsHeader
         onMarkAllRead={() => void markAllRead.mutate()}
         isMarkingAllRead={markAllRead.isPending}

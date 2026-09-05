@@ -26,9 +26,9 @@ type GalleryFormSidebarProps = {
 };
 
 const statusStyles: Record<GalleryStatusSegment, string> = {
-  draft: "bg-charcoal text-white",
-  editing: "bg-charcoal text-white",
-  ready: "bg-green-600 text-white",
+  draft: "bg-paper-dim text-ink-soft",
+  editing: "bg-accent-tint text-accent-fg",
+  ready: "bg-ok-tint text-ok-fg",
 };
 
 export function GalleryFormSidebar({
@@ -80,15 +80,15 @@ export function GalleryFormSidebar({
 
   return (
     <aside className="flex flex-col gap-4">
-      <section className="overflow-hidden rounded-xl bg-gold p-5 text-white shadow-card">
-        <p className="text-[10px] font-bold tracking-wider text-white/80 uppercase">
+      <section className="overflow-hidden rounded-md bg-accent p-5 text-white">
+        <p className="text-[10px] font-medium text-white/80">
           {summary.title}
         </p>
 
         <dl className="mt-4 space-y-3">
           {summaryRows.map((row) => (
             <div key={row.label}>
-              <dt className="text-[10px] font-semibold tracking-wider text-white/70 uppercase">
+              <dt className="text-[10px] font-medium text-white/70">
                 {row.label}
               </dt>
               <dd className="mt-0.5 text-sm font-semibold text-white">
@@ -98,13 +98,13 @@ export function GalleryFormSidebar({
           ))}
 
           <div>
-            <dt className="text-[10px] font-semibold tracking-wider text-white/70 uppercase">
+            <dt className="text-[10px] font-medium text-white/70">
               {summary.status}
             </dt>
             <dd className="mt-1">
               <span
                 className={cn(
-                  "inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                  "inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-medium",
                   statusStyles[values.statusSegment],
                 )}
               >
@@ -119,23 +119,23 @@ export function GalleryFormSidebar({
         </p>
       </section>
 
-      <section className="rounded-xl border border-border bg-white p-5 shadow-card">
-        <p className="text-[10px] font-bold tracking-wider text-muted-light uppercase">
+      <section className="rounded-md border border-border bg-panel p-5">
+        <p className="text-[10px] font-medium text-ink-faint">
           {plan.title}
         </p>
 
         <div className="mt-4">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-charcoal">{plan.storageUsed}</span>
-            <span className="font-bold text-charcoal">{storagePercent}%</span>
+            <span className="font-semibold text-ink">{plan.storageUsed}</span>
+            <span className="font-bold text-ink">{storagePercent}%</span>
           </div>
-          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-100">
+          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-dim">
             <div
-              className="h-full rounded-full bg-gold transition-all"
+              className="h-full rounded-full bg-accent transition-all"
               style={{ width: `${storagePercent}%` }}
             />
           </div>
-          <p className="mt-3 text-xs text-muted">{plan.remaining(remaining)}</p>
+          <p className="mt-3 text-xs text-ink-soft">{plan.remaining(remaining)}</p>
         </div>
 
         <Button variant="outline" size="sm" className="mt-4 w-full">
@@ -143,8 +143,8 @@ export function GalleryFormSidebar({
         </Button>
       </section>
 
-      <section className="rounded-xl border border-border bg-white p-5 shadow-card">
-        <p className="text-[10px] font-bold tracking-wider text-muted-light uppercase">
+      <section className="rounded-md border border-border bg-panel p-5">
+        <p className="text-[10px] font-medium text-ink-faint">
           {links.title}
         </p>
 
@@ -164,7 +164,7 @@ export function GalleryFormSidebar({
         </div>
 
         {!quickLinksEnabled ? (
-          <p className="mt-3 text-xs text-muted">{links.hint}</p>
+          <p className="mt-3 text-xs text-ink-soft">{links.hint}</p>
         ) : null}
       </section>
     </aside>
@@ -190,15 +190,15 @@ function QuickLink({
       className={cn(
         "flex w-full items-center justify-between gap-3 py-3 text-sm font-semibold transition-colors",
         disabled
-          ? "cursor-not-allowed text-muted-light"
-          : "text-charcoal hover:text-gold",
+          ? "cursor-not-allowed text-ink-faint"
+          : "text-ink hover:text-accent",
       )}
     >
       <span className="flex items-center gap-2.5">
-        <Icon className="size-4 text-muted" aria-hidden />
+        <Icon className="size-4 text-ink-soft" aria-hidden />
         {label}
       </span>
-      <ChevronRight className="size-4 text-muted" aria-hidden />
+      <ChevronRight className="size-4 text-ink-soft" aria-hidden />
     </button>
   );
 }

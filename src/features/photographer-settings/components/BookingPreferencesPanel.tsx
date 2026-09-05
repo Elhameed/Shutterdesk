@@ -39,7 +39,7 @@ export function BookingPreferencesPanel({
               onChange("maxDaysAhead", Number(event.target.value) || 60)
             }
           />
-          <p className="text-xs text-muted">{copy.maxDaysAheadHint}</p>
+          <p className="text-xs text-ink-soft">{copy.maxDaysAheadHint}</p>
         </div>
 
         <div className="space-y-2">
@@ -85,7 +85,7 @@ export function BookingPreferencesPanel({
 
       <Link
         to={ROUTES.photographer.calendar}
-        className="inline-flex items-center gap-2 text-sm font-semibold text-gold hover:text-gold/80"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:text-accent/80"
       >
         <CalendarDays className="size-4" aria-hidden />
         {copy.calendarLink}

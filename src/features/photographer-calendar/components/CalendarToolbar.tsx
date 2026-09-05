@@ -22,10 +22,10 @@ export function CalendarPageHeader() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+      <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
         {copy.pageTitle}
       </h1>
-      <p className="mt-1 text-sm text-muted">{copy.pageSubtitle}</p>
+      <p className="mt-1 text-sm text-ink-soft">{copy.pageSubtitle}</p>
     </div>
   );
 }
@@ -45,11 +45,11 @@ export function CalendarControls({
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center rounded-lg border border-border bg-white">
+        <div className="flex items-center rounded-sm border border-border bg-panel">
           <button
             type="button"
             onClick={onPrevious}
-            className="rounded-l-lg p-2 text-muted transition-colors hover:bg-gray-50 hover:text-charcoal"
+            className="rounded-l-lg p-2 text-ink-soft transition-colors hover:bg-paper-dim hover:text-ink"
             aria-label={previousLabel}
           >
             <ChevronLeft className="size-4" />
@@ -57,27 +57,27 @@ export function CalendarControls({
           <button
             type="button"
             onClick={onToday}
-            className="border-x border-border px-3 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-gray-50"
+            className="border-x border-border px-3 py-2 text-xs font-semibold text-ink transition-colors hover:bg-paper-dim"
           >
             {copy.today}
           </button>
           <button
             type="button"
             onClick={onNext}
-            className="rounded-r-lg p-2 text-muted transition-colors hover:bg-gray-50 hover:text-charcoal"
+            className="rounded-r-lg p-2 text-ink-soft transition-colors hover:bg-paper-dim hover:text-ink"
             aria-label={nextLabel}
           >
             <ChevronRight className="size-4" />
           </button>
         </div>
 
-        <p className="text-base font-bold text-charcoal sm:text-lg">
+        <p className="text-base font-bold text-ink sm:text-lg">
           {periodLabel}
         </p>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
-        <div className="flex rounded-lg border border-border bg-gray-100 p-1">
+        <div className="flex rounded-sm border border-border bg-paper-dim p-1">
           {viewOptions.map((option) => (
             <button
               key={option}
@@ -86,8 +86,8 @@ export function CalendarControls({
               className={cn(
                 "rounded-md px-4 py-1.5 text-xs font-semibold capitalize transition-colors",
                 view === option
-                  ? "bg-white text-charcoal shadow-sm"
-                  : "text-muted hover:text-charcoal",
+                  ? "bg-panel text-ink"
+                  : "text-ink-soft hover:text-ink",
               )}
             >
               {copy.views[option]}

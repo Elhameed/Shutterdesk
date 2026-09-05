@@ -23,7 +23,7 @@ export function UpcomingSessionCard({
   const cover = landingAssets.gallery.wedding[2];
 
   return (
-    <section className="relative overflow-hidden rounded-xl border border-border bg-white shadow-card">
+    <section className="relative overflow-hidden rounded-md border border-border bg-panel">
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 sm:block">
         <img
           src={cover.src}
@@ -33,21 +33,21 @@ export function UpcomingSessionCard({
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
       </div>
 
-      <div className="absolute inset-y-0 left-0 w-1 bg-gold" aria-hidden />
+      <div className="absolute inset-y-0 left-0 w-1 bg-accent" aria-hidden />
 
       <div className="relative max-w-md p-5 pl-6">
-        <p className="text-[11px] font-semibold tracking-wider text-gold uppercase">
+        <p className="text-[11px] font-medium text-accent">
           {copy.upcomingSession}
         </p>
-        <h2 className="mt-2 text-xl font-bold text-charcoal">{title}</h2>
+        <h2 className="mt-2 text-xl font-bold text-ink">{title}</h2>
 
-        <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
+        <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-soft">
           <span className="flex items-center gap-1.5">
-            <CalendarDays className="size-4 text-muted-light" aria-hidden />
+            <CalendarDays className="size-4 text-ink-faint" aria-hidden />
             {date}
           </span>
           <span className="flex items-center gap-1.5">
-            <MapPin className="size-4 text-muted-light" aria-hidden />
+            <MapPin className="size-4 text-ink-faint" aria-hidden />
             {venue}
           </span>
         </div>
@@ -60,7 +60,7 @@ export function UpcomingSessionCard({
           </Button>
           <a
             href={`mailto:${CLIENT_SUPPORT_EMAIL}?subject=Session%20inquiry`}
-            className="text-xs font-semibold text-muted transition-colors hover:text-charcoal"
+            className="text-xs font-semibold text-ink-soft transition-colors hover:text-ink"
           >
             {copy.contactPhotographer} ›
           </a>

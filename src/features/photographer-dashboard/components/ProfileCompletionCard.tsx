@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { PHOTOGRAPHER_DASHBOARD_COPY } from "@/constants/photographer-dashboard";
 import type { PhotographerDashboardSummary } from "@/types/domains/dashboard";
 import { cn } from "@/lib/utils";
@@ -19,30 +20,30 @@ export function ProfileCompletionCard({
 
   return (
     <section className="min-w-0">
-      <div className="rounded-xl border border-border bg-white p-5">
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <h2 className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
-            {copy.title}
-          </h2>
-          <span className="text-sm font-bold text-gold">{percent}%</span>
+      <Card className="p-4">
+        <div className="flex items-baseline justify-between gap-3">
+          <h2 className="text-ink text-sm font-semibold">{copy.title}</h2>
+          {/* One of the few places the accent carries a number — it is the
+              single call to action in this card. */}
+          <span className="font-display text-accent text-sm">{percent}%</span>
         </div>
 
-        <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-gray-200">
+        <div className="bg-paper-dim mt-2.5 mb-3 h-1.5 overflow-hidden rounded-full">
           <div
-            className="h-full rounded-full bg-gold transition-all"
+            className="bg-accent h-full rounded-full transition-all"
             style={{ width: `${percent}%` }}
           />
         </div>
 
-        <ul className="space-y-4">
+        <ul className="space-y-2.5">
           {sortedItems.map((item) => (
             <li key={item.id} className="flex items-center gap-2">
               <span
                 className={cn(
-                  "flex size-3 shrink-0 items-center justify-center rounded-full border",
+                  "flex size-3.5 shrink-0 items-center justify-center rounded-full border",
                   item.completed
-                    ? "border-muted-light bg-muted-light text-white"
-                    : "border-muted-light bg-white",
+                    ? "border-ok bg-ok text-panel"
+                    : "border-border-strong",
                 )}
               >
                 {item.completed && (
@@ -51,23 +52,19 @@ export function ProfileCompletionCard({
               </span>
               <span
                 className={cn(
-                  "text-sm",
-                  item.completed
-                    ? "text-muted-light line-through"
-                    : "font-medium text-charcoal",
+                  "text-xs",
+                  item.completed ? "text-ink-faint" : "text-ink",
                 )}
               >
                 {item.label}
                 {item.optional ? (
-                  <span className="ml-1.5 text-xs font-normal text-muted">
-                    (Optional)
-                  </span>
+                  <span className="text-ink-faint ml-1.5">(optional)</span>
                 ) : null}
               </span>
             </li>
           ))}
         </ul>
-      </div>
+      </Card>
     </section>
   );
 }

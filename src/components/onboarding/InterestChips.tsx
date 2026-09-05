@@ -15,7 +15,7 @@ export function InterestChips({
 }: InterestChipsProps) {
   return (
     <div className="space-y-3">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-charcoal">
+      <p className="text-xs font-medium text-ink">
         {label}
       </p>
       <div className="flex flex-wrap gap-2">
@@ -29,8 +29,8 @@ export function InterestChips({
               className={cn(
                 "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
                 isSelected
-                  ? "border-charcoal bg-charcoal text-white"
-                  : "border-border bg-white text-charcoal hover:border-muted",
+                  ? "border-accent bg-accent-tint text-accent-fg"
+                  : "border-border bg-panel text-ink-soft hover:bg-paper-dim hover:text-ink",
               )}
             >
               {interest}

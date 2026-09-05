@@ -11,7 +11,7 @@ export function PaymentsSearch({ value, onChange }: PaymentsSearchProps) {
   return (
     <div className="relative">
       <Search
-        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-light"
+        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-faint"
         aria-hidden
       />
       <Input
@@ -19,7 +19,7 @@ export function PaymentsSearch({ value, onChange }: PaymentsSearchProps) {
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={PAYMENTS_COPY.searchPlaceholder}
-        className="h-11 rounded-full bg-gray-50 pl-10"
+        className="h-11 rounded-full bg-paper-dim pl-10"
         aria-label={PAYMENTS_COPY.searchPlaceholder}
       />
     </div>

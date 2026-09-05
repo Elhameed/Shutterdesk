@@ -298,29 +298,29 @@ export function GalleryFormView({
   };
 
   return (
-    <div className="min-w-0 max-w-full bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+    <div className="min-w-0 max-w-full bg-paper-dim/50 p-4 sm:p-6 lg:p-8">
       <nav
         aria-label="Breadcrumb"
-        className="flex items-center gap-1.5 text-sm text-muted"
+        className="flex items-center gap-1.5 text-sm text-ink-soft"
       >
         <Link
           to={ROUTES.photographer.galleries}
-          className="transition-colors hover:text-charcoal"
+          className="transition-colors hover:text-ink"
         >
           {copy.breadcrumbGalleries}
         </Link>
         <ChevronRight className="size-3.5" aria-hidden />
-        <span className="font-medium text-charcoal">
+        <span className="font-medium text-ink">
           {isEdit ? copy.breadcrumbEdit : copy.breadcrumbCreate}
         </span>
       </nav>
 
       <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             {isEdit ? copy.editTitle : copy.title}
           </h1>
-          <p className="mt-1 max-w-2xl text-sm text-muted">
+          <p className="mt-1 max-w-2xl text-sm text-ink-soft">
             {isEdit ? copy.editSubtitle : copy.subtitle}
           </p>
         </div>
@@ -365,7 +365,7 @@ export function GalleryFormView({
 
       {draftSavedMessage ? (
         <p
-          className="mt-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
+          className="mt-4 rounded-sm border border-ok/30 bg-ok-tint px-4 py-3 text-sm text-ok-fg"
           role="status"
         >
           {draftSavedMessage}
@@ -373,7 +373,7 @@ export function GalleryFormView({
       ) : null}
 
       {submitError ? (
-        <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <p className="mt-4 rounded-sm border border-bad/30 bg-bad-tint px-4 py-3 text-sm text-bad-fg" role="alert">
           {submitError}
         </p>
       ) : null}
@@ -451,26 +451,26 @@ export function GalleryFormView({
                     ))}
                   </Select>
                   {isApplyingBooking ? (
-                    <p className="text-xs text-muted">Applying session details…</p>
+                    <p className="text-xs text-ink-soft">Applying session details…</p>
                   ) : null}
                 </div>
               </div>
 
               {selectedClient && (
-                <div className="rounded-xl border border-border bg-gray-50/80 p-4">
+                <div className="rounded-md border border-border bg-paper-dim/80 p-4">
                   <img
                     src={selectedClient.avatar}
                     alt=""
                     className="size-12 rounded-full object-cover"
                   />
-                  <p className="mt-3 text-sm font-bold text-charcoal">
+                  <p className="mt-3 text-sm font-bold text-ink">
                     {selectedClient.name}
                   </p>
-                  <p className="mt-0.5 text-xs text-muted">
+                  <p className="mt-0.5 text-xs text-ink-soft">
                     {selectedClient.email}
                   </p>
                   {selectedClient.tier === "vip" && (
-                    <span className="mt-2 inline-flex rounded-full bg-charcoal px-2 py-0.5 text-[10px] font-bold tracking-wide text-white uppercase">
+                    <span className="mt-2 inline-flex rounded-full bg-ink px-2 py-0.5 text-[10px] font-medium text-white">
                       {copy.eliteClient}
                     </span>
                   )}
@@ -498,18 +498,18 @@ export function GalleryFormView({
             {totalPhotoCount > 0 && (
               <div className="mt-4">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-charcoal">
+                  <span className="font-semibold text-ink">
                     {copy.uploadProgress(
                       totalPhotoCount,
                       storageUsedGb,
                       storageTotalGb,
                     )}
                   </span>
-                  <span className="font-bold text-charcoal">{storagePercent}%</span>
+                  <span className="font-bold text-ink">{storagePercent}%</span>
                 </div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-100">
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-dim">
                   <div
-                    className="h-full rounded-full bg-gold transition-all"
+                    className="h-full rounded-full bg-accent transition-all"
                     style={{ width: `${storagePercent}%` }}
                   />
                 </div>
@@ -521,7 +521,7 @@ export function GalleryFormView({
             <FormSection icon={Send} title={copy.deliverySettings}>
               <div className="space-y-4">
                 <div>
-                  <p className="mb-3 text-xs font-semibold text-charcoal">
+                  <p className="mb-3 text-xs font-semibold text-ink">
                     {copy.visibility}
                   </p>
                   <div className="space-y-2">
@@ -540,9 +540,9 @@ export function GalleryFormView({
                           name="visibility"
                           checked={visibility === value}
                           onChange={() => setVisibility(value)}
-                          className="size-4 accent-charcoal"
+                          className="size-4 accent-accent"
                         />
-                        <span className="text-sm text-charcoal">{label}</span>
+                        <span className="text-sm text-ink">{label}</span>
                       </label>
                     ))}
                   </div>
@@ -557,12 +557,12 @@ export function GalleryFormView({
                       placeholder={copy.accessPinPlaceholder}
                       inputMode="numeric"
                     />
-                    <p className="text-xs text-muted">{copy.accessPinHint}</p>
+                    <p className="text-xs text-ink-soft">{copy.accessPinHint}</p>
                   </div>
                 ) : null}
 
                 <div className="border-t border-border pt-4">
-                  <p className="mb-4 text-xs font-semibold text-charcoal">
+                  <p className="mb-4 text-xs font-semibold text-ink">
                     {copy.permissions}
                   </p>
                   <div className="space-y-4">
@@ -589,12 +589,12 @@ export function GalleryFormView({
             <FormSection icon={Info} title={copy.galleryStatus}>
               {isStatusLocked ? (
                 <div className="space-y-3">
-                  <div className="inline-flex rounded-full bg-charcoal px-3 py-1.5 text-xs font-bold tracking-wide text-white uppercase">
+                  <div className="inline-flex rounded-full bg-ink px-3 py-1.5 text-xs font-medium text-white">
                     {initialValues.workflowStatus === "delivered"
                       ? copy.lockedStatus.delivered
                       : copy.lockedStatus.archived}
                   </div>
-                  <p className="text-xs leading-relaxed text-muted">
+                  <p className="text-xs leading-relaxed text-ink-soft">
                     {initialValues.workflowStatus === "delivered"
                       ? copy.lockedStatusHints.delivered
                       : copy.lockedStatusHints.archived}
@@ -602,7 +602,7 @@ export function GalleryFormView({
                 </div>
               ) : (
                 <>
-                  <div className="flex rounded-lg border border-border bg-gray-100 p-1">
+                  <div className="flex rounded-sm border border-border bg-paper-dim p-1">
                     {statusSegments.map((segment) => (
                       <button
                         key={segment}
@@ -611,15 +611,15 @@ export function GalleryFormView({
                         className={cn(
                           "flex-1 rounded-md px-3 py-2 text-xs font-semibold transition-colors",
                           statusSegment === segment
-                            ? "bg-white text-charcoal shadow-sm"
-                            : "text-muted hover:text-charcoal",
+                            ? "bg-panel text-ink"
+                            : "text-ink-soft hover:text-ink",
                         )}
                       >
                         {copy.statusSegments[segment]}
                       </button>
                     ))}
                   </div>
-                  <p className="mt-3 text-xs leading-relaxed text-muted">
+                  <p className="mt-3 text-xs leading-relaxed text-ink-soft">
                     {copy.statusDescriptions[statusSegment]}
                   </p>
                 </>
@@ -653,11 +653,11 @@ function FormSection({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <section className="rounded-md border border-border bg-panel p-5">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Icon className="size-4 text-gold" aria-hidden />
-          <h2 className="text-sm font-bold text-charcoal">{title}</h2>
+          <Icon className="size-4 text-accent" aria-hidden />
+          <h2 className="text-sm font-bold text-ink">{title}</h2>
         </div>
         {action}
       </div>

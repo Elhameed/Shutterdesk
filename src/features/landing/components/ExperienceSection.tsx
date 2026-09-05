@@ -23,25 +23,23 @@ const showcaseImages = [
 
 export function ExperienceSection() {
   return (
-    <section className="bg-charcoal py-16 sm:py-20 lg:py-24">
+    <section className="bg-rail-bg py-16 sm:py-20 lg:py-24">
       <PageContainer>
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-              Experience Excellence
-            </p>
-            <h2 className="mt-3 text-3xl font-bold leading-tight text-white sm:text-4xl">
+            <p className="text-rail-text text-xs">Experience excellence</p>
+            <h2 className="font-display text-rail-text-active mt-2 text-3xl leading-tight sm:text-4xl">
               A command center designed for the aesthetic professional.
             </h2>
             <ul className="mt-10 space-y-8">
               {EXCELLENCE_FEATURES.map((feature) => (
                 <li key={feature.title} className="flex gap-4">
-                  <span className="mt-1 flex size-5 shrink-0 items-center justify-center text-gold">
-                    <Check className="size-4" strokeWidth={2.5} />
+                  <span className="text-rail-accent mt-1 flex size-5 shrink-0 items-center justify-center">
+                    <Check className="size-4" strokeWidth={2} />
                   </span>
                   <div>
-                    <h3 className="font-bold text-white">{feature.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-white/60">
+                    <h3 className="text-rail-text-active font-semibold">{feature.title}</h3>
+                    <p className="text-rail-text mt-1 text-sm leading-relaxed">
                       {feature.description}
                     </p>
                   </div>
@@ -54,7 +52,7 @@ export function ExperienceSection() {
             {showcaseImages.map((image) => (
               <div
                 key={image.alt}
-                className={`overflow-hidden rounded-xl ${image.className}`}
+                className={`overflow-hidden rounded-md ${image.className}`}
               >
                 <img
                   src={image.src}

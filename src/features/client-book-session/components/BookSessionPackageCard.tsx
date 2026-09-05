@@ -81,51 +81,51 @@ export function BookSessionPackageCard({
   return (
     <article
       className={cn(
-        "flex h-full flex-col overflow-hidden rounded-xl border bg-white transition-shadow",
+        "flex h-full flex-col overflow-hidden rounded-md border bg-panel transition-shadow",
         isSelected
-          ? "border-gold ring-1 ring-gold"
-          : "border-border hover:shadow-md",
+          ? "border-accent ring-1 ring-accent"
+          : "border-border hover:border-border-strong",
       )}
     >
-      <div className="relative aspect-[4/3] shrink-0 overflow-hidden bg-gray-100">
+      <div className="relative aspect-[4/3] shrink-0 overflow-hidden bg-paper-dim">
         <AppImage
           src={serviceCoverDisplayUrl(pkg.coverImage)}
           alt=""
           wrapperClassName="absolute inset-0"
         />
         {featuredLabel ? (
-          <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-gold px-2.5 py-1 text-[10px] font-bold tracking-wide text-charcoal uppercase shadow-sm">
+          <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-accent px-2.5 py-1 text-[10px] font-medium text-ink">
             <Sparkles className="size-3" aria-hidden />
             {featuredLabel}
           </span>
         ) : null}
-        <span className="absolute top-3 right-3 rounded-full bg-charcoal/75 px-2.5 py-1 text-[10px] font-bold tracking-wide text-white uppercase">
+        <span className="absolute top-3 right-3 rounded-full bg-ink/75 px-2.5 py-1 text-[10px] font-medium text-white">
           {DURATION_BADGE_LABELS[pkg.duration]}
         </span>
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <span className="w-fit rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold tracking-wide text-muted uppercase">
+        <span className="w-fit rounded-full bg-paper-dim px-2 py-0.5 text-[10px] font-medium text-ink-soft">
           {CATEGORY_LABELS[pkg.category]}
         </span>
 
         <div className="mt-2 flex items-start justify-between gap-2">
-          <h3 className="text-sm font-bold text-charcoal">{pkg.title}</h3>
-          <p className="shrink-0 text-sm font-bold text-gold">
+          <h3 className="text-sm font-bold text-ink">{pkg.title}</h3>
+          <p className="shrink-0 text-sm font-bold text-accent">
             {formatRwfPrice(pkg.price)}
           </p>
         </div>
 
         {description ? (
           <div className="mt-2">
-            <p className="text-xs leading-relaxed text-muted">
+            <p className="text-xs leading-relaxed text-ink-soft">
               {shownDescription}
             </p>
             {isLongDescription ? (
               <button
                 type="button"
                 onClick={() => setExpanded((value) => !value)}
-                className="mt-1 text-xs font-semibold text-charcoal transition-colors hover:text-gold"
+                className="mt-1 text-xs font-semibold text-ink transition-colors hover:text-accent"
               >
                 {expanded ? copy.readLess : copy.readMore}
               </button>
@@ -138,9 +138,9 @@ export function BookSessionPackageCard({
             {metaItems.map((item) => (
               <li
                 key={item.label}
-                className="flex items-center gap-1.5 text-[11px] text-muted"
+                className="flex items-center gap-1.5 text-[11px] text-ink-soft"
               >
-                <item.icon className="size-3.5 shrink-0 text-gold" aria-hidden />
+                <item.icon className="size-3.5 shrink-0 text-accent" aria-hidden />
                 <span className="truncate">{item.label}</span>
               </li>
             ))}

@@ -32,7 +32,7 @@ export function BookSessionStepper({ current }: BookSessionStepperProps) {
                 <span
                   className={cn(
                     "absolute top-4 left-[calc(50%+1rem)] h-0.5 w-[calc(100%-2rem)]",
-                    index < currentIndex ? "bg-gold" : "bg-border",
+                    index < currentIndex ? "bg-accent" : "bg-border",
                   )}
                   aria-hidden
                 />
@@ -42,8 +42,8 @@ export function BookSessionStepper({ current }: BookSessionStepperProps) {
                 className={cn(
                   "relative z-10 flex size-8 items-center justify-center rounded-full text-xs font-bold",
                   isActive || isComplete
-                    ? "bg-gold text-white"
-                    : "bg-gray-100 text-muted",
+                    ? "bg-accent text-on-accent"
+                    : "bg-paper-dim text-ink-soft",
                 )}
               >
                 {index + 1}
@@ -51,15 +51,15 @@ export function BookSessionStepper({ current }: BookSessionStepperProps) {
 
               <span
                 className={cn(
-                  "mt-2 text-center text-[10px] font-bold tracking-wider uppercase",
-                  isActive ? "text-charcoal" : "text-muted-light",
+                  "mt-2 text-center text-[10px] font-medium",
+                  isActive ? "text-ink" : "text-ink-faint",
                 )}
               >
                 {copy[step]}
               </span>
 
               {isActive ? (
-                <span className="mt-1 h-0.5 w-12 rounded-full bg-gold" aria-hidden />
+                <span className="mt-1 h-0.5 w-12 rounded-full bg-accent" aria-hidden />
               ) : (
                 <span className="mt-1 h-0.5 w-12" aria-hidden />
               )}

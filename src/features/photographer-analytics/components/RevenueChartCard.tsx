@@ -57,11 +57,11 @@ export function RevenueChartCard({ analytics }: RevenueChartCardProps) {
     .join(" ");
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <section className="rounded-md border border-border bg-panel p-5">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-sm font-bold text-charcoal">{copy.revenueOverTime}</h2>
+        <h2 className="text-sm font-semibold text-ink">{copy.revenueOverTime}</h2>
 
-        <div className="flex rounded-lg border border-border bg-gray-100 p-1">
+        <div className="flex rounded-sm border border-border bg-paper-dim p-1">
           {(["monthly", "weekly"] as const).map((option) => (
             <button
               key={option}
@@ -70,8 +70,8 @@ export function RevenueChartCard({ analytics }: RevenueChartCardProps) {
               className={cn(
                 "rounded-md px-3 py-1 text-xs font-semibold transition-colors",
                 period === option
-                  ? "bg-charcoal text-white"
-                  : "text-muted hover:text-charcoal",
+                  ? "bg-panel text-ink border-border border"
+                  : "text-ink-soft hover:text-ink",
               )}
             >
               {copy[option]}
@@ -92,7 +92,7 @@ export function RevenueChartCard({ analytics }: RevenueChartCardProps) {
             y1={CHART.height - CHART.bottomPadding}
             x2={chartWidth}
             y2={CHART.height - CHART.bottomPadding}
-            className="stroke-gray-200"
+            className="stroke-border"
             strokeWidth={1}
           />
 
@@ -104,7 +104,7 @@ export function RevenueChartCard({ analytics }: RevenueChartCardProps) {
                 width={CHART.barWidth}
                 height={point.barHeight}
                 rx={4}
-                className="fill-gray-200"
+                className="fill-border"
               />
 
               <text
@@ -123,7 +123,7 @@ export function RevenueChartCard({ analytics }: RevenueChartCardProps) {
           <path
             d={linePath}
             fill="none"
-            className="stroke-charcoal"
+            className="stroke-ink"
             strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -135,7 +135,7 @@ export function RevenueChartCard({ analytics }: RevenueChartCardProps) {
               cx={point.centerX}
               cy={point.lineY}
               r={4}
-              className="fill-charcoal"
+              className="fill-ink"
             />
           ))}
         </svg>

@@ -106,20 +106,20 @@ function ClientActionMenu({
     <div
       id={menuId}
       role="menu"
-      className="absolute top-full right-0 z-20 mt-1 min-w-[200px] overflow-hidden rounded-lg border border-border bg-white py-1 shadow-lg"
+      className="absolute top-full right-0 z-20 mt-1 min-w-[200px] overflow-hidden rounded-sm border border-border bg-panel py-1 shadow-lg"
     >
       {items.map((item) => (
         <button
           key={item.label}
           type="button"
           role="menuitem"
-          className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-charcoal transition-colors hover:bg-gray-50"
+          className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-ink transition-colors hover:bg-paper-dim"
           onClick={() => {
             item.onClick();
             onClose();
           }}
         >
-          <item.icon className="size-4 shrink-0 text-muted" aria-hidden />
+          <item.icon className="size-4 shrink-0 text-ink-soft" aria-hidden />
           {item.label}
         </button>
       ))}
@@ -161,9 +161,9 @@ export function ClientManagementActions({
   }, [menuOpen]);
 
   const iconButtonClass = cn(
-    "rounded-lg p-1.5 text-muted transition-colors hover:bg-gray-100 hover:text-charcoal",
+    "rounded-sm p-1.5 text-ink-soft transition-colors hover:bg-paper-dim hover:text-ink",
     variant === "card" &&
-      "flex size-9 shrink-0 items-center justify-center border border-border hover:bg-gray-50",
+      "flex size-9 shrink-0 items-center justify-center border border-border hover:bg-paper-dim",
   );
 
   return (

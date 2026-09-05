@@ -18,10 +18,10 @@ export function GalleryDetailHero({ gallery, onUploadClick }: GalleryDetailHeroP
   const detail = copy.detail;
 
   return (
-    <section className="relative overflow-hidden rounded-2xl">
+    <section className="relative overflow-hidden rounded-md">
       <div className="relative h-56 sm:h-64 lg:h-72">
         {gallery.isPlaceholder || !gallery.coverImage ? (
-          <div className="size-full bg-gray-300" aria-hidden />
+          <div className="size-full bg-border-strong" aria-hidden />
         ) : (
           <img
             src={gallery.coverImage}
@@ -29,14 +29,14 @@ export function GalleryDetailHero({ gallery, onUploadClick }: GalleryDetailHeroP
             className="size-full object-cover"
           />
         )}
-        <div className="absolute inset-0 bg-linear-to-t from-charcoal/90 via-charcoal/40 to-charcoal/20" />
+        <div className="absolute inset-0 bg-linear-to-t from-ink/90 via-ink/40 to-ink/20" />
 
         <div className="absolute inset-x-0 bottom-0 flex flex-col gap-4 p-5 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <div className="mb-3 flex flex-wrap gap-2">
               <span
                 className={cn(
-                  "rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                  "rounded-full px-2.5 py-0.5 text-[10px] font-medium",
                   GALLERY_CATEGORY_BADGE_STYLES[gallery.category],
                 )}
               >
@@ -44,11 +44,11 @@ export function GalleryDetailHero({ gallery, onUploadClick }: GalleryDetailHeroP
               </span>
               <span
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                  "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-medium",
                   GALLERY_WORKFLOW_BADGE_STYLES[gallery.workflowStatus],
                 )}
               >
-                <span className="size-1.5 rounded-full bg-gold" aria-hidden />
+                <span className="size-1.5 rounded-full bg-accent" aria-hidden />
                 {copy.workflowStatus[gallery.workflowStatus]}
               </span>
             </div>
@@ -66,7 +66,7 @@ export function GalleryDetailHero({ gallery, onUploadClick }: GalleryDetailHeroP
             <Button
               variant="outline-light"
               size="sm"
-              className="gap-2 border-white/30 bg-white/10 backdrop-blur-sm"
+              className="gap-2 border-white/30 bg-panel/10 backdrop-blur-sm"
             >
               <Eye className="size-4" />
               {detail.preview}
@@ -74,7 +74,7 @@ export function GalleryDetailHero({ gallery, onUploadClick }: GalleryDetailHeroP
             <Button
               variant="outline-light"
               size="sm"
-              className="gap-2 border-white/30 bg-white/10 backdrop-blur-sm"
+              className="gap-2 border-white/30 bg-panel/10 backdrop-blur-sm"
             >
               <Share2 className="size-4" />
               {detail.share}

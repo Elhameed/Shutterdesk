@@ -88,8 +88,8 @@ export function GalleryContentPanel({
               className={cn(
                 "-mb-px shrink-0 border-b-2 pb-3 text-sm font-semibold transition-colors",
                 activeTab === tab
-                  ? "border-charcoal text-charcoal"
-                  : "border-transparent text-muted hover:text-charcoal",
+                  ? "border-border-strong text-ink"
+                  : "border-transparent text-ink-soft hover:text-ink",
               )}
             >
               {copy.tabs[tab]}
@@ -98,12 +98,12 @@ export function GalleryContentPanel({
         </div>
 
         <div className="shrink-0 pb-3 sm:min-w-[160px] sm:text-right">
-          <p className="text-xs font-bold text-charcoal">
+          <p className="text-xs font-bold text-ink">
             {copy.storageUsed(storageUsedGb, storageTotalGb)}
           </p>
-          <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-gray-200">
+          <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-border">
             <div
-              className="h-full rounded-full bg-charcoal transition-all"
+              className="h-full rounded-full bg-ink transition-all"
               style={{ width: `${storagePercent}%` }}
             />
           </div>
@@ -133,19 +133,19 @@ export function GalleryContentPanel({
               <div className="mt-8 flex flex-col items-center gap-2">
                 <Button
                   variant="outline"
-                  className="min-w-[220px] rounded-xl"
+                  className="min-w-[220px] rounded-md"
                   onClick={onLoadMore}
                 >
                   {copy.loadMorePhotos}
                 </Button>
-                <p className="text-xs text-muted">
+                <p className="text-xs text-ink-soft">
                   {copy.showingPhotos(photos.length, totalPhotos)}
                 </p>
               </div>
             )}
 
             {!hasMore && photos.length > 0 && (
-              <p className="mt-6 text-center text-xs text-muted">
+              <p className="mt-6 text-center text-xs text-ink-soft">
                 {copy.showingPhotos(photos.length, totalPhotos)}
               </p>
             )}

@@ -36,7 +36,7 @@ export function ClientGalleriesView() {
   if (error) {
     return (
       <div className="min-w-0 max-w-full p-4 sm:p-6 lg:p-8">
-        <p className="text-sm text-red-700" role="alert">
+        <p className="text-sm text-bad-fg" role="alert">
           {getQueryErrorMessage(error, "Unable to load galleries.")}
         </p>
       </div>
@@ -57,7 +57,7 @@ export function ClientGalleriesView() {
 
       {filtered.length === 0 ? (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          <p className="rounded-xl border border-border bg-white p-8 text-center text-sm text-muted sm:col-span-2 xl:col-span-2">
+          <p className="rounded-md border border-border bg-panel p-8 text-center text-sm text-ink-soft sm:col-span-2 xl:col-span-2">
             {copy.noResults}
           </p>
           <ClientNewSessionCard />

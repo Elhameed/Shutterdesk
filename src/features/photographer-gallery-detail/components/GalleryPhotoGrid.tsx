@@ -51,7 +51,7 @@ export function GalleryPhotoGrid({
 
   if (photos.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-white p-8 text-center text-sm text-muted">
+      <div className="rounded-md border border-border bg-panel p-8 text-center text-sm text-ink-soft">
         {copy.noPhotosFound}
       </div>
     );
@@ -139,7 +139,7 @@ export function GalleryPhotoGrid({
           return (
             <article
               key={photo.id}
-              className="group relative mb-3 break-inside-avoid overflow-hidden rounded-xl ring-1 ring-gold/60 sm:mb-4"
+              className="group relative mb-3 break-inside-avoid overflow-hidden rounded-md ring-1 ring-accent/60 sm:mb-4"
             >
               <img
                 src={photo.src}
@@ -148,12 +148,12 @@ export function GalleryPhotoGrid({
                 loading="lazy"
               />
 
-              <div className="absolute inset-0 flex flex-wrap items-end justify-end gap-2 rounded-xl bg-linear-to-t from-charcoal/70 via-charcoal/10 to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+              <div className="absolute inset-0 flex flex-wrap items-end justify-end gap-2 rounded-md bg-linear-to-t from-ink/70 via-ink/10 to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
                 <PhotoOverlayAction label={copy.downloadPhoto}>
                   <button
                     type="button"
                     onClick={() => downloadGalleryPhoto(photo)}
-                    className="flex size-9 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white"
+                    className="flex size-9 items-center justify-center rounded-full bg-panel/90 text-ink transition-colors hover:bg-panel"
                     aria-label={copy.downloadPhoto}
                   >
                     <Download className="size-4" />
@@ -163,7 +163,7 @@ export function GalleryPhotoGrid({
                   <button
                     type="button"
                     onClick={() => setViewerIndex(index)}
-                    className="flex size-9 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white"
+                    className="flex size-9 items-center justify-center rounded-full bg-panel/90 text-ink transition-colors hover:bg-panel"
                     aria-label={copy.viewPhoto}
                   >
                     <Eye className="size-4" />
@@ -174,7 +174,7 @@ export function GalleryPhotoGrid({
                     type="button"
                     disabled={disabled || isSaving}
                     onClick={() => openEditor(photo)}
-                    className="flex size-9 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white disabled:opacity-50"
+                    className="flex size-9 items-center justify-center rounded-full bg-panel/90 text-ink transition-colors hover:bg-panel disabled:opacity-50"
                     aria-label={copy.editPhoto}
                   >
                     <Pencil className="size-4" />
@@ -185,7 +185,7 @@ export function GalleryPhotoGrid({
                     type="button"
                     disabled={disabled || isSaving || globalIndex <= 0}
                     onClick={() => void handleMove(photo.id, "up")}
-                    className="flex size-9 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white disabled:opacity-50"
+                    className="flex size-9 items-center justify-center rounded-full bg-panel/90 text-ink transition-colors hover:bg-panel disabled:opacity-50"
                     aria-label={copy.moveEarlier}
                   >
                     <ArrowUp className="size-4" />
@@ -198,7 +198,7 @@ export function GalleryPhotoGrid({
                       disabled || isSaving || globalIndex >= allPhotos.length - 1
                     }
                     onClick={() => void handleMove(photo.id, "down")}
-                    className="flex size-9 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white disabled:opacity-50"
+                    className="flex size-9 items-center justify-center rounded-full bg-panel/90 text-ink transition-colors hover:bg-panel disabled:opacity-50"
                     aria-label={copy.moveLater}
                   >
                     <ArrowDown className="size-4" />
@@ -212,7 +212,7 @@ export function GalleryPhotoGrid({
                       setReplacingPhotoId(photo.id);
                       replaceInputRef.current?.click();
                     }}
-                    className="flex size-9 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white disabled:opacity-50"
+                    className="flex size-9 items-center justify-center rounded-full bg-panel/90 text-ink transition-colors hover:bg-panel disabled:opacity-50"
                     aria-label={copy.replacePhoto}
                   >
                     <RefreshCw className="size-4" />
@@ -223,7 +223,7 @@ export function GalleryPhotoGrid({
                     type="button"
                     disabled={disabled || isSaving}
                     onClick={() => handleDelete(photo.id)}
-                    className="flex size-9 items-center justify-center rounded-full bg-white/90 text-red-600 shadow-sm transition-colors hover:bg-white disabled:opacity-50"
+                    className="flex size-9 items-center justify-center rounded-full bg-panel/90 text-bad-fg transition-colors hover:bg-panel disabled:opacity-50"
                     aria-label={copy.deletePhoto}
                   >
                     <Trash2 className="size-4" />
@@ -236,7 +236,7 @@ export function GalleryPhotoGrid({
       </div>
 
       {editingPhoto ? (
-        <div className="mt-5 rounded-xl border border-border bg-white p-5 shadow-card">
+        <div className="mt-5 rounded-md border border-border bg-panel p-5">
           <div className="space-y-3">
             <Label htmlFor="photo-alt">{copy.photoAltLabel}</Label>
             <Input

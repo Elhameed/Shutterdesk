@@ -34,3 +34,6 @@ Thumbs.db
 test-results/
 playwright-report/
 playwright/.cache/
+
+# Local redesign tracker
+roadmap.md

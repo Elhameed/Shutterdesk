@@ -4,10 +4,10 @@ import type { PhotographerActivity } from "@/types/domains/dashboard";
 import { cn } from "@/lib/utils";
 
 const dotStyles = {
-  booking: "bg-charcoal",
-  payment: "bg-gold",
-  gallery: "bg-gray-300",
-  client: "bg-emerald-500",
+  booking: "bg-ink",
+  payment: "bg-accent",
+  gallery: "bg-border-strong",
+  client: "bg-ok",
   service: "bg-sky-500",
 } as const;
 
@@ -20,14 +20,14 @@ export function ActivityHistoryFeed({ activities }: ActivityHistoryFeedProps) {
 
   if (activities.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-white p-8 text-center text-sm text-muted">
+      <div className="rounded-md border border-border bg-panel p-8 text-center text-sm text-ink-soft">
         {copy.empty}
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-border bg-white p-5 sm:p-6">
+    <div className="rounded-md border border-border bg-panel p-5 sm:p-6">
       <ul>
         {activities.map((item, index) => {
           const isLast = index === activities.length - 1;
@@ -42,15 +42,15 @@ export function ActivityHistoryFeed({ activities }: ActivityHistoryFeedProps) {
                   aria-hidden
                 />
                 {!isLast ? (
-                  <span className="mt-1 w-px flex-1 bg-gray-200" aria-hidden />
+                  <span className="mt-1 w-px flex-1 bg-border" aria-hidden />
                 ) : null}
               </div>
               <div className={cn("min-w-0 flex-1", !isLast && "pb-5")}>
-                <p className="text-sm font-semibold text-charcoal">{item.title}</p>
-                <p className="mt-0.5 text-xs leading-relaxed text-muted">
+                <p className="text-sm font-semibold text-ink">{item.title}</p>
+                <p className="mt-0.5 text-xs leading-relaxed text-ink-soft">
                   {item.description}
                 </p>
-                <p className="mt-1 text-[10px] font-medium tracking-wide text-muted-light uppercase">
+                <p className="mt-1 text-[10px] font-medium text-ink-faint">
                   {item.time}
                 </p>
               </div>
@@ -62,7 +62,7 @@ export function ActivityHistoryFeed({ activities }: ActivityHistoryFeedProps) {
               <li key={item.id}>
                 <Link
                   to={item.href}
-                  className="flex gap-3 rounded-lg transition-colors hover:bg-gray-50"
+                  className="flex gap-3 rounded-sm transition-colors hover:bg-paper-dim"
                 >
                   {content}
                 </Link>

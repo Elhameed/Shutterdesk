@@ -84,14 +84,14 @@ export function BookSessionCalendar({
   return (
     <div>
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-base font-bold text-charcoal">
+        <h3 className="text-base font-bold text-ink">
           {formatMonthYear(month)}
         </h3>
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => onMonthChange(addMonths(month, -1))}
-            className="flex size-8 items-center justify-center rounded-lg border border-border text-muted transition-colors hover:bg-gray-50 hover:text-charcoal"
+            className="flex size-8 items-center justify-center rounded-sm border border-border text-ink-soft transition-colors hover:bg-paper-dim hover:text-ink"
             aria-label="Previous month"
           >
             <ChevronLeft className="size-4" />
@@ -99,7 +99,7 @@ export function BookSessionCalendar({
           <button
             type="button"
             onClick={() => onMonthChange(addMonths(month, 1))}
-            className="flex size-8 items-center justify-center rounded-lg border border-border text-muted transition-colors hover:bg-gray-50 hover:text-charcoal"
+            className="flex size-8 items-center justify-center rounded-sm border border-border text-ink-soft transition-colors hover:bg-paper-dim hover:text-ink"
             aria-label="Next month"
           >
             <ChevronRight className="size-4" />
@@ -115,7 +115,7 @@ export function BookSessionCalendar({
         {WEEKDAYS.map((day) => (
           <span
             key={day}
-            className="py-1 text-[10px] font-semibold tracking-wider text-muted-light uppercase"
+            className="py-1 text-[10px] font-medium text-ink-faint"
           >
             {day}
           </span>
@@ -134,14 +134,14 @@ export function BookSessionCalendar({
               disabled={muted || isUnavailable}
               onClick={() => onSelect(date)}
               className={cn(
-                "mx-auto flex size-9 items-center justify-center rounded-lg text-sm transition-colors",
-                muted && "cursor-default text-muted-light/70",
-                isUnavailable && "cursor-not-allowed text-muted-light/50",
+                "mx-auto flex size-9 items-center justify-center rounded-sm text-sm transition-colors",
+                muted && "cursor-default text-ink-faint/70",
+                isUnavailable && "cursor-not-allowed text-ink-faint/50",
                 !muted &&
                   isAvailable &&
                   !isSelected &&
-                  "text-charcoal hover:bg-gray-100",
-                isSelected && "bg-charcoal font-semibold text-white",
+                  "text-ink hover:bg-paper-dim",
+                isSelected && "bg-ink font-semibold text-white",
               )}
             >
               {date.getDate()}

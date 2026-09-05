@@ -56,7 +56,7 @@ export function GalleryPhotoLightbox({
   if (!photo) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/95">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/95">
       <button
         type="button"
         className="absolute inset-0"
@@ -67,7 +67,7 @@ export function GalleryPhotoLightbox({
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-4 right-4 z-20 flex size-11 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 sm:size-10"
+        className="absolute top-4 right-4 z-20 flex size-11 items-center justify-center rounded-full bg-panel/10 text-white transition-colors hover:bg-panel/20 sm:size-10"
         aria-label={copy.close}
       >
         <X className="size-5" />
@@ -80,7 +80,7 @@ export function GalleryPhotoLightbox({
             event.stopPropagation();
             void onDownloadPhoto(photo);
           }}
-          className="absolute top-4 left-4 z-20 inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-charcoal shadow-lg transition-colors hover:bg-gray-50 sm:min-h-10"
+          className="absolute top-4 left-4 z-20 inline-flex min-h-11 items-center gap-2 rounded-full bg-panel px-4 py-2 text-sm font-semibold text-ink shadow-lg transition-colors hover:bg-paper-dim sm:min-h-10"
           aria-label={downloadLabel}
         >
           <Download className="size-4" aria-hidden />
@@ -99,7 +99,7 @@ export function GalleryPhotoLightbox({
             event.stopPropagation();
             goPrevious();
           }}
-          className="absolute top-1/2 left-3 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 sm:left-6"
+          className="absolute top-1/2 left-3 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-panel/10 text-white transition-colors hover:bg-panel/20 sm:left-6"
           aria-label={copy.previous}
         >
           <ChevronLeft className="size-6" />
@@ -113,7 +113,7 @@ export function GalleryPhotoLightbox({
             event.stopPropagation();
             goNext();
           }}
-          className="absolute top-1/2 right-3 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 sm:right-6"
+          className="absolute top-1/2 right-3 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-panel/10 text-white transition-colors hover:bg-panel/20 sm:right-6"
           aria-label={copy.next}
         >
           <ChevronRight className="size-6" />
@@ -127,7 +127,7 @@ export function GalleryPhotoLightbox({
         <img
           src={photo.src}
           alt={photo.alt}
-          className="max-h-[85vh] max-w-full rounded-lg object-contain shadow-2xl"
+          className="max-h-[85vh] max-w-full rounded-sm object-contain shadow-2xl"
         />
       </div>
 

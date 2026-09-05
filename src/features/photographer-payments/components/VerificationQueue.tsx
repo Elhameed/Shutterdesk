@@ -24,7 +24,7 @@ function StatusBadge({ status }: { status: PaymentVerification["status"] }) {
   return (
     <span
       className={cn(
-        "inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+        "inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-medium",
         VERIFICATION_STATUS_BADGE_STYLES[status],
       )}
     >
@@ -41,7 +41,7 @@ function ClientCell({ verification }: { verification: PaymentVerification }) {
         alt={verification.clientName}
         className="size-10 shrink-0 rounded-full object-cover"
       />
-      <p className="text-sm font-semibold text-charcoal">
+      <p className="text-sm font-semibold text-ink">
         {verification.clientName}
       </p>
     </div>
@@ -63,15 +63,15 @@ export function VerificationQueue({
 
   if (verifications.length === 0) {
     return (
-      <section className="overflow-hidden rounded-xl border border-border bg-white shadow-card">
+      <section className="overflow-hidden rounded-md border border-border bg-panel">
         <QueueHeader />
-        <div className="p-8 text-center text-sm text-muted">{copy.noResults}</div>
+        <div className="p-8 text-center text-sm text-ink-soft">{copy.noResults}</div>
       </section>
     );
   }
 
   return (
-    <section className="overflow-hidden rounded-xl border border-border bg-white shadow-card">
+    <section className="overflow-hidden rounded-md border border-border bg-panel">
       <QueueHeader />
 
       <ul className="divide-y divide-border md:hidden">
@@ -81,21 +81,21 @@ export function VerificationQueue({
               type="button"
               onClick={() => onSelect(verification)}
               className={cn(
-                "w-full p-4 text-left transition-colors hover:bg-gray-50",
-                selectedId === verification.id && "bg-gray-50",
+                "w-full p-4 text-left transition-colors hover:bg-paper-dim",
+                selectedId === verification.id && "bg-paper-dim",
               )}
             >
               <ClientCell verification={verification} />
 
               <div className="mt-3 space-y-2">
                 <div>
-                  <p className="text-sm font-semibold text-charcoal">
+                  <p className="text-sm font-semibold text-ink">
                     {verification.bookingTitle}
                   </p>
-                  <p className="text-xs text-muted">{verification.bookingDate}</p>
+                  <p className="text-xs text-ink-soft">{verification.bookingDate}</p>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-bold text-charcoal">
+                  <p className="text-sm font-bold text-ink">
                     {copy.amountDisplay(verification.amount)}
                   </p>
                   <StatusBadge status={verification.status} />
@@ -121,11 +121,11 @@ export function VerificationQueue({
             <col className="w-[22%]" />
           </colgroup>
           <thead>
-            <tr className="border-b border-border bg-gray-50">
+            <tr className="border-b border-border">
               {Object.values(copy.columns).map((label) => (
                 <th
                   key={label}
-                  className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase"
+                  className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint"
                 >
                   {label}
                 </th>
@@ -138,21 +138,21 @@ export function VerificationQueue({
                 key={verification.id}
                 onClick={() => onSelect(verification)}
                 className={cn(
-                  "cursor-pointer transition-colors hover:bg-gray-50",
-                  selectedId === verification.id && "bg-gray-50",
+                  "cursor-pointer transition-colors hover:bg-paper-dim",
+                  selectedId === verification.id && "bg-paper-dim",
                 )}
               >
                 <td className="px-5 py-4 align-middle">
                   <ClientCell verification={verification} />
                 </td>
                 <td className="px-5 py-4 align-middle">
-                  <p className="text-sm font-semibold text-charcoal">
+                  <p className="text-sm font-semibold text-ink">
                     {verification.bookingTitle}
                   </p>
-                  <p className="text-xs text-muted">{verification.bookingDate}</p>
+                  <p className="text-xs text-ink-soft">{verification.bookingDate}</p>
                 </td>
                 <td className="px-5 py-4 align-middle">
-                  <p className="text-sm font-bold text-charcoal">
+                  <p className="text-sm font-bold text-ink">
                     {copy.amountDisplay(verification.amount)}
                   </p>
                 </td>
@@ -188,7 +188,7 @@ function QueueHeader() {
 
   return (
     <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
-      <h2 className="text-sm font-bold text-charcoal">{copy.queueTitle}</h2>
+      <h2 className="text-sm font-bold text-ink">{copy.queueTitle}</h2>
       <Button variant="outline" size="sm" className="gap-2">
         <SlidersHorizontal className="size-4" />
         <span className="hidden sm:inline">{copy.filter}</span>

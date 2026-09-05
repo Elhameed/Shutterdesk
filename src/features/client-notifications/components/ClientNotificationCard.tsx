@@ -23,10 +23,10 @@ export function ClientNotificationCard({
   return (
     <article
       className={cn(
-        "rounded-xl p-4 sm:p-5",
+        "rounded-md p-4 sm:p-5",
         notification.read
-          ? "border border-border bg-white"
-          : "border border-gold/20 border-l-4 border-l-gold bg-gold-light/40",
+          ? "border border-border bg-panel"
+          : "border border-accent/20 border-l-4 border-l-gold bg-accent-tint/40",
       )}
     >
       <div className="flex gap-3 sm:gap-4">
@@ -34,8 +34,8 @@ export function ClientNotificationCard({
           className={cn(
             "flex size-10 shrink-0 items-center justify-center rounded-full",
             notification.read
-              ? "bg-gray-100 text-muted"
-              : "bg-white text-gold shadow-sm",
+              ? "bg-paper-dim text-ink-soft"
+              : "bg-panel text-accent",
           )}
         >
           <Icon className="size-4" aria-hidden />
@@ -46,12 +46,12 @@ export function ClientNotificationCard({
             <h2
               className={cn(
                 "text-sm font-bold",
-                notification.read ? "text-muted" : "text-charcoal",
+                notification.read ? "text-ink-soft" : "text-ink",
               )}
             >
               {notification.title}
             </h2>
-            <time className="shrink-0 text-xs text-muted-light">
+            <time className="shrink-0 text-xs text-ink-faint">
               {notification.timestamp}
             </time>
           </div>
@@ -59,7 +59,7 @@ export function ClientNotificationCard({
           <p
             className={cn(
               "mt-1 text-sm",
-              notification.read ? "text-muted-light" : "text-muted",
+              notification.read ? "text-ink-faint" : "text-ink-soft",
             )}
           >
             {notification.message}
@@ -76,8 +76,8 @@ export function ClientNotificationCard({
                 }}
                 className={cn(
                   notification.read
-                    ? "text-muted transition-colors hover:text-charcoal"
-                    : "text-gold transition-colors hover:text-gold-hover",
+                    ? "text-ink-soft transition-colors hover:text-ink"
+                    : "text-accent transition-colors hover:text-accent-hover",
                 )}
               >
                 {actionText}
@@ -87,14 +87,14 @@ export function ClientNotificationCard({
             {!notification.read ? (
               <>
                 {notification.href ? (
-                  <span className="text-muted-light" aria-hidden>
+                  <span className="text-ink-faint" aria-hidden>
                     ·
                   </span>
                 ) : null}
                 <button
                   type="button"
                   onClick={() => onMarkRead(notification.id)}
-                  className="text-muted transition-colors hover:text-charcoal"
+                  className="text-ink-soft transition-colors hover:text-ink"
                 >
                   {copy.markRead}
                 </button>

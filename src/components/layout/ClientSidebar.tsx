@@ -9,6 +9,11 @@ import {
   CLIENT_NAV_ITEMS,
   type ClientNavItem,
 } from "@/constants/client-dashboard";
+import {
+  RAIL_ITEM,
+  RAIL_SHELL,
+  railItemState,
+} from "@/components/layout/rail-nav";
 import { CLIENT_SETTINGS_COPY } from "@/constants/client-settings";
 import { ROUTES } from "@/constants/routes";
 import { useClientUnreadNotificationCount } from "@/hooks/queries/notifications";
@@ -41,13 +46,13 @@ function NavItem({
       onClick={onNavigate}
       className={({ isActive }) =>
         cn(
-          "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-          item.highlight &&
-            "bg-gold text-white hover:bg-gold-hover hover:text-white",
-          !item.highlight &&
-            (isActive
-              ? "bg-gray-100 text-gold"
-              : "text-muted hover:bg-gray-50 hover:text-charcoal"),
+          RAIL_ITEM,
+          // `highlight` used to paint a solid gold fill, which read as a
+          // permanently-active item. It now reads as emphasis without
+          // competing with the real active state.
+          item.highlight
+            ? "text-rail-text-active border-transparent bg-white/[0.07] hover:bg-white/10"
+            : railItemState(isActive),
         )
       }
     >
@@ -70,17 +75,12 @@ export function ClientSidebar({
   const avatarSrc = resolveMediaUrl(authUser?.avatarUrl, appAssets.userAvatar);
 
   return (
-    <aside
-      className={cn(
-        "flex h-screen w-60 shrink-0 flex-col border-r border-border bg-white",
-        className,
-      )}
-    >
+    <aside className={cn(RAIL_SHELL, className)}>
       <div className="px-5 pt-5 pb-2">
-        <Logo size="md" />
+        <Logo size="md" tone="light" />
       </div>
 
-      <nav className="flex flex-1 flex-col overflow-y-auto px-3 pb-4 pt-4">
+      <nav className="flex flex-1 flex-col overflow-y-auto px-3 pt-4 pb-4">
         <div className="flex flex-col gap-1">
           {CLIENT_NAV_ITEMS.map((item) => (
             <NavItem
@@ -98,7 +98,7 @@ export function ClientSidebar({
             onNavigate={onNavigate}
           />
 
-          <div className="mt-4 border-t border-border pt-4">
+          <div className="mt-4 border-t border-white/10 pt-4">
             <div className="flex items-center gap-3 px-3">
               {authUser ? (
                 <img
@@ -107,27 +107,27 @@ export function ClientSidebar({
                   className="size-8 shrink-0 rounded-full object-cover"
                 />
               ) : (
-                <Skeleton className="size-8 shrink-0 rounded-full" />
+                <Skeleton className="size-8 shrink-0 rounded-full bg-white/10" />
               )}
               <div className="min-w-0 flex-1">
                 {authUser ? (
                   <>
-                    <p className="truncate text-sm font-medium text-charcoal">
+                    <p className="text-rail-text-active truncate text-sm font-medium">
                       {displayName}
                     </p>
-                    <p className="truncate text-[10px] text-muted">Client</p>
+                    <p className="text-rail-text truncate text-[11px]">Client</p>
                   </>
                 ) : (
                   <div className="space-y-1.5">
-                    <Skeleton className="h-3 w-2/3" />
-                    <Skeleton className="h-2.5 w-1/2" />
+                    <Skeleton className="h-3 w-2/3 bg-white/10" />
+                    <Skeleton className="h-2.5 w-1/2 bg-white/10" />
                   </div>
                 )}
               </div>
               <button
                 type="button"
                 onClick={onOpenSettings}
-                className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:bg-gray-100 hover:text-charcoal"
+                className="text-rail-text hover:text-rail-text-active flex size-8 shrink-0 items-center justify-center rounded-sm transition-colors hover:bg-white/10"
                 aria-label={settingsCopy.title}
               >
                 <Settings className="size-4" aria-hidden />

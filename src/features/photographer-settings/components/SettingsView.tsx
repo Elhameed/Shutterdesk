@@ -359,27 +359,27 @@ export function SettingsView() {
 
   if (loading || !profile || !studio || !payment || !notifications || !gallery || !booking) {
     return (
-      <div className="min-w-0 max-w-full bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+      <div className="min-w-0 max-w-full bg-paper-dim/50 p-4 sm:p-6 lg:p-8">
         <CardSkeleton />
       </div>
     );
   }
 
   return (
-    <div className="min-w-0 max-w-full bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+    <div className="min-w-0 max-w-full bg-paper-dim/50 p-4 sm:p-6 lg:p-8">
       <SettingsBreadcrumbs
         activeTab={activeTab}
         onNavigateRoot={() => changeTab("profile")}
       />
 
       <div className="mt-4">
-        <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
           {copy.title}
         </h1>
-        <p className="mt-1 text-sm text-muted">{copy.subtitle}</p>
+        <p className="mt-1 text-sm text-ink-soft">{copy.subtitle}</p>
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-border bg-white shadow-card lg:sticky lg:top-6">
+      <div className="mt-6 overflow-hidden rounded-md border border-border bg-panel lg:sticky lg:top-6">
         <div className="grid lg:grid-cols-[260px_minmax(0,1fr)]">
           <SettingsNav activeTab={activeTab} onTabChange={changeTab} />
 

@@ -23,14 +23,14 @@ export function OnboardingProgress({
               key={step}
               className={cn(
                 "h-1 w-10 rounded-full sm:w-12",
-                isReached ? "bg-gold" : "bg-border",
+                isReached ? "bg-accent" : "bg-border",
               )}
               aria-hidden
             />
           );
         })}
       </div>
-      <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+      <p className="mt-4 text-xs font-medium text-accent">
         {stepLabel}
       </p>
     </div>

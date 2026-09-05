@@ -66,18 +66,18 @@ export function ReceiptUploadZone({
   }
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card sm:p-6">
+    <section className="rounded-md border border-border bg-panel p-5 sm:p-6">
       <div className="flex items-center gap-2">
-        <CloudUpload className="size-5 text-gold" aria-hidden />
-        <h2 className="text-base font-bold text-charcoal">{copy.receiptLabel}</h2>
+        <CloudUpload className="size-5 text-accent" aria-hidden />
+        <h2 className="text-base font-bold text-ink">{copy.receiptLabel}</h2>
       </div>
 
       <div
         className={cn(
-          "mt-4 rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors",
+          "mt-4 rounded-md border-2 border-dashed px-4 py-8 text-center transition-colors",
           dragOver
-            ? "border-gold bg-gold/5"
-            : "border-border bg-gray-50",
+            ? "border-accent bg-accent-hover/5"
+            : "border-border bg-paper-dim",
           disabled && "pointer-events-none opacity-60",
         )}
         onDragOver={(event) => {
@@ -91,14 +91,14 @@ export function ReceiptUploadZone({
           <img
             src={previewUrl}
             alt="Receipt preview"
-            className="mx-auto max-h-44 rounded-lg object-contain"
+            className="mx-auto max-h-44 rounded-sm object-contain"
           />
         ) : file?.type === "application/pdf" ? (
-          <p className="text-sm font-medium text-charcoal">{file.name}</p>
+          <p className="text-sm font-medium text-ink">{file.name}</p>
         ) : (
-          <CloudUpload className="mx-auto size-10 text-muted-light" aria-hidden />
+          <CloudUpload className="mx-auto size-10 text-ink-faint" aria-hidden />
         )}
-        <p className="mt-3 text-sm text-muted">
+        <p className="mt-3 text-sm text-ink-soft">
           {file ? file.name : copy.receiptHint}
         </p>
         <Button
@@ -123,7 +123,7 @@ export function ReceiptUploadZone({
         />
       </div>
 
-      {error ? <p className="mt-2 text-xs text-red-600">{error}</p> : null}
+      {error ? <p className="mt-2 text-xs text-bad-fg">{error}</p> : null}
     </section>
   );
 }

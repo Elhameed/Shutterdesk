@@ -16,7 +16,7 @@ export function TableRowsSkeleton({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl border border-border bg-white",
+        "border-border bg-panel overflow-hidden rounded-md border",
         className,
       )}
       role="status"
@@ -48,7 +48,7 @@ export function TableRowsSkeleton({
 export function NotificationCardSkeleton() {
   return (
     <div
-      className="flex gap-3 rounded-xl border border-border bg-white p-4 shadow-card sm:gap-4 sm:p-5"
+      className="flex gap-3 rounded-md border border-border bg-panel p-4 sm:gap-4 sm:p-5"
       aria-hidden
     >
       <Skeleton className="size-10 shrink-0 rounded-full" />
@@ -86,7 +86,7 @@ export function NotificationsFeedSkeleton({ rows = 5 }: { rows?: number }) {
 export function ActivityFeedSkeleton({ rows = 6 }: { rows?: number }) {
   return (
     <div
-      className="rounded-xl border border-border bg-white p-5"
+      className="border-border bg-panel rounded-md border p-4"
       role="status"
       aria-busy
       aria-label="Loading activity"

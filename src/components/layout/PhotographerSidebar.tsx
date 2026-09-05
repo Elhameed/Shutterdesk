@@ -7,6 +7,11 @@ import {
   PHOTOGRAPHER_NAV_ITEMS,
   type PhotographerNavItem,
 } from "@/constants/photographer-dashboard";
+import {
+  RAIL_ITEM,
+  RAIL_SHELL,
+  railItemState,
+} from "@/components/layout/rail-nav";
 import { ROUTES } from "@/constants/routes";
 import { usePhotographerDashboard } from "@/hooks/queries/photographer";
 import { usePhotographerUnreadNotificationCount } from "@/hooks/queries/notifications";
@@ -33,7 +38,7 @@ function NavItem({
   if (!item.available) {
     return (
       <span
-        className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-light"
+        className={cn(RAIL_ITEM, "text-rail-text/45")}
         title="Coming soon"
       >
         <Icon className="size-[18px] shrink-0" aria-hidden />
@@ -47,14 +52,7 @@ function NavItem({
       to={item.to}
       end={item.to === ROUTES.photographer.dashboard}
       onClick={onNavigate}
-      className={({ isActive }) =>
-        cn(
-          "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-          isActive
-            ? "bg-gray-100 text-gold"
-            : "text-muted hover:bg-gray-50 hover:text-charcoal",
-        )
-      }
+      className={({ isActive }) => cn(RAIL_ITEM, railItemState(isActive))}
     >
       <Icon className="size-[18px] shrink-0" aria-hidden />
       <span className="min-w-0 flex-1">{item.label}</span>
@@ -78,12 +76,7 @@ export function PhotographerSidebar({
   };
 
   return (
-    <aside
-      className={cn(
-        "flex h-screen w-60 shrink-0 flex-col border-r border-border bg-white",
-        className,
-      )}
-    >
+    <aside className={cn(RAIL_SHELL, className)}>
       <div className="px-5 pt-5 pb-2">
         {dashboard?.user.studioLogo ? (
           <img
@@ -92,11 +85,11 @@ export function PhotographerSidebar({
             className="h-8 w-auto max-w-[140px] object-contain"
           />
         ) : (
-          <Logo size="md" />
+          <Logo size="md" tone="light" />
         )}
       </div>
 
-      <nav className="flex flex-1 flex-col overflow-y-auto px-3 pb-4 pt-4">
+      <nav className="flex flex-1 flex-col overflow-y-auto px-3 pt-4 pb-4">
         <div className="flex flex-col gap-1">
           {PHOTOGRAPHER_NAV_ITEMS.map((item) => (
             <NavItem key={item.label} item={item} onNavigate={onNavigate} />
@@ -113,7 +106,7 @@ export function PhotographerSidebar({
             />
           ))}
 
-          <div className="mt-4 border-t border-border pt-4">
+          <div className="mt-4 border-t border-white/10 pt-4">
             <div className="flex items-center gap-3 px-3">
               {authUser ? (
                 <img
@@ -122,22 +115,22 @@ export function PhotographerSidebar({
                   className="size-8 shrink-0 rounded-full object-cover"
                 />
               ) : (
-                <Skeleton className="size-8 shrink-0 rounded-full" />
+                <Skeleton className="size-8 shrink-0 rounded-full bg-white/10" />
               )}
               <div className="min-w-0 flex-1">
                 {authUser ? (
                   <>
-                    <p className="truncate text-sm font-medium text-charcoal">
+                    <p className="text-rail-text-active truncate text-sm font-medium">
                       {sidebarUser.name}
                     </p>
-                    <p className="truncate text-[10px] text-muted">
+                    <p className="text-rail-text truncate text-[11px]">
                       {sidebarUser.role}
                     </p>
                   </>
                 ) : (
                   <div className="space-y-1.5">
-                    <Skeleton className="h-3 w-2/3" />
-                    <Skeleton className="h-2.5 w-1/2" />
+                    <Skeleton className="h-3 w-2/3 bg-white/10" />
+                    <Skeleton className="h-2.5 w-1/2 bg-white/10" />
                   </div>
                 )}
               </div>

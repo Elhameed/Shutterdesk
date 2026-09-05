@@ -87,7 +87,7 @@ export function BookSessionScheduleStep({
     <>
       <div className="grid lg:grid-cols-2 lg:divide-x lg:divide-border">
         <div className="p-5 sm:p-6">
-          <h2 className="text-base font-bold text-charcoal">
+          <h2 className="text-base font-bold text-ink">
             {copy.scheduleStep.selectDate}
           </h2>
           <div className="mt-4">
@@ -103,11 +103,11 @@ export function BookSessionScheduleStep({
         </div>
 
         <div className="flex flex-col p-5 sm:p-6">
-          <h2 className="text-base font-bold text-charcoal">
+          <h2 className="text-base font-bold text-ink">
             {copy.scheduleStep.availableTime}
           </h2>
           {selectedDate ? (
-            <p className="mt-1 text-xs text-muted">
+            <p className="mt-1 text-xs text-ink-soft">
               {copy.scheduleStep.selected(
                 formatBookSessionDateShort(selectedDate),
               )}
@@ -119,12 +119,12 @@ export function BookSessionScheduleStep({
               <li aria-busy aria-label="Loading available times">
                 <div className="space-y-2">
                   {Array.from({ length: 4 }, (_, index) => (
-                    <Skeleton key={index} className="h-11 w-full rounded-xl" />
+                    <Skeleton key={index} className="h-11 w-full rounded-md" />
                   ))}
                 </div>
               </li>
             ) : slots.length === 0 ? (
-              <li className="text-sm text-muted">{copy.scheduleStep.noSlots}</li>
+              <li className="text-sm text-ink-soft">{copy.scheduleStep.noSlots}</li>
             ) : (
               slots.map((slot) => {
                 const isSelected = slot.label === selectedTime;
@@ -134,19 +134,19 @@ export function BookSessionScheduleStep({
                       type="button"
                       onClick={() => onTimeSelect(slot.label)}
                       className={cn(
-                        "flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-medium transition-colors",
+                        "flex w-full items-center justify-between rounded-md border px-4 py-3 text-sm font-medium transition-colors",
                         isSelected
-                          ? "border-gold bg-gold-light/50 text-charcoal"
-                          : "border-border bg-white text-charcoal hover:bg-gray-50",
+                          ? "border-accent bg-accent-tint/50 text-ink"
+                          : "border-border bg-panel text-ink hover:bg-paper-dim",
                       )}
                     >
                       {slot.label}
                       {isSelected ? (
-                        <span className="flex size-6 items-center justify-center rounded-full bg-charcoal text-white">
+                        <span className="flex size-6 items-center justify-center rounded-full bg-ink text-panel">
                           <Check className="size-3.5" aria-hidden />
                         </span>
                       ) : (
-                        <Clock className="size-4 text-muted-light" aria-hidden />
+                        <Clock className="size-4 text-ink-faint" aria-hidden />
                       )}
                     </button>
                   </li>
@@ -155,12 +155,12 @@ export function BookSessionScheduleStep({
             )}
           </ul>
 
-          <div className="mt-auto border-l-4 border-gold bg-gray-50 p-4 pt-6 lg:mt-6">
-            <p className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+          <div className="mt-auto border-l-4 border-accent bg-paper-dim p-4 pt-6 lg:mt-6">
+            <p className="flex items-center gap-1.5 text-[10px] font-medium text-ink-faint">
               <Info className="size-3.5" aria-hidden />
               {copy.scheduleStep.currentSelection}
             </p>
-            <p className="mt-1 text-sm font-bold text-charcoal">
+            <p className="mt-1 text-sm font-bold text-ink">
               {packageInfo.title} ({packageInfo.details[0].label})
             </p>
           </div>

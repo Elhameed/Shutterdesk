@@ -28,21 +28,21 @@ export function ClientBookingDetailHeader({
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             {detail.sessionLabel}
           </h1>
-          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink-soft">
             <span className="flex items-center gap-1.5">
-              <CalendarDays className="size-4 text-muted-light" aria-hidden />
+              <CalendarDays className="size-4 text-ink-faint" aria-hidden />
               {detail.event.date}
             </span>
             <span className="flex items-center gap-1.5">
-              <MapPin className="size-4 text-muted-light" aria-hidden />
+              <MapPin className="size-4 text-ink-faint" aria-hidden />
               {detail.event.city}
             </span>
           </div>
           {detail.statusMessage ? (
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-soft">
               {detail.statusMessage}
             </p>
           ) : null}
@@ -51,7 +51,7 @@ export function ClientBookingDetailHeader({
         {primaryAction?.type === "link" ? (
           <Button
             variant="gold"
-            className="h-auto shrink-0 px-5 py-3 shadow-card"
+            className="h-auto shrink-0 px-5 py-3"
             asChild
           >
             <Link to={primaryAction.href}>{primaryAction.label}</Link>

@@ -27,15 +27,15 @@ type GalleryStatusCardProps = {
 };
 
 function getBarStyle(index: number, currentStage: number): string {
-  if (index < currentStage) return "bg-gold-hover";
-  if (index === currentStage) return "bg-gold";
-  return "bg-gray-200";
+  if (index < currentStage) return "bg-accent-hover";
+  if (index === currentStage) return "bg-accent";
+  return "bg-border";
 }
 
 function getLabelStyle(index: number, currentStage: number): string {
-  if (index < currentStage) return "font-medium text-charcoal";
-  if (index === currentStage) return "font-bold text-charcoal";
-  return "text-muted-light";
+  if (index < currentStage) return "font-medium text-ink";
+  if (index === currentStage) return "font-bold text-ink";
+  return "text-ink-faint";
 }
 
 function getStageLabel(stage: GalleryStage, index: number, currentStage: number): string {
@@ -108,27 +108,27 @@ export function GalleryStatusCard({
   return (
     <section
       className={cn(
-        "rounded-xl border bg-white p-5 shadow-card",
+        "rounded-md border bg-panel p-5",
         (isPostSession || isBalanceDue) && !galleryId && !galleryReleaseBlocked
-          ? "border-gold/30 ring-1 ring-gold/10"
+          ? "border-accent/30 ring-1 ring-accent/10"
           : "border-border",
       )}
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-sm font-bold text-charcoal">{copy.galleryStatus}</h2>
+          <h2 className="text-sm font-bold text-ink">{copy.galleryStatus}</h2>
           {galleryReleaseBlocked ? (
-            <p className="mt-1 flex items-start gap-1.5 text-xs leading-relaxed text-muted">
-              <Lock className="mt-0.5 size-3.5 shrink-0 text-gold" aria-hidden />
+            <p className="mt-1 flex items-start gap-1.5 text-xs leading-relaxed text-ink-soft">
+              <Lock className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden />
               {copy.galleryBlockedHint}
             </p>
           ) : isPostSession && !galleryId ? (
-            <p className="mt-1 text-xs leading-relaxed text-muted">
+            <p className="mt-1 text-xs leading-relaxed text-ink-soft">
               {copy.galleryCreateHint}
             </p>
           ) : null}
           {galleryReleaseOverride ? (
-            <p className="mt-2 text-xs font-medium text-gold">
+            <p className="mt-2 text-xs font-medium text-accent">
               {copy.galleryReleaseEnabled}
             </p>
           ) : null}

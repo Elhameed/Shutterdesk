@@ -67,12 +67,12 @@ export function GalleryPhotoUploadPanel({
   return (
     <section
       className={cn(
-        "rounded-xl border border-dashed border-border bg-white p-5 shadow-card",
+        "rounded-md border border-dashed border-border bg-panel p-5",
         className,
       )}
     >
       <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:text-left">
-        <div className="flex size-12 items-center justify-center rounded-full bg-gold/10 text-gold">
+        <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
           {isUploading ? (
             <Loader2 className="size-5 animate-spin" aria-hidden />
           ) : (
@@ -80,8 +80,8 @@ export function GalleryPhotoUploadPanel({
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="text-sm font-semibold text-charcoal">{copy.uploadPhotos}</h3>
-          <p className="mt-1 text-sm text-muted">
+          <h3 className="text-sm font-semibold text-ink">{copy.uploadPhotos}</h3>
+          <p className="mt-1 text-sm text-ink-soft">
             {isUploading
               ? `Uploading ${selectedCount} photo${selectedCount === 1 ? "" : "s"}…`
               : "JPG, PNG, or WebP up to 15MB each"}
@@ -105,7 +105,7 @@ export function GalleryPhotoUploadPanel({
           onChange={handleFiles}
         />
       </div>
-      {error ? <p className="mt-3 text-xs text-red-600">{error}</p> : null}
+      {error ? <p className="mt-3 text-xs text-bad-fg">{error}</p> : null}
     </section>
   );
 }

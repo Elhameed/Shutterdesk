@@ -7,17 +7,17 @@ import type {
 } from "@/types/domains/service";
 
 export const CLIENT_BOOK_SESSION_COPY = {
-  title: "Book a Session",
+  title: "Book a session",
   subtitle: "Choose a package and request your preferred date.",
   steps: {
-    package: "Choose Package",
+    package: "Choose package",
     schedule: "Schedule",
     details: "Details",
   },
   packageStep: {
     heading: "Select your session type",
     subheading: "All sessions include professionally edited digital files.",
-    selectPackage: "Select Package",
+    selectPackage: "Select package",
     selectedPackage: "Selected",
     readMore: "Read more",
     readLess: "Read less",
@@ -29,40 +29,40 @@ export const CLIENT_BOOK_SESSION_COPY = {
       "This studio has not published any bookable packages yet. Try another studio or contact them directly.",
   },
   scheduleStep: {
-    selectDate: "Select Date",
-    availableTime: "Available Time",
+    selectDate: "Select date",
+    availableTime: "Available time",
     selected: (dayLabel: string) => `Selected: ${dayLabel}`,
-    currentSelection: "Current Selection",
-    continueToDetails: "Continue to Details",
+    currentSelection: "Current selection",
+    continueToDetails: "Continue to details",
     loadingSlots: "Loading available times…",
     noSlots: "No open slots on this day. Choose another date.",
   },
   detailsStep: {
-    heading: "Session Details",
+    heading: "Session details",
     subheading:
       "Confirm your contact details and tell us where the session will take place.",
     contactHeading: "Your contact details",
-    contactHint: "From your Shutterdesk profile. Update anytime in Settings.",
-    fullName: "Full Name",
-    email: "Email Address",
-    phone: "Phone Number",
-    location: "Location / Venue Address",
+    contactHint: "From your Shutterdesk profile. Update anytime in settings.",
+    fullName: "Full name",
+    email: "Email address",
+    phone: "Phone number",
+    location: "Location / venue address",
     locationPlaceholder: "Enter session address",
-    notes: "Special Requests / Notes",
+    notes: "Special requests / notes",
     notesPlaceholder:
       "Tell us about specific shots, outfit changes, or lighting preferences...",
-    bookingSummary: "Booking Summary",
-    confirmedSlot: "Confirmed Slot",
-    sessionFee: "Session Fee",
-    locationFee: "Location Fee",
+    bookingSummary: "Booking summary",
+    confirmedSlot: "Confirmed slot",
+    sessionFee: "Session fee",
+    locationFee: "Location fee",
     total: "Total",
     reserveNote:
       "Your session is reserved for 15 minutes. Complete this step to secure your date.",
-    reviewSubmit: "Review & Submit",
+    reviewSubmit: "Review & submit",
   },
   back: "Back",
   continue: "Continue",
-  confirm: "Submit Booking Request",
+  confirm: "Submit booking request",
   success: "Booking request submitted!",
 } as const;
 
@@ -90,7 +90,7 @@ export const LOCATION_TYPE_LABELS: Record<ServiceLocationType, string> = {
 
 /** Client-facing "featured" badges. Visibility badges (public/private/…) are excluded. */
 export const FEATURED_BADGE_LABELS: Partial<Record<ServiceBadgeType, string>> = {
-  popular: "Most Popular",
+  popular: "Most popular",
   featured: "Featured",
   new: "New",
 };

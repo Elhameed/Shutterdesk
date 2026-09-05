@@ -9,33 +9,33 @@ import { BrowserFrame } from "@/features/landing/components/BrowserFrame";
 
 export function HeroSection() {
   return (
-    <section className="bg-white pb-16 pt-12 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
+    <section className="bg-paper pt-12 pb-16 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-24">
       <PageContainer>
         <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl font-bold leading-tight tracking-tight text-charcoal sm:text-5xl lg:text-[3.25rem] lg:leading-[1.15]">
-            Manage Your Photography Business
+          <h1 className="font-display text-ink text-4xl leading-tight sm:text-5xl lg:text-[3.25rem] lg:leading-[1.15]">
+            Manage your photography business
             <br />
-            <span className="text-gold">From Booking to Delivery</span>
+            <span className="text-accent">From booking to delivery</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
+          <p className="text-ink-soft mx-auto mt-6 max-w-2xl text-base leading-relaxed sm:text-lg">
             Shutterdesk helps photographers manage bookings, clients, payments,
             and photo galleries in one streamlined platform.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Button variant="gold" size="lg" asChild>
-              <Link to={ROUTES.register}>Start Free Trial</Link>
+            <Button size="lg" asChild>
+              <Link to={ROUTES.register}>Start free trial</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <a href="#how-it-works">View Demo</a>
+              <a href="#how-it-works">View demo</a>
             </Button>
           </div>
           <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             {HERO_TRUST_INDICATORS.map((item) => (
               <li
                 key={item}
-                className="flex items-center gap-2 text-sm text-muted"
+                className="text-ink-soft flex items-center gap-2 text-sm"
               >
-                <Check className="size-4 shrink-0 text-gold" strokeWidth={2.5} />
+                <Check className="text-accent size-4 shrink-0" strokeWidth={2} />
                 {item}
               </li>
             ))}

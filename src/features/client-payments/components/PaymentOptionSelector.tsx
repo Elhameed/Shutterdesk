@@ -39,8 +39,8 @@ export function PaymentOptionSelector({
   ];
 
   return (
-    <section className="mt-6 rounded-xl border border-border bg-white p-5 shadow-card sm:p-6">
-      <p className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+    <section className="mt-6 rounded-md border border-border bg-panel p-5 sm:p-6">
+      <p className="text-[11px] font-medium text-ink-faint">
         {copy.paymentOptionTitle}
       </p>
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -53,31 +53,31 @@ export function PaymentOptionSelector({
               onClick={() => onChange(option.key)}
               aria-pressed={selected}
               className={cn(
-                "flex flex-col rounded-lg border p-4 text-left transition-colors",
+                "flex flex-col rounded-sm border p-4 text-left transition-colors",
                 selected
-                  ? "border-gold bg-gold-light/40 ring-1 ring-gold"
-                  : "border-border bg-gray-50 hover:border-gold/40",
+                  ? "border-accent bg-accent-tint/40 ring-1 ring-accent"
+                  : "border-border bg-paper-dim hover:border-accent/40",
               )}
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="text-sm font-bold text-charcoal">
+                <span className="text-sm font-bold text-ink">
                   {option.label}
                 </span>
                 <span
                   className={cn(
                     "flex size-5 items-center justify-center rounded-full border",
                     selected
-                      ? "border-gold bg-gold text-white"
-                      : "border-border bg-white",
+                      ? "border-accent bg-accent text-on-accent"
+                      : "border-border bg-panel",
                   )}
                 >
                   {selected ? <Check className="size-3.5" aria-hidden /> : null}
                 </span>
               </div>
-              <span className="mt-2 text-lg font-bold tracking-tight text-charcoal">
+              <span className="mt-2 text-lg font-bold tracking-tight text-ink">
                 {formatRwf(option.amount)}
               </span>
-              <span className="mt-1 text-xs text-muted">{option.hint}</span>
+              <span className="mt-1 text-xs text-ink-soft">{option.hint}</span>
             </button>
           );
         })}

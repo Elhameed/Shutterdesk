@@ -8,7 +8,7 @@ type ClientsGridProps = {
 export function ClientsGrid({ clients }: ClientsGridProps) {
   if (clients.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-white p-8 text-center text-sm text-muted">
+      <div className="rounded-md border border-border bg-panel p-8 text-center text-sm text-ink-soft">
         No clients found for this filter.
       </div>
     );

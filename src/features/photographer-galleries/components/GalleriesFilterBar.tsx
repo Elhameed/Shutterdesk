@@ -37,15 +37,15 @@ function FilterPill({
         onChange={(event) => onChange(event.target.value)}
         aria-label={ariaLabel}
         className={cn(
-          "h-9 cursor-pointer appearance-none rounded-full border border-border bg-white py-0 pr-8 pl-4 text-xs font-medium text-charcoal",
-          "transition-colors hover:bg-gray-50",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/20",
+          "h-9 cursor-pointer appearance-none rounded-full border border-border bg-panel py-0 pr-8 pl-4 text-xs font-medium text-ink",
+          "transition-colors hover:bg-paper-dim",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20",
         )}
       >
         {children}
       </select>
       <ChevronDown
-        className="pointer-events-none absolute top-1/2 right-3 size-3.5 -translate-y-1/2 text-muted"
+        className="pointer-events-none absolute top-1/2 right-3 size-3.5 -translate-y-1/2 text-ink-soft"
         aria-hidden
       />
     </div>
@@ -97,7 +97,7 @@ export function GalleriesFilterBar({
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-xs font-medium text-muted">{copy.sortBy}:</span>
+        <span className="text-xs font-medium text-ink-soft">{copy.sortBy}:</span>
         <FilterPill
           value={sortBy}
           onChange={(value) => onSortChange(value as GallerySortOption)}

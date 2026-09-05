@@ -229,29 +229,29 @@ export function ServicePackageFormView({
   };
 
   return (
-    <div className="min-w-0 max-w-full bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+    <div className="min-w-0 max-w-full bg-paper-dim/50 p-4 sm:p-6 lg:p-8">
       <nav
         aria-label="Breadcrumb"
-        className="flex items-center gap-1.5 text-sm text-muted"
+        className="flex items-center gap-1.5 text-sm text-ink-soft"
       >
         <Link
           to={ROUTES.photographer.services}
-          className="transition-colors hover:text-charcoal"
+          className="transition-colors hover:text-ink"
         >
           {copy.breadcrumbServices}
         </Link>
         <ChevronRight className="size-3.5" aria-hidden />
-        <span className="font-medium text-charcoal">
+        <span className="font-medium text-ink">
           {isEdit ? copy.editBreadcrumbCurrent : copy.breadcrumbCurrent}
         </span>
       </nav>
 
       <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             {isEdit ? copy.editTitle : copy.title}
           </h1>
-          <p className="mt-1 max-w-2xl text-sm text-muted">
+          <p className="mt-1 max-w-2xl text-sm text-ink-soft">
             {isEdit ? copy.editSubtitle : copy.subtitle}
           </p>
         </div>
@@ -295,7 +295,7 @@ export function ServicePackageFormView({
       </div>
 
       {submitError ? (
-        <p className="mt-4 text-sm text-red-600">{submitError}</p>
+        <p className="mt-4 text-sm text-bad-fg">{submitError}</p>
       ) : null}
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
@@ -327,20 +327,20 @@ export function ServicePackageFormView({
               </div>
             </div>
 
-            <div className="mt-4 flex items-center justify-between rounded-lg border border-border bg-gray-50/50 px-4 py-3">
+            <div className="mt-4 flex items-center justify-between rounded-sm border border-border bg-paper-dim/50 px-4 py-3">
               <div className="flex items-center gap-3">
-                <span className="flex size-9 items-center justify-center rounded-full bg-gold-light text-gold">
+                <span className="flex size-9 items-center justify-center rounded-full bg-accent-tint text-accent">
                   <Eye className="size-4" />
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-charcoal">
+                  <p className="text-sm font-semibold text-ink">
                     {copy.status}
                   </p>
-                  <p className="text-xs text-muted">{copy.statusDescription}</p>
+                  <p className="text-xs text-ink-soft">{copy.statusDescription}</p>
                 </div>
               </div>
               <label className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-charcoal">
+                <span className="text-xs font-semibold text-ink">
                   {copy.active}
                 </span>
                 <button
@@ -350,12 +350,12 @@ export function ServicePackageFormView({
                   onClick={() => setIsActive((value) => !value)}
                   className={cn(
                     "relative h-6 w-11 rounded-full transition-colors",
-                    isActive ? "bg-gold" : "bg-gray-300",
+                    isActive ? "bg-accent" : "bg-border-strong",
                   )}
                 >
                   <span
                     className={cn(
-                      "absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition-transform",
+                      "absolute top-0.5 left-0.5 size-5 rounded-full bg-panel shadow transition-transform",
                       isActive && "translate-x-5",
                     )}
                   />
@@ -369,7 +369,7 @@ export function ServicePackageFormView({
                 type="button"
                 onClick={() => coverInputRef.current?.click()}
                 disabled={isSubmitting}
-                className="relative w-full overflow-hidden rounded-xl border border-dashed border-border bg-gray-50/80 px-4 py-10 text-center transition-colors hover:border-gold/60 disabled:opacity-60"
+                className="relative w-full overflow-hidden rounded-md border border-dashed border-border bg-paper-dim/80 px-4 py-10 text-center transition-colors hover:border-accent/60 disabled:opacity-60"
               >
                 {coverPreview ? (
                   <img
@@ -382,11 +382,11 @@ export function ServicePackageFormView({
                     aria-hidden
                   />
                 ) : null}
-                <CloudUpload className="relative mx-auto size-8 text-muted" />
-                <p className="relative mt-3 text-sm font-semibold text-charcoal">
+                <CloudUpload className="relative mx-auto size-8 text-ink-soft" />
+                <p className="relative mt-3 text-sm font-semibold text-ink">
                   {copy.coverDropTitle}
                 </p>
-                <p className="relative mt-1 text-xs text-muted">
+                <p className="relative mt-1 text-xs text-ink-soft">
                   {coverFile ? coverFile.name : copy.coverDropHint}
                 </p>
                 <input
@@ -407,7 +407,7 @@ export function ServicePackageFormView({
                 <div className="space-y-2">
                   <Label>{copy.packagePrice}</Label>
                   <div className="relative">
-                    <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-xs font-medium text-muted">
+                    <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-xs font-medium text-ink-soft">
                       RWF
                     </span>
                     <Input
@@ -425,7 +425,7 @@ export function ServicePackageFormView({
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>{copy.depositPercentage}</Label>
-                    <span className="text-sm font-bold text-charcoal">
+                    <span className="text-sm font-bold text-ink">
                       {depositPercent}%
                     </span>
                   </div>
@@ -438,7 +438,7 @@ export function ServicePackageFormView({
                     onChange={(event) =>
                       setDepositPercent(Number(event.target.value))
                     }
-                    className="h-2 w-full cursor-pointer accent-gold"
+                    className="h-2 w-full cursor-pointer accent-accent"
                   />
                 </div>
 
@@ -532,14 +532,14 @@ export function ServicePackageFormView({
                     checked={onlineGallery}
                     onChange={(event) => setOnlineGallery(event.target.checked)}
                   />
-                  <span className="text-sm text-charcoal">{copy.onlineGallery}</span>
+                  <span className="text-sm text-ink">{copy.onlineGallery}</span>
                 </label>
                 <label className="flex items-center gap-2">
                   <Checkbox
                     checked={printDelivery}
                     onChange={(event) => setPrintDelivery(event.target.checked)}
                   />
-                  <span className="text-sm text-charcoal">{copy.printDelivery}</span>
+                  <span className="text-sm text-ink">{copy.printDelivery}</span>
                 </label>
                 <label className="flex items-center gap-2">
                   <Checkbox
@@ -548,7 +548,7 @@ export function ServicePackageFormView({
                       setCommercialLicense(event.target.checked)
                     }
                   />
-                  <span className="text-sm text-charcoal">
+                  <span className="text-sm text-ink">
                     {copy.commercialLicense}
                   </span>
                 </label>
@@ -573,7 +573,7 @@ export function ServicePackageFormView({
                   <button
                     type="button"
                     onClick={startAddingInclude}
-                    className="text-xs font-semibold text-gold hover:text-gold-hover"
+                    className="text-xs font-semibold text-accent hover:text-accent-hover"
                   >
                     {copy.addCustom}
                   </button>
@@ -583,13 +583,13 @@ export function ServicePackageFormView({
                   {includes.map((item) => (
                     <span
                       key={item}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold-light/40 px-3 py-1 text-xs font-medium text-charcoal"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent-tint/40 px-3 py-1 text-xs font-medium text-ink"
                     >
                       {item}
                       <button
                         type="button"
                         onClick={() => removeInclude(item)}
-                        className="text-muted hover:text-charcoal"
+                        className="text-ink-soft hover:text-ink"
                         aria-label={`Remove ${item}`}
                       >
                         <X className="size-3" />
@@ -598,7 +598,7 @@ export function ServicePackageFormView({
                   ))}
 
                   {isAddingInclude ? (
-                    <span className="inline-flex items-center rounded-full border border-charcoal/20 bg-white px-2 py-1">
+                    <span className="inline-flex items-center rounded-full border border-border-strong/20 bg-panel px-2 py-1">
                       <input
                         autoFocus
                         value={newInclude}
@@ -614,14 +614,14 @@ export function ServicePackageFormView({
                         }}
                         onBlur={addInclude}
                         placeholder="Item name"
-                        className="w-28 border-0 bg-transparent text-xs text-charcoal outline-none placeholder:text-muted"
+                        className="w-28 border-0 bg-transparent text-xs text-ink outline-none placeholder:text-ink-faint"
                       />
                     </span>
                   ) : (
                     <button
                       type="button"
                       onClick={startAddingInclude}
-                      className="inline-flex items-center gap-1 rounded-full border border-charcoal/15 bg-charcoal/5 px-3 py-1 text-xs font-medium text-charcoal transition-colors hover:bg-charcoal/10"
+                      className="inline-flex items-center gap-1 rounded-full border border-border-strong/15 bg-ink/5 px-3 py-1 text-xs font-medium text-ink transition-colors hover:bg-ink/10"
                     >
                       <Plus className="size-3" />
                       {copy.addItem}
@@ -668,10 +668,10 @@ function FormSection({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <section className="rounded-md border border-border bg-panel p-5">
       <div className="mb-4 flex items-center gap-2">
-        <Icon className="size-4 text-gold" aria-hidden />
-        <h2 className="text-sm font-bold text-charcoal">{title}</h2>
+        <Icon className="size-4 text-accent" aria-hidden />
+        <h2 className="text-sm font-bold text-ink">{title}</h2>
       </div>
       {children}
     </section>

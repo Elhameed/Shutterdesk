@@ -31,10 +31,10 @@ export function BookingsFilterTabs({
           type="button"
           onClick={() => onChange(filter)}
           className={cn(
-            "rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors",
+            "rounded-full border px-4 py-1.5 text-xs font-medium transition-colors",
             active === filter
-              ? "border-charcoal bg-charcoal text-white"
-              : "border-border bg-white text-charcoal hover:bg-gray-50",
+              ? "border-accent bg-accent-tint text-accent-fg"
+              : "border-border bg-panel text-ink-soft hover:bg-paper-dim hover:text-ink",
           )}
         >
           {copy[filter]} {counts[filter]}

@@ -1,11 +1,11 @@
 export const BOOKINGS_COPY = {
-  title: "Bookings Management",
+  title: "Bookings management",
   subtitle: "Organize and process your upcoming photography sessions.",
-  advancedFilter: "Advanced Filter",
-  newBooking: "New Booking",
+  advancedFilter: "Advanced filter",
+  newBooking: "New booking",
   searchPlaceholder: "Search bookings...",
   filters: {
-    all: "All Bookings",
+    all: "All bookings",
     pending: "Pending",
     confirmed: "Confirmed",
     completed: "Completed",
@@ -13,8 +13,8 @@ export const BOOKINGS_COPY = {
   },
   columns: {
     client: "Client",
-    servicePackage: "Service Package",
-    dateTime: "Date & Time",
+    servicePackage: "Service package",
+    dateTime: "Date & time",
     payment: "Payment",
     status: "Status",
     actions: "Actions",
@@ -32,9 +32,9 @@ export const BOOKINGS_COPY = {
   },
   showing: (from: number, to: number, total: number) =>
     `Showing ${from} to ${to} of ${total} bookings`,
-  viewBooking: "View Booking",
-  approveBooking: "Approve Booking",
-  cancelBooking: "Cancel Booking",
+  viewBooking: "View booking",
+  approveBooking: "Approve booking",
+  cancelBooking: "Cancel booking",
   cancelBookingConfirm:
     "Cancel this booking? The client will be notified. This cannot be undone.",
   cancelBookingFailed: "Unable to cancel booking. It may already have a deposit on file.",

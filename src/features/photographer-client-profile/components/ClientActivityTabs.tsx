@@ -61,7 +61,7 @@ export function ClientActivityTabs({
   }
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <section className="rounded-md border border-border bg-panel p-5">
       <div className="flex gap-6 overflow-x-auto border-b border-border">
         {tabs.map((tab) => (
           <button
@@ -71,8 +71,8 @@ export function ClientActivityTabs({
             className={cn(
               "-mb-px shrink-0 border-b-2 pb-3 text-sm font-semibold capitalize transition-colors",
               activeTab === tab
-                ? "border-charcoal text-charcoal"
-                : "border-transparent text-muted hover:text-charcoal",
+                ? "border-border-strong text-ink"
+                : "border-transparent text-ink-soft hover:text-ink",
             )}
           >
             {copy.tabs[tab]}

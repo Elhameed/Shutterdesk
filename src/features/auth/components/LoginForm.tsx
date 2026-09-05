@@ -6,6 +6,7 @@ import { AuthBackLink } from "@/components/auth/AuthBackLink";
 import { AuthDivider } from "@/components/auth/AuthDivider";
 import { GoogleIcon } from "@/components/auth/GoogleIcon";
 import { PasswordInput } from "@/components/auth/PasswordInput";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -53,18 +54,18 @@ export function LoginForm() {
       <AuthBackLink label={copy.backToWebsite} />
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-charcoal">
-          {copy.title}
-        </h1>
-        <span className="mt-4 inline-block rounded-full bg-gold-light px-3 py-1 text-xs font-medium text-gold">
+        <h1 className="font-display text-ink text-3xl">{copy.title}</h1>
+        <Badge variant="accent" className="mt-4">
           {copy.portalBadge}
-        </span>
-        <p className="mt-4 text-sm leading-relaxed text-muted">{copy.subtitle}</p>
+        </Badge>
+        <p className="text-ink-soft mt-4 text-sm leading-relaxed">
+          {copy.subtitle}
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         <div className="space-y-2">
-          <Label htmlFor="email">Email Address</Label>
+          <Label htmlFor="email">Email address</Label>
           <Input
             id="email"
             type="email"
@@ -91,11 +92,14 @@ export function LoginForm() {
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
           />
-          <span className="text-sm text-muted">{copy.rememberMe}</span>
+          <span className="text-ink-soft text-sm">{copy.rememberMe}</span>
         </label>
 
         {error && (
-          <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p
+            className="bg-bad-tint text-bad-fg rounded-sm px-4 py-3 text-sm"
+            role="alert"
+          >
             {error}
           </p>
         )}
@@ -133,16 +137,16 @@ export function LoginForm() {
         {copy.google}
       </Button>
 
-      <p className="mt-6 flex items-center justify-center gap-1 text-xs text-muted-light">
+      <p className="text-ink-faint mt-6 flex items-center justify-center gap-1 text-xs">
         <Lock className="size-3 shrink-0" aria-hidden />
         {copy.securityNote}
       </p>
 
-      <p className="mt-8 text-center text-sm text-muted">
+      <p className="text-ink-soft mt-8 text-center text-sm">
         {copy.noAccount}{" "}
         <Link
           to={ROUTES.register}
-          className="font-semibold text-gold hover:text-gold-hover"
+          className="text-accent hover:text-accent-hover font-medium transition-colors"
         >
           {copy.createAccount}
         </Link>

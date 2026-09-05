@@ -62,19 +62,19 @@ export function ClientPaymentsView() {
       <PortalPageHeader title={copy.title} subtitle={copy.subtitle} />
 
       {totalBalance > 0 && (
-        <section className="mt-6 rounded-xl border border-border bg-gray-50 p-5">
-          <p className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+        <section className="mt-6 rounded-md border border-border bg-paper-dim p-5">
+          <p className="text-[11px] font-medium text-ink-faint">
             {copy.totalDue}
           </p>
-          <p className="mt-2 text-2xl font-bold text-charcoal">
+          <p className="mt-2 text-2xl font-bold text-ink">
             {formatRwf(totalBalance)}
           </p>
           {unpaid.length > 1 ? (
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-sm text-ink-soft">
               {copy.obligationsAcrossStudios(unpaid.length)}
             </p>
           ) : unpaid.length === 1 ? (
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-sm text-ink-soft">
               {copy.actionRequiredSubtitle(1)}
             </p>
           ) : null}

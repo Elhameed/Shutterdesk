@@ -14,6 +14,7 @@ import {
 import {
   usePhotographerDashboard,
 } from "@/hooks/queries/photographer";
+import { FrameGrid } from "@/components/ui/card";
 import { PhotographerDashboardSkeleton } from "@/components/skeletons";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 
@@ -34,7 +35,7 @@ export function PhotographerDashboardView() {
   if (error || !dashboard) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center p-8">
-        <p className="max-w-md text-center text-sm text-red-700" role="alert">
+        <p className="text-bad-fg max-w-md text-center text-sm" role="alert">
           {getQueryErrorMessage(error, "Unable to load your dashboard.")}
         </p>
       </div>
@@ -45,7 +46,7 @@ export function PhotographerDashboardView() {
     <div className="min-w-0 max-w-full p-4 sm:p-6 lg:p-8">
       <DashboardGreeting user={dashboard.user} actions={<LocalTimeBadge />} />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <FrameGrid className="sm:grid-cols-2 xl:grid-cols-4">
         {dashboard.stats.map((stat) => (
           <StatCard
             key={stat.id}
@@ -57,16 +58,16 @@ export function PhotographerDashboardView() {
             tone={stat.tone ?? "default"}
           />
         ))}
-      </div>
+      </FrameGrid>
 
       <div className="mt-6 min-w-0">
         <div className="mb-4 flex items-center justify-between gap-4 lg:hidden">
-          <h2 className="text-base font-bold text-charcoal">
+          <h2 className="font-display text-ink text-base">
             {shootsCopy.title}
           </h2>
           <Link
             to={ROUTES.photographer.calendar}
-            className="text-xs font-semibold text-gold transition-colors hover:text-gold-hover"
+            className="text-accent hover:text-accent-hover text-xs transition-colors"
           >
             {shootsCopy.viewCalendar}
           </Link>
@@ -74,17 +75,17 @@ export function PhotographerDashboardView() {
 
         <div className="mb-4 hidden items-center gap-6 lg:grid lg:grid-cols-[7fr_3fr]">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="text-base font-bold text-charcoal">
+            <h2 className="font-display text-ink text-base">
               {shootsCopy.title}
             </h2>
             <Link
               to={ROUTES.photographer.calendar}
-              className="text-xs font-semibold text-gold transition-colors hover:text-gold-hover"
+              className="text-accent hover:text-accent-hover text-xs transition-colors"
             >
               {shootsCopy.viewCalendar}
             </Link>
           </div>
-          <h2 className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+          <h2 className="font-display text-ink text-base">
             {quickActionsCopy.title}
           </h2>
         </div>
@@ -95,7 +96,7 @@ export function PhotographerDashboardView() {
             shoots={dashboard.upcomingShoots}
           />
           <div className="min-w-0 space-y-6">
-            <h2 className="text-[11px] font-semibold tracking-wider text-muted-light uppercase lg:hidden">
+            <h2 className="font-display text-ink text-base lg:hidden">
               {quickActionsCopy.title}
             </h2>
             <QuickActionsSection showHeader={false} />

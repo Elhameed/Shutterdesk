@@ -6,10 +6,10 @@ import type { Client } from "@/types/domains/photographer-client";
 import { cn } from "@/lib/utils";
 
 const categoryStyles = {
-  wedding: "bg-gold-light text-gold",
-  commercial: "bg-gray-100 text-charcoal",
-  portrait: "bg-gray-100 text-charcoal",
-  editorial: "bg-gray-100 text-charcoal",
+  wedding: "bg-accent-tint text-accent",
+  commercial: "bg-paper-dim text-ink",
+  portrait: "bg-paper-dim text-ink",
+  editorial: "bg-paper-dim text-ink",
 } as const;
 
 type ClientsListProps = {
@@ -22,7 +22,7 @@ function CategoryBadge({ category }: { category: Client["category"] }) {
   return (
     <span
       className={cn(
-        "inline-flex rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+        "inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium",
         categoryStyles[category],
       )}
     >
@@ -37,7 +37,7 @@ function TierBadge({ tier }: { tier: Client["tier"] }) {
   return (
     <span
       className={cn(
-        "inline-flex rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+        "inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium",
         CLIENT_TIER_BADGE_STYLES[tier],
       )}
     >
@@ -51,11 +51,11 @@ function HealthIndicator({ balance }: { balance: number }) {
   const atRisk = balance > 0;
 
   return (
-    <span className="inline-flex items-center gap-2 text-sm text-charcoal">
+    <span className="inline-flex items-center gap-2 text-sm text-ink">
       <span
         className={cn(
           "size-2.5 shrink-0 rounded-full",
-          atRisk ? "bg-red-500" : "bg-green-500",
+          atRisk ? "bg-bad" : "bg-ok",
         )}
         aria-hidden
       />
@@ -73,8 +73,8 @@ function ClientCell({ client }: { client: Client }) {
         className="size-10 shrink-0 rounded-full object-cover"
       />
       <div className="min-w-0">
-        <p className="text-sm font-semibold text-charcoal">{client.name}</p>
-        <p className="truncate text-xs text-muted">{client.email}</p>
+        <p className="text-sm font-semibold text-ink">{client.name}</p>
+        <p className="truncate text-xs text-ink-soft">{client.email}</p>
       </div>
     </div>
   );
@@ -89,14 +89,14 @@ export function ClientsList({ clients }: ClientsListProps) {
 
   if (clients.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-white p-8 text-center text-sm text-muted">
+      <div className="rounded-md border border-border bg-panel p-8 text-center text-sm text-ink-soft">
         No clients found for this filter.
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-white">
+    <div className="overflow-hidden rounded-md border border-border bg-panel">
       {/* Mobile cards */}
       <ul className="divide-y divide-border lg:hidden">
         {clients.map((client) => (
@@ -117,29 +117,29 @@ export function ClientsList({ clients }: ClientsListProps) {
 
             <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
               <div>
-                <dt className="text-muted-light">{copy.sessions}</dt>
-                <dd className="font-semibold text-charcoal">{client.sessions}</dd>
+                <dt className="text-ink-faint">{copy.sessions}</dt>
+                <dd className="font-semibold text-ink">{client.sessions}</dd>
               </div>
               <div>
-                <dt className="text-muted-light">{copy.totalRevenue}</dt>
-                <dd className="font-bold text-charcoal">
+                <dt className="text-ink-faint">{copy.totalRevenue}</dt>
+                <dd className="font-bold text-ink">
                   {formatClientCurrency(client.revenue)}
                 </dd>
               </div>
               <div>
-                <dt className="text-muted-light">{copy.balance}</dt>
+                <dt className="text-ink-faint">{copy.balance}</dt>
                 <dd
                   className={cn(
                     "font-bold",
-                    client.balance > 0 ? "text-red-600" : "text-charcoal",
+                    client.balance > 0 ? "text-bad-fg" : "text-ink",
                   )}
                 >
                   {formatClientCurrency(client.balance)}
                 </dd>
               </div>
               <div>
-                <dt className="text-muted-light">{copy.lastBooking}</dt>
-                <dd className="text-charcoal">{client.lastBooking}</dd>
+                <dt className="text-ink-faint">{copy.lastBooking}</dt>
+                <dd className="text-ink">{client.lastBooking}</dd>
               </div>
             </dl>
           </li>
@@ -161,60 +161,60 @@ export function ClientsList({ clients }: ClientsListProps) {
             <col className="w-[8%]" />
           </colgroup>
           <thead>
-            <tr className="border-b border-border bg-gray-50">
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+            <tr className="border-b border-border">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.client}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.category}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.sessions}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.totalRevenue}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.balance}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.lastBooking}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.status}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.health}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.actions}
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {clients.map((client) => (
-              <tr key={client.id} className="transition-colors hover:bg-gray-50">
+              <tr key={client.id} className="transition-colors hover:bg-paper-dim">
                 <td className="px-5 py-4 align-top">
                   <ClientCell client={client} />
                 </td>
                 <td className="px-5 py-4 align-top">
                   <CategoryBadge category={client.category} />
                 </td>
-                <td className="px-5 py-4 align-top text-sm text-charcoal">
+                <td className="px-5 py-4 align-top text-sm text-ink">
                   {client.sessions}
                 </td>
-                <td className="px-5 py-4 align-top text-sm font-bold text-charcoal">
+                <td className="px-5 py-4 align-top text-sm font-bold text-ink">
                   {formatClientCurrency(client.revenue)}
                 </td>
                 <td
                   className={cn(
                     "px-5 py-4 align-top text-sm font-bold",
-                    client.balance > 0 ? "text-red-600" : "text-charcoal",
+                    client.balance > 0 ? "text-bad-fg" : "text-ink",
                   )}
                 >
                   {formatClientCurrency(client.balance)}
                 </td>
-                <td className="px-5 py-4 align-top text-sm text-charcoal">
+                <td className="px-5 py-4 align-top text-sm text-ink">
                   {client.lastBooking}
                 </td>
                 <td className="px-5 py-4 align-top">

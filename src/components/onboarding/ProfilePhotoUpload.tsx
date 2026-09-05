@@ -13,8 +13,8 @@ type ProfilePhotoUploadProps = {
 export function ProfilePhotoUpload({
   preview,
   onChange,
-  title = "Profile Photo",
-  hint = "Recommended: Square JPG or PNG, max 5MB",
+  title = "Profile photo",
+  hint = "Recommended: square JPG or PNG, max 5MB",
   className,
 }: ProfilePhotoUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,7 +25,7 @@ export function ProfilePhotoUpload({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="flex size-28 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-border bg-[#f7f7f5] transition-colors hover:border-muted sm:size-32"
+          className="flex size-28 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-border bg-[#f7f7f5] transition-colors hover:border-border-strong sm:size-32"
           aria-label="Upload profile photo"
         >
           {preview ? (
@@ -35,7 +35,7 @@ export function ProfilePhotoUpload({
               className="size-full object-cover"
             />
           ) : (
-            <div className="relative text-muted-light">
+            <div className="relative text-ink-faint">
               <Camera className="size-10" strokeWidth={1.25} />
               <Plus className="absolute -right-1 -top-1 size-4" strokeWidth={2.5} />
             </div>
@@ -44,7 +44,7 @@ export function ProfilePhotoUpload({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="absolute bottom-0 right-0 flex size-8 items-center justify-center rounded-full bg-charcoal text-white shadow-md"
+          className="absolute bottom-0 right-0 flex size-8 items-center justify-center rounded-full bg-ink text-panel shadow-md"
           aria-label="Edit profile photo"
         >
           <Pencil className="size-3.5" />
@@ -60,8 +60,8 @@ export function ProfilePhotoUpload({
           }}
         />
       </div>
-      <p className="mt-4 text-sm font-bold text-charcoal">{title}</p>
-      <p className="mt-1 text-xs text-muted-light">{hint}</p>
+      <p className="mt-4 text-sm font-bold text-ink">{title}</p>
+      <p className="mt-1 text-xs text-ink-faint">{hint}</p>
     </div>
   );
 }

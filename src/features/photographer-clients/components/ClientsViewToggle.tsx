@@ -16,7 +16,7 @@ const options: { value: ClientViewMode; label: string; icon: typeof LayoutGrid }
 
 export function ClientsViewToggle({ view, onChange }: ClientsViewToggleProps) {
   return (
-    <div className="flex rounded-lg border border-border bg-gray-100 p-1">
+    <div className="flex rounded-sm border border-border bg-paper-dim p-1">
       {options.map(({ value, label, icon: Icon }) => (
         <button
           key={value}
@@ -25,8 +25,8 @@ export function ClientsViewToggle({ view, onChange }: ClientsViewToggleProps) {
           className={cn(
             "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors",
             view === value
-              ? "bg-white text-charcoal shadow-sm"
-              : "text-muted hover:text-charcoal",
+              ? "bg-panel text-ink"
+              : "text-ink-soft hover:text-ink",
           )}
         >
           <Icon className="size-3.5" aria-hidden />

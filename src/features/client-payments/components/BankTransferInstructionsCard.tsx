@@ -22,18 +22,18 @@ export function BankTransferInstructionsCard({
   return (
     <section
       className={cn(
-        "rounded-xl border border-border bg-white p-5 shadow-card sm:p-6",
+        "rounded-md border border-border bg-panel p-5 sm:p-6",
         className,
       )}
     >
       <div className="flex items-center gap-2">
-        <Building2 className="size-5 text-gold" aria-hidden />
-        <h2 className="text-base font-bold text-charcoal">
+        <Building2 className="size-5 text-accent" aria-hidden />
+        <h2 className="text-base font-bold text-ink">
           {copy.bankInstructions}
         </h2>
       </div>
 
-      <p className="mt-1 text-sm text-muted">{copy.bankTransferHint}</p>
+      <p className="mt-1 text-sm text-ink-soft">{copy.bankTransferHint}</p>
 
       <div className={cn("mt-5 space-y-4", compact && "mt-4 space-y-3")}>
         <CopyableField
@@ -48,14 +48,14 @@ export function BankTransferInstructionsCard({
         />
       </div>
 
-      <p className="mt-4 text-xs leading-relaxed text-muted">
-        <span className="font-semibold text-charcoal">{copy.referenceNote}:</span>{" "}
+      <p className="mt-4 text-xs leading-relaxed text-ink-soft">
+        <span className="font-semibold text-ink">{copy.referenceNote}:</span>{" "}
         {config.referenceHint}
         {bookingReference ? (
           <>
             {" "}
             Use{" "}
-            <span className="font-semibold text-charcoal">{bookingReference}</span>.
+            <span className="font-semibold text-ink">{bookingReference}</span>.
           </>
         ) : null}
       </p>

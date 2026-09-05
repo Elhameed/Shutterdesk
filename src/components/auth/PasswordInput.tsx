@@ -17,7 +17,7 @@ export function PasswordInput({
   id,
   label = "Password",
   forgotPasswordHref = "#",
-  forgotPasswordLabel = "Forgot Password?",
+  forgotPasswordLabel = "Forgot password?",
   showForgotPassword = true,
   className,
   ...props
@@ -36,7 +36,7 @@ export function PasswordInput({
         {showForgotPassword && (
           <a
             href={forgotPasswordHref}
-            className="text-xs font-medium text-gold hover:text-gold-hover"
+            className="text-accent hover:text-accent-hover text-xs font-medium transition-colors"
           >
             {forgotPasswordLabel}
           </a>
@@ -51,7 +51,7 @@ export function PasswordInput({
         />
         <button
           type="button"
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-light hover:text-muted"
+          className="text-ink-faint hover:text-ink absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
           onClick={() => setVisible((v) => !v)}
           aria-label={visible ? "Hide password" : "Show password"}
         >

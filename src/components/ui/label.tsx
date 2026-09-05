@@ -11,13 +11,13 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
       <label
         ref={ref}
         className={cn(
-          "text-xs font-semibold uppercase tracking-[0.12em] text-muted",
+          "text-ink-soft text-xs font-medium",
           className,
         )}
         {...props}
       >
         {children}
-        {required && <span className="text-gold"> *</span>}
+        {required && <span className="text-bad"> *</span>}
       </label>
     );
   },

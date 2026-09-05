@@ -1,21 +1,52 @@
 @import "tailwindcss";
 
 @theme {
-  --color-gold: #c9a227;
-  --color-gold-hover: #b08f1f;
-  --color-gold-light: #f5f0e1;
+  /* Surfaces */
+  --color-paper: #eaebe6; /* page background */
+  --color-paper-dim: #dee0d8; /* subtle secondary surface, progress track bg */
+  --color-panel: #f4f5f0; /* card/panel background */
 
-  --color-charcoal: #1a1a1a;
-  --color-charcoal-muted: #2a2a2a;
+  /* Ink (text) */
+  --color-ink: #1a1e22; /* primary text, near-black but blue-tinted, not pure black */
+  --color-ink-soft: #4e555b; /* secondary text */
+  --color-ink-faint: #868d8f; /* tertiary/metadata text, timestamps */
 
-  --color-muted: #6b6b6b;
-  --color-muted-light: #9ca3af;
-  --color-border: #e8e8e8;
+  /* Borders */
+  --color-border: #cbcfc7; /* default hairline */
+  --color-border-strong: #b0b6a9; /* emphasized divider, sidebar frame */
+
+  /* Accent — verdigris, use sparingly */
+  --color-accent: #33594f;
+  --color-accent-hover: #274841;
+  --color-accent-tint: #d6e1da; /* badge/chip backgrounds */
+  --color-accent-fg: #274841; /* text on accent-tint */
+  --color-on-accent: #f8f1e8; /* text on a filled accent surface (handoff §7) */
+
+  /* Status */
+  --color-ok: #8a6a2a; /* ochre — success/paid */
+  --color-ok-tint: #efe4c9;
+  --color-ok-fg: #6b5220;
+
+  --color-bad: #9c4034; /* brick — alert/needs review */
+  --color-bad-tint: #eedad3;
+  --color-bad-fg: #7a3128;
+
+  /* Dark rail (sidebar) — separate from ink since it's an inverted surface */
+  --color-rail-bg: #1a1e22;
+  --color-rail-text: #a6ada7;
+  --color-rail-text-active: #edf0ec;
+  --color-rail-brand: #edf0ec;
+  /* The accent adapted for the inverted surface. #33594F on #1A1E22 is roughly
+     2:1 — a 2px active marker in it is invisible. Same hue, lifted until the
+     marker actually reads. */
+  --color-rail-accent: #6e9c8b;
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", ui-serif, serif;
 
-  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.06), 0 4px 12px rgb(0 0 0 / 0.04);
-  --shadow-elevated: 0 8px 30px rgb(0 0 0 / 0.08);
+  --shadow-card: none; /* replaced by hairline borders — avoid drop shadows as default */
+  --radius-sm: 3px;
+  --radius-md: 6px;
 }
 
 @layer base {
@@ -29,8 +60,11 @@
     @apply scroll-smooth antialiased;
   }
 
+  /* Fraunces carries headings, section headlines and key numeric values only
+     (via the `font-display` utility). Inter stays the workhorse for body text,
+     labels, table cells, buttons and form inputs. */
   body {
-    @apply min-h-screen bg-white font-sans text-charcoal;
+    @apply bg-paper text-ink min-h-screen font-sans;
   }
 
   #root {

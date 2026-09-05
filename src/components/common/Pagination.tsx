@@ -21,14 +21,14 @@ type PaginationProps = {
 };
 
 const navButtonClass =
-  "flex size-8 shrink-0 items-center justify-center rounded-lg border border-border bg-white text-muted transition-colors hover:bg-gray-100 hover:text-charcoal disabled:pointer-events-none disabled:opacity-40";
+  "border-border bg-panel text-ink-soft hover:bg-paper-dim hover:text-ink flex size-8 shrink-0 items-center justify-center rounded-sm border transition-colors disabled:pointer-events-none disabled:opacity-40";
 
 const pageButtonClass = (active: boolean) =>
   cn(
-    "flex size-8 shrink-0 items-center justify-center rounded-lg text-xs font-semibold transition-colors",
+    "flex size-8 shrink-0 items-center justify-center rounded-sm text-xs font-medium transition-colors",
     active
-      ? "bg-charcoal text-white"
-      : "border border-border bg-white text-charcoal hover:bg-gray-100",
+      ? "bg-accent text-on-accent"
+      : "border-border bg-panel text-ink hover:bg-paper-dim border",
   );
 
 export function Pagination({
@@ -77,7 +77,7 @@ export function Pagination({
         item === "ellipsis" ? (
           <span
             key={`ellipsis-${index}`}
-            className="flex size-8 shrink-0 items-center justify-center text-xs text-muted"
+            className="text-ink-faint flex size-8 shrink-0 items-center justify-center text-xs"
             aria-hidden
           >
             ...
@@ -124,11 +124,11 @@ export function Pagination({
     return (
       <div
         className={cn(
-          "flex flex-col gap-3 border-t border-border bg-gray-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5",
+          "flex flex-col gap-3 border-t border-border bg-paper-dim px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5",
           className,
         )}
       >
-        {summary ? <p className="text-xs text-muted">{summary}</p> : null}
+        {summary ? <p className="text-ink-soft text-xs">{summary}</p> : null}
         {controls}
       </div>
     );
@@ -142,7 +142,7 @@ export function Pagination({
           className,
         )}
       >
-        <p className="text-xs text-muted">{summary}</p>
+        <p className="text-ink-soft text-xs">{summary}</p>
         {controls}
       </div>
     );

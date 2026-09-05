@@ -12,8 +12,8 @@ export function SettingsFooter({ saved, saving = false, onReset, onSave }: Setti
   const copy = SETTINGS_COPY;
 
   return (
-    <div className="flex flex-col gap-3 border-t border-border bg-white px-5 py-4 sm:sticky sm:bottom-0 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-      <p className="text-xs text-muted">{saved ? copy.saved : "\u00A0"}</p>
+    <div className="flex flex-col gap-3 border-t border-border bg-panel px-5 py-4 sm:sticky sm:bottom-0 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <p className="text-xs text-ink-soft">{saved ? copy.saved : "\u00A0"}</p>
       <div className="flex flex-wrap justify-end gap-2">
         <Button variant="ghost" size="sm" onClick={onReset}>
           {copy.resetChanges}

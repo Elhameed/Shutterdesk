@@ -11,41 +11,41 @@ export function FinancialSummaryCard({ financial }: FinancialSummaryCardProps) {
   const copy = CLIENT_PROFILE_COPY;
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
-      <h2 className="text-[10px] font-bold tracking-wider text-muted-light uppercase">
+    <section className="rounded-md border border-border bg-panel p-5">
+      <h2 className="text-[10px] font-medium text-ink-faint">
         {copy.financialSummary}
       </h2>
 
-      <p className="mt-2 text-3xl font-bold text-charcoal">
+      <p className="mt-2 text-3xl font-bold text-ink">
         {formatClientCurrency(financial.totalRevenue)}
       </p>
 
       <div className="mt-4 flex items-center justify-between gap-3 text-sm">
-        <span className="text-muted">
+        <span className="text-ink-soft">
           {copy.balance}:{" "}
           <span
             className={cn(
               "font-bold",
-              financial.balance > 0 ? "text-red-600" : "text-green-600",
+              financial.balance > 0 ? "text-bad-fg" : "text-ok-fg",
             )}
           >
             {formatClientCurrency(financial.balance)}
           </span>
         </span>
-        <span className="text-muted">
+        <span className="text-ink-soft">
           {copy.sessions}:{" "}
-          <span className="font-bold text-charcoal">{financial.sessions}</span>
+          <span className="font-bold text-ink">{financial.sessions}</span>
         </span>
       </div>
 
-      <p className="mt-3 text-sm text-muted">
+      <p className="mt-3 text-sm text-ink-soft">
         {copy.reliability}:{" "}
-        <span className="font-bold text-green-600">
+        <span className="font-bold text-ok-fg">
           {financial.reliability}%
         </span>
       </p>
 
-      <p className="mt-3 text-xs italic text-muted">
+      <p className="mt-3 text-xs italic text-ink-soft">
         {copy.memberSince(financial.memberSince)}
       </p>
     </section>

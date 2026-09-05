@@ -16,7 +16,7 @@ export function ClientProjectsTab({ projects }: ClientProjectsTabProps) {
 
   if (projects.length === 0) {
     return (
-      <p className="py-8 text-center text-sm text-muted">No projects yet.</p>
+      <p className="py-8 text-center text-sm text-ink-soft">No projects yet.</p>
     );
   }
 
@@ -33,11 +33,11 @@ export function ClientProjectsTab({ projects }: ClientProjectsTabProps) {
                   className="size-full object-cover"
                 />
               ) : (
-                <div className="size-full bg-gradient-to-br from-gray-100 via-[#f7f7f5] to-gold-light/30" />
+                <div className="size-full bg-gradient-to-br from-paper-dim via-[#f7f7f5] to-accent-tint/30" />
               )}
               <span
                 className={cn(
-                  "absolute top-3 right-3 rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                  "absolute top-3 right-3 rounded-full px-2 py-0.5 text-[10px] font-medium",
                   PROJECT_STATUS_BADGE_STYLES[project.status],
                 )}
               >
@@ -46,14 +46,14 @@ export function ClientProjectsTab({ projects }: ClientProjectsTabProps) {
             </div>
 
             <div className="p-4">
-              <p className="text-[10px] font-bold tracking-wider text-gold uppercase">
+              <p className="text-[10px] font-medium text-accent">
                 {project.category}
               </p>
-              <h3 className="mt-1 text-base font-bold text-charcoal">
+              <h3 className="mt-1 text-base font-bold text-ink">
                 {project.title}
               </h3>
 
-              <div className="mt-3 flex items-center justify-between gap-2 text-xs text-muted">
+              <div className="mt-3 flex items-center justify-between gap-2 text-xs text-ink-soft">
                 <span className="flex items-center gap-1.5">
                   <Calendar className="size-3.5 shrink-0" aria-hidden />
                   {project.date}
@@ -77,7 +77,7 @@ export function ClientProjectsTab({ projects }: ClientProjectsTabProps) {
         return (
           <article
             key={project.id}
-            className="overflow-hidden rounded-xl border border-border bg-white shadow-card transition-shadow hover:shadow-md"
+            className="overflow-hidden rounded-md border border-border bg-panel transition-colors hover:border-border-strong"
           >
             {project.bookingId ? (
               <Link

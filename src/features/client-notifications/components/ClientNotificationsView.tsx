@@ -37,7 +37,7 @@ export function ClientNotificationsView() {
           <Button
             variant="outline"
             size="sm"
-            className="shadow-card"
+            className=""
             onClick={() => void markAllRead.mutate()}
             disabled={markAllRead.isPending}
           >
@@ -54,10 +54,10 @@ export function ClientNotificationsView() {
             type="button"
             onClick={() => setFilter(key)}
             className={cn(
-              "rounded-full px-4 py-2 text-xs font-semibold transition-colors",
+              "rounded-full border px-4 py-2 text-xs font-medium transition-colors",
               filter === key
-                ? "bg-charcoal text-white"
-                : "bg-white text-muted ring-1 ring-border hover:text-charcoal",
+                ? "border-accent bg-accent-tint text-accent-fg"
+                : "border-border bg-panel text-ink-soft hover:bg-paper-dim hover:text-ink",
             )}
           >
             {copy.filters[key]}
@@ -69,7 +69,7 @@ export function ClientNotificationsView() {
         {showSkeleton ? (
           <NotificationsFeedSkeleton rows={5} />
         ) : isLoading ? null : filtered.length === 0 ? (
-          <p className="rounded-xl border border-border bg-white p-8 text-center text-sm text-muted">
+          <p className="rounded-md border border-border bg-panel p-8 text-center text-sm text-ink-soft">
             {copy.empty}
           </p>
         ) : (

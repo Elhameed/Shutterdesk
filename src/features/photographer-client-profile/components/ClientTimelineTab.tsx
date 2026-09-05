@@ -22,15 +22,15 @@ const timelineIcons: Record<ClientTimelineType, LucideIcon> = {
 };
 
 const timelineIconStyles: Record<ClientTimelineType, string> = {
-  upcoming: "bg-gold-light text-gold",
-  gallery: "bg-gray-100 text-charcoal",
-  payment: "bg-gray-100 text-charcoal",
-  feedback: "bg-gray-100 text-charcoal",
-  onboarded: "bg-gray-100 text-charcoal",
+  upcoming: "bg-accent-tint text-accent",
+  gallery: "bg-paper-dim text-ink",
+  payment: "bg-paper-dim text-ink",
+  feedback: "bg-paper-dim text-ink",
+  onboarded: "bg-paper-dim text-ink",
 };
 
 const defaultTimelineIcon = Circle;
-const defaultTimelineIconStyle = "bg-gray-100 text-charcoal";
+const defaultTimelineIconStyle = "bg-paper-dim text-ink";
 
 function getTimelineIcon(type: string): LucideIcon {
   return timelineIcons[type as ClientTimelineType] ?? defaultTimelineIcon;
@@ -47,7 +47,7 @@ type ClientTimelineTabProps = {
 export function ClientTimelineTab({ events }: ClientTimelineTabProps) {
   if (events.length === 0) {
     return (
-      <p className="py-8 text-center text-sm text-muted">No activity yet.</p>
+      <p className="py-8 text-center text-sm text-ink-soft">No activity yet.</p>
     );
   }
 
@@ -77,21 +77,21 @@ export function ClientTimelineTab({ events }: ClientTimelineTabProps) {
 
             <div className="min-w-0 flex-1 pt-0.5">
               {event.highlighted ? (
-                <div className="rounded-lg bg-gray-50 p-4">
-                  <p className="text-sm font-bold text-charcoal">{event.title}</p>
+                <div className="rounded-sm bg-paper-dim p-4">
+                  <p className="text-sm font-bold text-ink">{event.title}</p>
                   {event.subtitle && (
-                    <p className="mt-0.5 text-xs font-semibold text-gold">
+                    <p className="mt-0.5 text-xs font-semibold text-accent">
                       {event.subtitle}
                     </p>
                   )}
-                  <p className="mt-1 text-xs text-muted">{event.date}</p>
+                  <p className="mt-1 text-xs text-ink-soft">{event.date}</p>
                 </div>
               ) : (
                 <>
-                  <p className="text-sm text-charcoal">
+                  <p className="text-sm text-ink">
                     {event.title}{" "}
                     {event.linkText && (
-                      <span className="font-semibold text-gold underline-offset-2 hover:underline">
+                      <span className="font-semibold text-accent underline-offset-2 hover:underline">
                         {event.linkText}
                       </span>
                     )}
@@ -101,18 +101,18 @@ export function ClientTimelineTab({ events }: ClientTimelineTabProps) {
                       {Array.from({ length: event.rating }, (_, i) => (
                         <Star
                           key={i}
-                          className="size-3.5 fill-gold text-gold"
+                          className="size-3.5 fill-accent text-accent"
                           aria-hidden
                         />
                       ))}
                     </div>
                   )}
                   {event.quote && (
-                    <p className="mt-1 text-xs italic text-muted">
+                    <p className="mt-1 text-xs italic text-ink-soft">
                       &ldquo;{event.quote}&rdquo;
                     </p>
                   )}
-                  <p className="mt-1 text-xs text-muted">{event.date}</p>
+                  <p className="mt-1 text-xs text-ink-soft">{event.date}</p>
                 </>
               )}
             </div>

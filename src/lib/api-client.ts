@@ -1,6 +1,9 @@
 import axios from "axios";
 import { ROUTES } from "@/constants/routes";
 
+// `VITE_*` values are inlined at build time. A deploy built without
+// VITE_API_URL would silently ship pointing at localhost, so vite.config.ts
+// fails the build when it is missing on Vercel; this fallback is for local dev.
 const baseURL = import.meta.env.VITE_API_URL ?? "http://localhost:5000/api";
 
 export const apiClient = axios.create({

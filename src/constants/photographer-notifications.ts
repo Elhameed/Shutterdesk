@@ -14,8 +14,8 @@ export type NotificationGroup = "today" | "yesterday" | "earlier";
 export const NOTIFICATIONS_COPY = {
   title: "Notifications",
   subtitle: "Stay informed about your studio activity and client requests.",
-  markAllRead: "Mark All Read",
-  notificationSettings: "Notification Settings",
+  markAllRead: "Mark all read",
+  notificationSettings: "Notification settings",
   status: "Status",
   categories: "Categories",
   statusFilters: {
@@ -24,16 +24,16 @@ export const NOTIFICATIONS_COPY = {
     read: "Read",
   },
   categoryFilters: {
-    booking: "Booking Updates",
-    payment: "Payment Updates",
-    gallery: "Gallery Updates",
-    client: "Client Activity",
-    system: "System Notifications",
+    booking: "Booking updates",
+    payment: "Payment updates",
+    gallery: "Gallery updates",
+    client: "Client activity",
+    system: "System notifications",
   },
   groups: {
     today: "Today",
     yesterday: "Yesterday",
-    earlier: "Earlier This Week",
+    earlier: "Earlier this week",
   },
   categoryTags: {
     booking: "Booking",
@@ -43,7 +43,7 @@ export const NOTIFICATIONS_COPY = {
     system: "System",
   },
   priorityTags: {
-    high: "High Priority",
+    high: "High priority",
     medium: "Medium",
     low: "Low",
   },

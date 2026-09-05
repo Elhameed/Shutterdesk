@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button";
 import { CardSkeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import {
+  PANEL_NAV_ITEM,
+  panelNavItemState,
+} from "@/components/layout/rail-nav";
+import {
   CLIENT_SETTINGS_COPY,
   CLIENT_SETTINGS_TABS,
   normalizeClientNotificationSettings,
@@ -332,10 +336,9 @@ export function ClientSettingsView({ onClose, onDirtyChange }: ClientSettingsVie
                 setFieldErrors({});
               }}
               className={cn(
-                "inline-flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
-                isActive
-                  ? "bg-charcoal text-white"
-                  : "text-muted hover:bg-gray-100 hover:text-charcoal",
+                PANEL_NAV_ITEM,
+                panelNavItemState(isActive, "horizontal"),
+                "-mb-4 py-2",
               )}
             >
               <Icon className="size-4" aria-hidden />
@@ -348,7 +351,7 @@ export function ClientSettingsView({ onClose, onDirtyChange }: ClientSettingsVie
       {loading ? (
         <CardSkeleton />
       ) : !settings ? (
-        <p className="text-sm text-red-700">{error ?? "Unable to load settings."}</p>
+        <p className="text-sm text-bad-fg">{error ?? "Unable to load settings."}</p>
       ) : (
         <>
           {activeTab === "profile" ? (
@@ -363,16 +366,16 @@ export function ClientSettingsView({ onClose, onDirtyChange }: ClientSettingsVie
                 }}
               />
               {fieldErrors.fullName ? (
-                <p className="text-xs text-red-600">{fieldErrors.fullName}</p>
+                <p className="text-xs text-bad-fg">{fieldErrors.fullName}</p>
               ) : null}
               {fieldErrors.phone ? (
-                <p className="text-xs text-red-600">{fieldErrors.phone}</p>
+                <p className="text-xs text-bad-fg">{fieldErrors.phone}</p>
               ) : null}
               {fieldErrors.address ? (
-                <p className="text-xs text-red-600">{fieldErrors.address}</p>
+                <p className="text-xs text-bad-fg">{fieldErrors.address}</p>
               ) : null}
               {fieldErrors.interests ? (
-                <p className="text-xs text-red-600">{fieldErrors.interests}</p>
+                <p className="text-xs text-bad-fg">{fieldErrors.interests}</p>
               ) : null}
             </div>
           ) : null}
@@ -400,10 +403,10 @@ export function ClientSettingsView({ onClose, onDirtyChange }: ClientSettingsVie
       )}
 
       {error ? (
-        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+        <p className="rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">{error}</p>
       ) : null}
 
-      <div className="sticky bottom-0 -mx-1 flex justify-end gap-2 border-t border-border bg-white px-1 pt-4">
+      <div className="sticky bottom-0 -mx-1 flex justify-end gap-2 border-t border-border bg-panel px-1 pt-4">
         <Button type="button" variant="outline" size="sm" onClick={requestClose}>
           {copy.cancel}
         </Button>

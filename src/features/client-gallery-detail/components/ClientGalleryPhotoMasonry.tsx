@@ -53,7 +53,7 @@ export function ClientGalleryPhotoMasonry({
 
   if (photos.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-white p-8 text-center text-sm text-muted">
+      <div className="rounded-md border border-border bg-panel p-8 text-center text-sm text-ink-soft">
         {copy.noPhotosFound}
       </div>
     );
@@ -61,12 +61,12 @@ export function ClientGalleryPhotoMasonry({
 
   return (
     <>
-      <p className="mb-4 text-sm text-muted lg:hidden">{copy.tapToView}</p>
+      <p className="mb-4 text-sm text-ink-soft lg:hidden">{copy.tapToView}</p>
       <div className="columns-2 gap-4 sm:columns-3">
         {visiblePhotos.map((photo) => (
           <article
             key={photo.id}
-            className="group relative mb-4 break-inside-avoid overflow-hidden rounded-xl ring-1 ring-gold/60"
+            className="group relative mb-4 break-inside-avoid overflow-hidden rounded-md ring-1 ring-accent/60"
           >
             <button
               type="button"
@@ -83,7 +83,7 @@ export function ClientGalleryPhotoMasonry({
               />
             </button>
 
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-end gap-2 rounded-b-xl bg-linear-to-t from-charcoal/70 via-charcoal/25 to-transparent p-3 opacity-100 lg:opacity-0 lg:transition-opacity lg:group-hover:opacity-100 lg:group-focus-within:opacity-100">
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-end gap-2 rounded-b-md bg-linear-to-t from-ink/70 via-ink/25 to-transparent p-3 opacity-100 lg:opacity-0 lg:transition-opacity lg:group-hover:opacity-100 lg:group-focus-within:opacity-100">
               {downloadEnabled ? (
                 <Tooltip label={copy.downloadPhoto} side="top">
                   <button
@@ -92,7 +92,7 @@ export function ClientGalleryPhotoMasonry({
                       event.stopPropagation();
                       void handleDownloadPhoto(photo);
                     }}
-                    className="pointer-events-auto flex size-10 items-center justify-center rounded-full bg-white/95 text-charcoal shadow-md transition-colors hover:bg-white lg:size-9"
+                    className="pointer-events-auto flex size-10 items-center justify-center rounded-full bg-panel/95 text-ink shadow-md transition-colors hover:bg-panel lg:size-9"
                     aria-label={copy.downloadPhoto}
                   >
                     <Download className="size-4" aria-hidden />
@@ -106,7 +106,7 @@ export function ClientGalleryPhotoMasonry({
                     event.stopPropagation();
                     openPhoto(photo);
                   }}
-                  className="pointer-events-auto hidden size-9 items-center justify-center rounded-full bg-white/95 text-charcoal shadow-md transition-colors hover:bg-white lg:flex"
+                  className="pointer-events-auto hidden size-9 items-center justify-center rounded-full bg-panel/95 text-ink shadow-md transition-colors hover:bg-panel lg:flex"
                   aria-label={copy.viewPhoto}
                 >
                   <Eye className="size-4" aria-hidden />

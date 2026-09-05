@@ -42,23 +42,23 @@ export function DashboardAside({ balance, obligations }: DashboardAsideProps) {
 
   return (
     <aside className="space-y-4">
-      <section className="rounded-xl border border-border bg-white p-5 shadow-card">
-        <p className="text-center text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+      <section className="rounded-md border border-border bg-panel p-5">
+        <p className="text-center text-[11px] font-medium text-ink-faint">
           {copy.outstandingBalance}
         </p>
-        <p className="mt-3 text-center text-4xl font-bold tracking-tight text-charcoal">
+        <p className="mt-3 text-center text-4xl font-bold tracking-tight text-ink">
           {formatRwf(balance)}
         </p>
 
         {isUpToDate ? (
-          <p className="mt-2 flex items-center justify-center gap-1.5 text-xs font-medium text-gold">
+          <p className="mt-2 flex items-center justify-center gap-1.5 text-xs font-medium text-accent">
             <CheckCircle2 className="size-3.5" aria-hidden />
             {copy.accountUpToDate}
           </p>
         ) : (
           <>
             {unpaid.length > 1 ? (
-              <p className="mt-2 text-center text-xs text-muted">
+              <p className="mt-2 text-center text-xs text-ink-soft">
                 {unpaid.length} payments due across{" "}
                 {new Set(unpaid.map((item) => item.studioId)).size} studios
               </p>
@@ -74,7 +74,7 @@ export function DashboardAside({ balance, obligations }: DashboardAsideProps) {
         <div className="mt-4 border-t border-border pt-4 text-center">
           <Link
             to={ROUTES.client.payments}
-            className="text-xs font-semibold text-charcoal transition-colors hover:text-gold"
+            className="text-xs font-semibold text-ink transition-colors hover:text-accent"
           >
             {copy.viewBilling}
           </Link>
@@ -82,13 +82,13 @@ export function DashboardAside({ balance, obligations }: DashboardAsideProps) {
       </section>
 
       <section className="py-6 sm:py-8">
-        <h2 className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+        <h2 className="text-[11px] font-medium text-ink-faint">
           {copy.quickActions.title}
         </h2>
         <div className="mt-5 flex flex-col gap-3 sm:mt-6">
           <Button
             variant="gold"
-            className="h-auto w-full rounded-xl px-4 py-3 shadow-card sm:px-5 sm:py-3.5"
+            className="h-auto w-full rounded-md px-4 py-3 sm:px-5 sm:py-3.5"
             asChild
           >
             <Link to={ROUTES.client.bookSession}>
@@ -98,7 +98,7 @@ export function DashboardAside({ balance, obligations }: DashboardAsideProps) {
           </Button>
           <Button
             variant="outline"
-            className="h-auto w-full rounded-xl px-4 py-3 shadow-card sm:px-5 sm:py-3.5"
+            className="h-auto w-full rounded-md px-4 py-3 sm:px-5 sm:py-3.5"
             asChild
           >
             <Link to={uploadLink}>
@@ -108,7 +108,7 @@ export function DashboardAside({ balance, obligations }: DashboardAsideProps) {
           </Button>
           <Button
             variant="outline"
-            className="h-auto w-full rounded-xl px-4 py-3 shadow-card sm:px-5 sm:py-3.5"
+            className="h-auto w-full rounded-md px-4 py-3 sm:px-5 sm:py-3.5"
             asChild
           >
             <Link to={ROUTES.client.galleries}>
@@ -119,14 +119,14 @@ export function DashboardAside({ balance, obligations }: DashboardAsideProps) {
         </div>
       </section>
 
-      <section className="rounded-xl bg-gray-100 p-5">
-        <h2 className="text-sm font-bold text-charcoal">
+      <section className="rounded-md bg-paper-dim p-5">
+        <h2 className="text-sm font-bold text-ink">
           {copy.needHelp.title}
         </h2>
-        <p className="mt-1 text-xs text-muted">{copy.needHelp.body}</p>
+        <p className="mt-1 text-xs text-ink-soft">{copy.needHelp.body}</p>
         <a
           href={`mailto:${CLIENT_SUPPORT_EMAIL}`}
-          className="mt-3 inline-block text-xs font-semibold text-charcoal transition-colors hover:text-gold"
+          className="mt-3 inline-block text-xs font-semibold text-ink transition-colors hover:text-accent"
         >
           {copy.needHelp.cta} ›
         </a>

@@ -9,8 +9,8 @@ export function SettingsPanelHeader({
 }: SettingsPanelHeaderProps) {
   return (
     <div>
-      <h2 className="text-lg font-bold text-charcoal">{title}</h2>
-      <p className="mt-1 text-sm text-muted">{subtitle}</p>
+      <h2 className="text-lg font-bold text-ink">{title}</h2>
+      <p className="mt-1 text-sm text-ink-soft">{subtitle}</p>
     </div>
   );
 }

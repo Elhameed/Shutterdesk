@@ -1,4 +1,4 @@
-import { Calendar, Camera, Clipboard, Clock, Users } from "lucide-react";
+import { FrameCell } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 type StatCardProps = {
@@ -10,73 +10,45 @@ type StatCardProps = {
   tone?: "default" | "alert";
 };
 
-const iconMap = {
-  camera: Camera,
-  calendar: Calendar,
-  users: Users,
-};
-
-function PendingPaymentsIcon({ className }: { className?: string }) {
-  return (
-    <span className={cn("relative inline-flex", className)}>
-      <Clipboard className="size-4" aria-hidden />
-      <Clock
-        className="absolute -right-1 -bottom-1 size-2.5 rounded-full bg-white"
-        aria-hidden
-      />
-    </span>
-  );
-}
-
+/**
+ * A single cell in the dashboard stat frame — render inside a `FrameGrid`,
+ * which supplies the surrounding border and the 1px dividers between cells.
+ *
+ * The label is sentence case at normal tracking rather than the old
+ * fixed-width all-caps treatment, which was what truncated longer labels into
+ * "MONTHLY REVE" and "ACTIVE BOOKIN".
+ *
+ * `icon` is still accepted so callers and the dashboard payload are unchanged,
+ * but the reference design carries no icon here: the number is the signal, and
+ * a tinted icon chip in every cell was decorative weight competing with it.
+ */
 export function StatCard({
   label,
   value,
   change,
   subtext,
-  icon,
   tone = "default",
 }: StatCardProps) {
   const isAlert = tone === "alert";
-  const Icon = icon !== "clipboard" ? iconMap[icon] : null;
 
   return (
-    <div className="rounded-xl border border-border bg-white p-5">
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
-          {label}
-        </p>
-        <div
-          className={cn(
-            "flex size-9 shrink-0 items-center justify-center rounded-lg",
-            isAlert ? "text-red-500" : "bg-gold-light text-gold",
-          )}
-        >
-          {Icon ? (
-            <Icon className="size-4" aria-hidden />
-          ) : (
-            <PendingPaymentsIcon />
-          )}
-        </div>
-      </div>
+    <FrameCell className="min-w-0">
+      <p className="text-ink-soft text-xs">{label}</p>
 
-      <p className="mt-3 text-3xl font-bold tracking-tight text-charcoal">
-        {value}
-      </p>
+      <p className="font-display text-ink mt-2 text-2xl">{value}</p>
 
-      {change && (
-        <p className="mt-1 text-xs font-medium text-gold">{change}</p>
-      )}
+      {change && <p className="text-ok-fg mt-1 text-[11px]">{change}</p>}
 
       {subtext && (
         <p
           className={cn(
-            "mt-1 text-xs font-medium",
-            isAlert ? "text-red-500" : "text-muted",
+            "mt-1 text-[11px]",
+            isAlert ? "text-bad-fg" : "text-ink-faint",
           )}
         >
           {subtext}
         </p>
       )}
-    </div>
+    </FrameCell>
   );
 }

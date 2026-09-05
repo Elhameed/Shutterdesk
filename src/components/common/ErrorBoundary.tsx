@@ -24,8 +24,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     if (this.state.hasError) {
       return (
         <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-8 text-center">
-          <h1 className="text-lg font-semibold text-charcoal">Something went wrong</h1>
-          <p className="max-w-md text-sm text-muted">
+          <h1 className="text-lg font-semibold text-ink">Something went wrong</h1>
+          <p className="max-w-md text-sm text-ink-soft">
             An unexpected error occurred. Refresh the page or try again in a moment.
           </p>
           <Button type="button" onClick={() => window.location.reload()}>

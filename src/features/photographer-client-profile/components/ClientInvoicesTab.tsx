@@ -13,26 +13,26 @@ export function ClientInvoicesTab({ invoices }: ClientInvoicesTabProps) {
 
   if (invoices.length === 0) {
     return (
-      <p className="py-8 text-center text-sm text-muted">No invoices yet.</p>
+      <p className="py-8 text-center text-sm text-ink-soft">No invoices yet.</p>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border">
+    <div className="overflow-hidden rounded-md border border-border">
       {/* Mobile cards */}
       <ul className="divide-y divide-border md:hidden">
         {invoices.map((invoice) => (
           <li key={invoice.id} className="p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-bold text-charcoal">
+                <p className="text-sm font-bold text-ink">
                   {invoice.number}
                 </p>
-                <p className="mt-0.5 text-xs text-muted">{invoice.description}</p>
+                <p className="mt-0.5 text-xs text-ink-soft">{invoice.description}</p>
               </div>
               <span
                 className={cn(
-                  "shrink-0 rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                  "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium",
                   INVOICE_STATUS_BADGE_STYLES[invoice.status],
                 )}
               >
@@ -40,8 +40,8 @@ export function ClientInvoicesTab({ invoices }: ClientInvoicesTabProps) {
               </span>
             </div>
             <div className="mt-2 flex items-center justify-between text-xs">
-              <span className="text-muted">{invoice.date}</span>
-              <span className="font-bold text-charcoal">
+              <span className="text-ink-soft">{invoice.date}</span>
+              <span className="font-bold text-ink">
                 {formatClientCurrency(invoice.amount)}
               </span>
             </div>
@@ -60,43 +60,43 @@ export function ClientInvoicesTab({ invoices }: ClientInvoicesTabProps) {
             <col className="w-[16%]" />
           </colgroup>
           <thead>
-            <tr className="border-b border-border bg-gray-50">
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+            <tr className="border-b border-border">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.invoiceColumns.number}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.invoiceColumns.description}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.invoiceColumns.date}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.invoiceColumns.amount}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.invoiceColumns.status}
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border bg-white">
+          <tbody className="divide-y divide-border bg-panel">
             {invoices.map((invoice) => (
               <tr key={invoice.id}>
-                <td className="px-5 py-4 text-sm font-medium text-charcoal">
+                <td className="px-5 py-4 text-sm font-medium text-ink">
                   {invoice.number}
                 </td>
-                <td className="px-5 py-4 text-sm text-charcoal">
+                <td className="px-5 py-4 text-sm text-ink">
                   {invoice.description}
                 </td>
-                <td className="px-5 py-4 text-sm text-charcoal">
+                <td className="px-5 py-4 text-sm text-ink">
                   {invoice.date}
                 </td>
-                <td className="px-5 py-4 text-sm font-bold text-charcoal">
+                <td className="px-5 py-4 text-sm font-bold text-ink">
                   {formatClientCurrency(invoice.amount)}
                 </td>
                 <td className="px-5 py-4">
                   <span
                     className={cn(
-                      "inline-flex rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                      "inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium",
                       INVOICE_STATUS_BADGE_STYLES[invoice.status],
                     )}
                   >

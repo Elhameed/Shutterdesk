@@ -12,26 +12,26 @@ const linkColumns = [
 
 export function PublicFooter() {
   return (
-    <footer id="contact" className="border-t border-border bg-white">
+    <footer id="contact" className="border-border bg-panel border-t">
       <PageContainer className="py-14">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
           <div className="sm:col-span-2 lg:col-span-1">
             <Logo />
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
+            <p className="text-ink-soft mt-4 max-w-xs text-sm leading-relaxed">
               The all-in-one management platform built specifically for
               photography studios and aesthetic entrepreneurs.
             </p>
             <div className="mt-5 flex gap-3">
               <a
                 href="#"
-                className="flex size-9 items-center justify-center rounded-full border border-border text-muted transition-colors hover:text-charcoal"
+                className="border-border text-ink-soft hover:text-ink flex size-9 items-center justify-center rounded-full border transition-colors"
                 aria-label="Website"
               >
                 <Globe className="size-4" />
               </a>
               <a
                 href="#"
-                className="flex size-9 items-center justify-center rounded-full border border-border text-muted transition-colors hover:text-charcoal"
+                className="border-border text-ink-soft hover:text-ink flex size-9 items-center justify-center rounded-full border transition-colors"
                 aria-label="Social"
               >
                 <AtSign className="size-4" />
@@ -41,13 +41,13 @@ export function PublicFooter() {
 
           {linkColumns.map((column) => (
             <div key={column.title}>
-              <h3 className="text-sm font-bold text-charcoal">{column.title}</h3>
+              <h3 className="text-ink text-sm font-semibold">{column.title}</h3>
               <ul className="mt-4 space-y-3">
                 {column.links.map((link) => (
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="text-sm text-muted transition-colors hover:text-charcoal"
+                      className="text-ink-soft hover:text-ink text-sm transition-colors"
                     >
                       {link.label}
                     </a>
@@ -58,14 +58,14 @@ export function PublicFooter() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-sm text-muted sm:flex-row">
+        <div className="border-border text-ink-faint mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 text-sm sm:flex-row">
           <p>© 2024 Shutterdesk Inc. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-charcoal">
-              System Status
+            <a href="#" className="hover:text-ink transition-colors">
+              System status
             </a>
-            <a href="#" className="hover:text-charcoal">
-              Privacy Preference
+            <a href="#" className="hover:text-ink transition-colors">
+              Privacy preference
             </a>
           </div>
         </div>

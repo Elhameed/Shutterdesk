@@ -15,10 +15,10 @@ export function PaymentSubmitSummary({
   const copy = CLIENT_PAYMENTS_COPY.upload;
 
   return (
-    <section className="rounded-xl bg-charcoal p-5 text-white shadow-card sm:p-6">
-      <div className="flex items-center gap-2 text-gold">
+    <section className="rounded-md bg-ink p-5 text-white sm:p-6">
+      <div className="flex items-center gap-2 text-accent">
         <Wallet className="size-5" aria-hidden />
-        <p className="text-[10px] font-semibold tracking-wider uppercase">
+        <p className="text-[10px] font-medium">
           {copy.totalPayment}
         </p>
       </div>
@@ -29,7 +29,7 @@ export function PaymentSubmitSummary({
       <Button
         type="submit"
         variant="gold"
-        className="mt-6 h-12 w-full text-base shadow-card"
+        className="mt-6 h-12 w-full text-base"
         disabled={isSubmitting}
       >
         {copy.submit} →

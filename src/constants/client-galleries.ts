@@ -1,8 +1,8 @@
 export const CLIENT_GALLERIES_COPY = {
-  title: "My Galleries",
+  title: "My galleries",
   subtitle: "View and download your private photo collections.",
   searchPlaceholder: "Search galleries...",
-  viewGallery: "View Gallery",
+  viewGallery: "View gallery",
   photos: (count: number) => `${count} photos`,
   processingSession: "Processing session...",
   badge: {
@@ -15,20 +15,20 @@ export const CLIENT_GALLERIES_COPY = {
   editing: "Being prepared",
   noResults: "No galleries found.",
   newSession: {
-    title: "New Session",
+    title: "New session",
     body: "Book your next shoot to start a new gallery.",
   },
   detail: {
-    backToGalleries: "My Galleries",
+    backToGalleries: "My galleries",
     download: "Download",
-    downloadGallery: "Download Gallery",
+    downloadGallery: "Download gallery",
     preparingZip: "Preparing ZIP...",
     preparingZipProgress: (completed: number, total: number) =>
       `Preparing ZIP (${completed}/${total})...`,
     downloadFailed: "Unable to download gallery. Please try again.",
     viewAlbum: "View album",
-    galleryInformation: "Gallery Information",
-    curatedHighlights: "Curated Highlights",
+    galleryInformation: "Gallery information",
+    curatedHighlights: "Curated highlights",
     curatedSubtitle: "Selected by the photographer",
     newContent: "New content",
     favorite: "Favorite",
@@ -36,7 +36,7 @@ export const CLIENT_GALLERIES_COPY = {
     expires: "Link expires",
     downloadsEnabled: "Downloads enabled",
     downloadsDisabled: "Downloads not available yet",
-    deliveryInfo: "Gallery Access",
+    deliveryInfo: "Gallery access",
     noPhotosFound: "No photos in this gallery yet.",
     loadMore: "Load more photos",
     downloadPhoto: "Download photo",
@@ -56,7 +56,7 @@ export const CLIENT_GALLERIES_COPY = {
     expiredTitle: "Gallery unavailable",
   },
   notFound: "We couldn't find that gallery.",
-  backToGalleries: "Back to My Galleries",
+  backToGalleries: "Back to my galleries",
 } as const;
 
 export type ClientGalleryBadgeKey = keyof typeof CLIENT_GALLERIES_COPY.badge;

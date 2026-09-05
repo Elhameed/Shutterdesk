@@ -3,9 +3,9 @@ import type { CalendarEvent } from "@/types/domains/calendar";
 import { cn } from "@/lib/utils";
 
 export const calendarEventStyles = {
-  editorial: "bg-gold-light text-gold",
-  travel: "text-[10px] font-semibold tracking-wide text-muted uppercase",
-  wedding: "bg-charcoal text-white",
+  editorial: "bg-paper-dim text-ink-soft",
+  travel: "text-[10px] font-medium text-ink-soft",
+  wedding: "bg-paper-dim text-ink-soft",
   product: SESSION_STATUS_BADGE_STYLES.paid,
   confirmed: SESSION_STATUS_BADGE_STYLES.confirmed,
   awaitingPayment: SESSION_STATUS_BADGE_STYLES.awaitingPayment,

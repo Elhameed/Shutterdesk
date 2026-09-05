@@ -17,9 +17,9 @@ export function ToggleSwitch({
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="min-w-0">
-        <p className="text-sm font-semibold text-charcoal">{label}</p>
+        <p className="text-sm font-semibold text-ink">{label}</p>
         {description && (
-          <p className="mt-0.5 text-xs text-muted">{description}</p>
+          <p className="mt-0.5 text-xs text-ink-soft">{description}</p>
         )}
       </div>
       <button
@@ -30,12 +30,12 @@ export function ToggleSwitch({
         onClick={() => onChange(!checked)}
         className={cn(
           "relative h-6 w-11 shrink-0 rounded-full transition-colors",
-          checked ? "bg-gold" : "bg-gray-300",
+          checked ? "bg-accent" : "bg-border-strong",
         )}
       >
         <span
           className={cn(
-            "absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition-transform",
+            "absolute top-0.5 left-0.5 size-5 rounded-full bg-panel shadow transition-transform",
             checked && "translate-x-5",
           )}
         />
@@ -56,9 +56,9 @@ export function GalleryTabSection({
   action,
 }: GalleryTabSectionProps) {
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <section className="rounded-md border border-border bg-panel p-5">
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="text-[10px] font-bold tracking-wider text-muted-light uppercase">
+        <h2 className="text-[10px] font-medium text-ink-faint">
           {title}
         </h2>
         {action}

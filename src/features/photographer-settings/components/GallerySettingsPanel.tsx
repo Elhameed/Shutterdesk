@@ -31,7 +31,7 @@ function GalleryToggleCard({
   return (
     <div className="flex h-full flex-col gap-3">
       <div className="flex items-start justify-between gap-4">
-        <p className="text-sm font-semibold text-charcoal">{title}</p>
+        <p className="text-sm font-semibold text-ink">{title}</p>
         <SettingsToggle
           checked={checked}
           onChange={onChange}
@@ -39,7 +39,7 @@ function GalleryToggleCard({
           variant="charcoal"
         />
       </div>
-      <p className="text-xs leading-relaxed text-muted">{description}</p>
+      <p className="text-xs leading-relaxed text-ink-soft">{description}</p>
     </div>
   );
 }
@@ -54,7 +54,7 @@ export function GallerySettingsPanel({
     <div className="space-y-8 p-5 sm:p-6 lg:p-8">
       <SettingsPanelHeader title={copy.title} subtitle={copy.subtitle} />
 
-      <div className="overflow-hidden rounded-xl border border-border lg:grid lg:grid-cols-2">
+      <div className="overflow-hidden rounded-md border border-border lg:grid lg:grid-cols-2">
         <div className="p-5 sm:p-6">
           <GalleryToggleCard
             title={copy.allowDownloads.title}
@@ -74,7 +74,7 @@ export function GallerySettingsPanel({
       </div>
 
       <div className="space-y-4">
-        <Label className="text-[10px] tracking-wider text-muted-light uppercase">
+        <Label className="text-[10px] text-ink-faint">
           {copy.watermarkPersistence}
         </Label>
         <div className="space-y-3">
@@ -86,9 +86,9 @@ export function GallerySettingsPanel({
               <Checkbox
                 checked={values[key]}
                 onChange={(event) => onChange(key, event.target.checked)}
-                className="size-[18px] rounded-sm accent-charcoal"
+                className="size-[18px] rounded-sm accent-accent"
               />
-              <span className="text-sm text-charcoal">
+              <span className="text-sm text-ink">
                 {copy.watermarkOptions[key]}
               </span>
             </label>

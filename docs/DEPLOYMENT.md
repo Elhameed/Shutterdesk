@@ -34,6 +34,29 @@ Generate a production JWT secret (32+ characters):
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
+Generate it yourself and paste it straight into the Render dashboard — it never
+needs to be written to a file or shared.
+
+---
+
+## Step 0 — Create the Neon database
+
+1. [neon.tech](https://neon.tech) → **New Project** (region close to Render's, e.g. EU)
+2. Copy the **Pooled connection** string — it contains `-pooler` in the host.
+   The unpooled string will exhaust connections under Render's free plan.
+3. Ensure it ends with `?sslmode=require`
+
+You do **not** need to create tables. `start:prod` runs `prisma migrate deploy`
+on every boot, and the 11 migrations in `server/prisma/migrations` build the
+schema on first deploy.
+
+Optional demo data, once the API is up:
+
+```bash
+cd server
+DATABASE_URL="your-neon-pooled-url" npm run db:seed
+```
+
 ---
 
 ## Step 1 — Deploy API on Render
@@ -43,6 +66,16 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 1. In Render Dashboard → **New** → **Blueprint**
 2. Connect the Shutterdesk GitHub repo
 3. Render reads [`render.yaml`](../render.yaml) and creates `shutterdesk-api`
+4. **Fill in every `sync: false` variable before the first boot** (see the table
+   below) — `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN` and the Cloudinary keys
+
+> `sync: false` means the blueprint deliberately carries no value and a human
+> must supply one. Render creates the service and starts it immediately, and
+> `start:prod` runs `prisma migrate deploy` first, so a missing `DATABASE_URL`
+> fails on the first line with `P1012 Environment variable not found` and the
+> service crash-loops. The build still succeeds, because `prisma generate` does
+> not need a reachable database — only `migrate deploy` does. Set the variables
+> and Render redeploys automatically.
 
 ### Option B: Manual Web Service
 
@@ -80,8 +113,10 @@ https://shutterdesk.vercel.app
 # Production + local dev
 https://shutterdesk.vercel.app,http://localhost:5173
 
-# Production + all Vercel preview deploys (wildcard not supported — list previews or use a single production URL)
-https://shutterdesk.vercel.app,https://shutterdesk-git-main-yourteam.vercel.app
+# Production + all Vercel preview deploys
+# `*` is supported and matches within a single label, so this covers every
+# preview URL Vercel generates (see server/src/middleware/cors.ts)
+https://shutterdesk.vercel.app,https://shutterdesk-*.vercel.app
 ```
 
 > Render assigns a URL like `https://shutterdesk-api.onrender.com`. Note this for the frontend step.
@@ -122,7 +157,17 @@ DATABASE_URL="your-neon-url" npm run db:seed
 
 > `VITE_*` variables are baked in at **build time**. Redeploy after changing them.
 
-[`vercel.json`](../vercel.json) configures SPA routing so React Router paths work on refresh.
+[`vercel.json`](../vercel.json) pins the framework, build command and output
+directory, so steps 2–5 above are already configured — you only need to set the
+environment variable. It also configures SPA routing so React Router paths work
+on refresh.
+
+If `VITE_API_URL` is missing, the Vercel build **fails deliberately** with a
+message naming the variable (see `assertDeployEnv` in [`vite.config.ts`](../vite.config.ts)).
+Without that guard the build would succeed and ship a bundle pointing at
+`localhost:5000`, which looks like a working deploy until every API call fails
+in the browser. The check is scoped to Vercel so local builds and CI still run
+without an API URL.
 
 ---
 
@@ -176,7 +221,7 @@ GitHub Actions ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs 
 |------|--------|
 | Vercel frontend deploy | Ready — follow steps above |
 | Render API deploy | Ready — `render.yaml` + `start:prod` |
-| Neon Postgres | Use existing project |
+| Neon Postgres | Ready — see step 0 |
 | CORS multi-origin | Implemented |
 | Auth rate limiting | Implemented (30 req / 15 min) |
 | Helmet security headers | Implemented |
@@ -193,7 +238,11 @@ GitHub Actions ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs 
 |---------|-----|
 | `Loading dashboard…` forever | API unreachable or CORS blocked — check `VITE_API_URL` and `CORS_ORIGIN` |
 | `Invalid environment configuration` on Render | Set `DATABASE_URL` and `JWT_SECRET` (32+ chars) |
+| `P1012 Environment variable not found: DATABASE_URL` on deploy, service crash-loops | The blueprint's `sync: false` variables were never filled in. Render → service → Environment → add them. See step 1. |
 | Migrations fail on deploy | Ensure `prisma` is in server `dependencies` and `start:prod` runs `migrate deploy` |
 | Build fails with `Could not find a declaration file for module 'express'` | Set build command to `npm install --include=dev && npm run build` (NODE_ENV=production skips devDependencies by default) |
 | 401 on all requests | Token from different `JWT_SECRET` — log out and log in again |
-| Cold start delay (Render free) | First request after idle may take ~30s |
+| Cold start delay (Render free) | First request after idle may take ~30s. Neon also auto-suspends when idle, so the very first request after a quiet period pays both. Subsequent requests are normal. |
+| Vercel build fails: `VITE_API_URL is not set` | Working as intended — set the variable in Project Settings and redeploy. See step 2. |
+| `Too many connections` from Postgres | The `DATABASE_URL` is the unpooled Neon string. Use the pooled one (host contains `-pooler`). |
+| Uploads fail but everything else works | Cloudinary vars are unset on Render. See [CLOUDINARY.md](./CLOUDINARY.md). |

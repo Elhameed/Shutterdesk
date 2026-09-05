@@ -23,10 +23,10 @@ export function AppImage({
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div className={cn("relative size-full overflow-hidden bg-gray-100", wrapperClassName)}>
+    <div className={cn("bg-paper-dim relative size-full overflow-hidden", wrapperClassName)}>
       {!loaded ? (
         <div
-          className="skeleton-shimmer absolute inset-0 bg-gray-200/80"
+          className="skeleton-shimmer bg-paper-dim absolute inset-0"
           aria-hidden
         />
       ) : null}

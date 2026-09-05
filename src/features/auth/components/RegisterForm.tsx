@@ -87,15 +87,15 @@ export function RegisterForm() {
       <AuthBackLink label={copy.backToWebsite} />
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-charcoal">
-          {copy.title}
-        </h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted">{copy.subtitle}</p>
+        <h1 className="font-display text-ink text-3xl">{copy.title}</h1>
+        <p className="text-ink-soft mt-2 text-sm leading-relaxed">
+          {copy.subtitle}
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         <div className="space-y-2">
-          <Label htmlFor="fullName">Full Name</Label>
+          <Label htmlFor="fullName">Full name</Label>
           <Input
             id="fullName"
             type="text"
@@ -109,7 +109,7 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email Address</Label>
+          <Label htmlFor="email">Email address</Label>
           <Input
             id="email"
             type="email"
@@ -123,7 +123,7 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone Number</Label>
+          <Label htmlFor="phone">Phone number</Label>
           <Input
             id="phone"
             type="tel"
@@ -164,20 +164,29 @@ export function RegisterForm() {
             checked={agreedToTerms}
             onChange={(e) => setAgreedToTerms(e.target.checked)}
           />
-          <span className="text-sm leading-relaxed text-muted">
+          <span className="text-ink-soft text-sm leading-relaxed">
             {copy.termsPrefix}{" "}
-            <a href="#" className="font-medium text-gold hover:text-gold-hover">
+            <a
+              href="#"
+              className="text-accent hover:text-accent-hover font-medium transition-colors"
+            >
               {copy.termsOfService}
             </a>{" "}
             {copy.termsAnd}{" "}
-            <a href="#" className="font-medium text-gold hover:text-gold-hover">
+            <a
+              href="#"
+              className="text-accent hover:text-accent-hover font-medium transition-colors"
+            >
               {copy.privacyPolicy}
             </a>
           </span>
         </label>
 
         {error && (
-          <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p
+            className="bg-bad-tint text-bad-fg rounded-sm px-4 py-3 text-sm"
+            role="alert"
+          >
             {error}
           </p>
         )}
@@ -215,16 +224,16 @@ export function RegisterForm() {
         {copy.google}
       </Button>
 
-      <p className="mt-6 flex items-center justify-center gap-1 text-xs text-muted-light">
+      <p className="text-ink-faint mt-6 flex items-center justify-center gap-1 text-xs">
         <Lock className="size-3 shrink-0" aria-hidden />
         {copy.securityNote}
       </p>
 
-      <p className="mt-8 text-center text-sm text-muted">
+      <p className="text-ink-soft mt-8 text-center text-sm">
         {copy.hasAccount}{" "}
         <Link
           to={ROUTES.login}
-          className="font-semibold text-gold hover:text-gold-hover"
+          className="text-accent hover:text-accent-hover font-medium transition-colors"
         >
           {copy.signIn}
         </Link>

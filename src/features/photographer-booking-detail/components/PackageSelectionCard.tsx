@@ -11,27 +11,27 @@ export function PackageSelectionCard({ packageInfo }: PackageSelectionCardProps)
   const copy = BOOKING_DETAIL_COPY;
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <section className="rounded-md border border-border bg-panel p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-sm font-bold text-charcoal">
+          <h2 className="text-sm font-bold text-ink">
             {copy.packageSelection}
           </h2>
-          <p className="mt-0.5 text-xs text-muted">{packageInfo.subtitle}</p>
+          <p className="mt-0.5 text-xs text-ink-soft">{packageInfo.subtitle}</p>
         </div>
         <div className="text-left sm:text-right">
-          <p className="text-2xl font-bold text-charcoal">
+          <p className="text-2xl font-bold text-ink">
             {formatRwf(packageInfo.price)}
           </p>
-          <p className="text-[10px] text-muted">{copy.allTaxesIncluded}</p>
+          <p className="text-[10px] text-ink-soft">{copy.allTaxesIncluded}</p>
         </div>
       </div>
 
       <ul className="mt-5 grid gap-3 sm:grid-cols-2">
         {packageInfo.includes.map((item) => (
-          <li key={item} className="flex items-start gap-2 text-sm text-charcoal">
+          <li key={item} className="flex items-start gap-2 text-sm text-ink">
             <Check
-              className="mt-0.5 size-4 shrink-0 text-gold"
+              className="mt-0.5 size-4 shrink-0 text-accent"
               strokeWidth={3}
               aria-hidden
             />

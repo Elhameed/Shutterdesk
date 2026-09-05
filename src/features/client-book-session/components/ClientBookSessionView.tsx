@@ -118,12 +118,12 @@ export function ClientBookSessionView() {
     <div className="min-w-0 max-w-full p-4 sm:p-6 lg:p-8">
       <BookSessionStepper current={step} />
       {submitError ? (
-        <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <p className="mb-4 rounded-sm border border-bad/30 bg-bad-tint px-4 py-3 text-sm text-bad-fg" role="alert">
           {submitError}
         </p>
       ) : null}
 
-      <div className="overflow-hidden rounded-xl border border-border bg-white shadow-card">
+      <div className="overflow-hidden rounded-md border border-border bg-panel">
         {step === "package" && (
           <BookSessionPackageStep
             studios={studios}

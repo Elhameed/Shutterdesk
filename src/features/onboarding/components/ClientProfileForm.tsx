@@ -107,12 +107,12 @@ export function ClientProfileForm() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-md rounded-2xl border border-border bg-white p-6 shadow-card sm:p-8 lg:p-10">
+    <div className="mx-auto w-full max-w-md rounded-md border border-border bg-panel p-6 sm:p-8 lg:p-10">
       <div className="mb-8 text-center">
-        <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
           {copy.title}
         </h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted sm:text-base">
+        <p className="mt-2 text-sm leading-relaxed text-ink-soft sm:text-base">
           {copy.subtitle}
         </p>
       </div>
@@ -140,7 +140,7 @@ export function ClientProfileForm() {
             required
           />
           {user?.phone ? (
-            <p className="text-xs text-muted">{copy.phoneFromAccount}</p>
+            <p className="text-xs text-ink-soft">{copy.phoneFromAccount}</p>
           ) : null}
         </div>
 
@@ -164,7 +164,7 @@ export function ClientProfileForm() {
         />
 
         {error ? (
-          <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p className="rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
             {error}
           </p>
         ) : null}
@@ -185,7 +185,7 @@ export function ClientProfileForm() {
             type="button"
             variant="link"
             size="sm"
-            className="text-muted-light hover:text-muted"
+            className="text-ink-faint hover:text-ink-soft"
             onClick={() => void handleSkip()}
             disabled={isSubmitting}
           >
@@ -193,13 +193,13 @@ export function ClientProfileForm() {
           </Button>
         </div>
 
-        <p className="text-center text-xs leading-relaxed text-muted-light">
+        <p className="text-center text-xs leading-relaxed text-ink-faint">
           {copy.termsPrefix}{" "}
-          <Link to="#" className="underline hover:text-muted">
+          <Link to="#" className="underline hover:text-ink-soft">
             {copy.termsOfService}
           </Link>{" "}
           {copy.termsAnd}{" "}
-          <Link to="#" className="underline hover:text-muted">
+          <Link to="#" className="underline hover:text-ink-soft">
             {copy.privacyPolicy}
           </Link>
           .
