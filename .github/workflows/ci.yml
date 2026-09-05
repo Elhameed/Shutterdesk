@@ -37,6 +37,7 @@ jobs:
         run: npm run build
         env:
           DATABASE_URL: postgresql://ci:ci@localhost:5432/ci?schema=public
+          DIRECT_DATABASE_URL: postgresql://ci:ci@localhost:5432/ci?schema=public
 
   api-tests:
     runs-on: ubuntu-latest
@@ -59,6 +60,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/shutterdesk_test?schema=public
+      DIRECT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/shutterdesk_test?schema=public
       JWT_SECRET: ci-test-jwt-secret-minimum-32-characters-long
       NODE_ENV: test
       CORS_ORIGIN: http://localhost:5173
@@ -103,6 +105,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/shutterdesk_test?schema=public
+      DIRECT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/shutterdesk_test?schema=public
       JWT_SECRET: ci-test-jwt-secret-minimum-32-characters-long
       NODE_ENV: development
       CORS_ORIGIN: http://localhost:5173
