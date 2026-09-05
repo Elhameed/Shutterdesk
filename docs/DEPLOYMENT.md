@@ -141,7 +141,16 @@ https://shutterdesk.vercel.app,https://shutterdesk-*.vercel.app
 curl https://YOUR-RENDER-URL.onrender.com/api/health
 ```
 
-Expected: `{"status":"ok","database":"connected",...}`
+Expected:
+
+```json
+{"status":"ok","database":"connected","commit":"7032cb9","timestamp":"..."}
+```
+
+`commit` is the deployed Git SHA (`RENDER_GIT_COMMIT`). Check it against the
+commit you expect: while a new deploy crash-loops, Render keeps serving the
+**previous** instance, so a healthy response alone does not prove your deploy
+went out.
 
 ### Optional: seed demo data on staging
 
