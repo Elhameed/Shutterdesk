@@ -66,6 +66,16 @@ DATABASE_URL="your-neon-pooled-url" npm run db:seed
 1. In Render Dashboard → **New** → **Blueprint**
 2. Connect the Shutterdesk GitHub repo
 3. Render reads [`render.yaml`](../render.yaml) and creates `shutterdesk-api`
+4. **Fill in every `sync: false` variable before the first boot** (see the table
+   below) — `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN` and the Cloudinary keys
+
+> `sync: false` means the blueprint deliberately carries no value and a human
+> must supply one. Render creates the service and starts it immediately, and
+> `start:prod` runs `prisma migrate deploy` first, so a missing `DATABASE_URL`
+> fails on the first line with `P1012 Environment variable not found` and the
+> service crash-loops. The build still succeeds, because `prisma generate` does
+> not need a reachable database — only `migrate deploy` does. Set the variables
+> and Render redeploys automatically.
 
 ### Option B: Manual Web Service
 
@@ -228,6 +238,7 @@ GitHub Actions ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs 
 |---------|-----|
 | `Loading dashboard…` forever | API unreachable or CORS blocked — check `VITE_API_URL` and `CORS_ORIGIN` |
 | `Invalid environment configuration` on Render | Set `DATABASE_URL` and `JWT_SECRET` (32+ chars) |
+| `P1012 Environment variable not found: DATABASE_URL` on deploy, service crash-loops | The blueprint's `sync: false` variables were never filled in. Render → service → Environment → add them. See step 1. |
 | Migrations fail on deploy | Ensure `prisma` is in server `dependencies` and `start:prod` runs `migrate deploy` |
 | Build fails with `Could not find a declaration file for module 'express'` | Set build command to `npm install --include=dev && npm run build` (NODE_ENV=production skips devDependencies by default) |
 | 401 on all requests | Token from different `JWT_SECRET` — log out and log in again |
