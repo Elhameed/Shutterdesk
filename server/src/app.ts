@@ -44,7 +44,7 @@ import {
   createClientOnboardingRouter,
   createPhotographerOnboardingRouter,
 } from "./modules/onboarding/onboarding.routes.js";
-import { healthRouter } from "./routes/health.js";
+import { createHealthRouter } from "./routes/health.js";
 
 export function createApp(env: Env) {
   const app = express();
@@ -60,7 +60,7 @@ export function createApp(env: Env) {
 
   logger.info("server_starting", { nodeEnv: env.NODE_ENV });
 
-  app.use("/api/health", healthRouter);
+  app.use("/api/health", createHealthRouter(env));
   app.use("/api/auth", createAuthRouter(env));
   app.use("/api/photographer/clients", createPhotographerClientsRouter(env));
   app.use("/api/photographer/bookings", createPhotographerBookingsRouter(env));
