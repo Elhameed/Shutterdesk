@@ -124,19 +124,14 @@ async function resolveBookingDurationMinutes(
 }
 
 async function nextBookingReference() {
-  const bookings = await prisma.booking.findMany({
-    select: { reference: true },
-  });
+  // Backed by a sequence (see the booking_reference_sequence migration) rather
+  // than scanning `bookings` for the highest reference: that was a full table
+  // scan on every create, and two concurrent creates would read the same max.
+  const rows = await prisma.$queryRaw<Array<{ nextval: bigint }>>`
+    SELECT nextval('booking_reference_seq')
+  `;
 
-  let max = 7740;
-  for (const { reference } of bookings) {
-    const match = reference.match(/^BK-(\d+)$/);
-    if (match) {
-      max = Math.max(max, Number.parseInt(match[1], 10));
-    }
-  }
-
-  return `BK-${max + 1}`;
+  return `BK-${rows[0].nextval}`;
 }
 
 function defaultTimeline(_title: string, dateLabel: string, time: string) {
