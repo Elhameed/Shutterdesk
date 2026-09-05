@@ -67,11 +67,11 @@ export const CLIENT_BOOK_SESSION_COPY = {
 } as const;
 
 export const DURATION_BADGE_LABELS: Record<ServiceDurationKey, string> = {
-  "30min": "30 MIN",
-  "1hr": "1 HOUR",
-  "2hr": "2 HOURS",
-  "4hr": "4 HOURS",
-  fullday: "8 HOURS",
+  "30min": "30 min",
+  "1hr": "1 hour",
+  "2hr": "2 hours",
+  "4hr": "4 hours",
+  fullday: "8 hours",
 };
 
 export const CATEGORY_LABELS: Record<ServiceCategory, string> = {
