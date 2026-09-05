@@ -1,3 +1,4 @@
+import { randomInt } from "node:crypto";
 import type { GalleryCategory, Prisma } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import { createNotification, findClientUserIdByEmail } from "../../lib/notification-dispatch.js";
@@ -68,6 +69,14 @@ async function getClientUser(clientUserId: string) {
     throw new AppError("Client account required", 403);
   }
   return user;
+}
+
+/**
+ * `Math.random` is not a CSPRNG — an access PIN generated from it is
+ * predictable given enough samples, which defeats the point of the PIN.
+ */
+function generateGalleryAccessPin() {
+  return String(randomInt(1000, 10_000));
 }
 
 function normalizeAssetKey(value: string) {
@@ -200,7 +209,7 @@ export async function createPhotographerGallery(
   if (!explicitVisibility && galleryDefaults.passwordProtection) {
     visibility = "password";
     if (!accessPin) {
-      accessPin = String(Math.floor(1000 + Math.random() * 9000));
+      accessPin = generateGalleryAccessPin();
     }
   }
 

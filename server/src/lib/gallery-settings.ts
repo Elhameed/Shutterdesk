@@ -1,4 +1,14 @@
+import { timingSafeEqual } from "node:crypto";
 import type { Gallery } from "@prisma/client";
+
+/** Constant-time compare so a wrong PIN leaks nothing through response timing. */
+function pinsMatch(submitted: string, expected: string) {
+  const a = Buffer.from(submitted);
+  const b = Buffer.from(expected);
+  // `timingSafeEqual` throws on length mismatch, which would itself be a leak,
+  // so compare lengths separately and still run the constant-time check.
+  return a.length === b.length && timingSafeEqual(a, b);
+}
 
 export type GalleryVisibility = "public" | "private" | "password";
 
@@ -202,7 +212,7 @@ export function verifyGalleryAccessPin(
     return false;
   }
 
-  return submittedPin.trim() === resolvedPin;
+  return pinsMatch(submittedPin.trim(), resolvedPin);
 }
 
 export type GalleryClientAccessOptions = {
@@ -233,7 +243,7 @@ export function resolveGalleryClientAccess(
 
   const resolvedPin = resolveGalleryAccessPin(gallery, settings);
   const submittedPin = options.accessPin?.trim() ?? "";
-  const pinVerified = Boolean(resolvedPin && submittedPin === resolvedPin);
+  const pinVerified = Boolean(resolvedPin && pinsMatch(submittedPin, resolvedPin));
 
   return {
     pinRequired: true,

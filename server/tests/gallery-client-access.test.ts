@@ -178,6 +178,67 @@ describe("client gallery access", () => {
     expect(download.body.message).toMatch(/expired/i);
   });
 
+  it("gates a PIN-protected gallery until the right PIN is supplied", async () => {
+    const { photographerToken } = await setUpPhotographer("pin");
+    const { clientToken, crmClientId } = await setUpLinkedClient(
+      photographerToken,
+      "pin",
+    );
+
+    const gallery = await createReadyGallery(photographerToken, crmClientId, {
+      visibility: "password",
+      accessPin: "4821",
+    });
+
+    const locked = await api()
+      .get(`/api/client/galleries/${gallery.id}`)
+      .set("Authorization", `Bearer ${clientToken}`)
+      .expect(200);
+    expect(locked.body.data.photos).toHaveLength(0);
+
+    const wrong = await api()
+      .post(`/api/client/galleries/${gallery.id}/verify-pin`)
+      .set("Authorization", `Bearer ${clientToken}`)
+      .send({ pin: "0000" })
+      .expect(400);
+    expect(wrong.body.message).toMatch(/incorrect/i);
+
+    await api()
+      .post(`/api/client/galleries/${gallery.id}/verify-pin`)
+      .set("Authorization", `Bearer ${clientToken}`)
+      .send({ pin: "4821" })
+      .expect(200)
+      .expect((response) => {
+        expect(response.body.data.verified).toBe(true);
+      });
+
+    const unlocked = await api()
+      .get(`/api/client/galleries/${gallery.id}`)
+      .set("Authorization", `Bearer ${clientToken}`)
+      .set("X-Gallery-Access-Pin", "4821")
+      .expect(200);
+    expect(unlocked.body.data.photos).toHaveLength(1);
+  });
+
+  it("rejects a verify-pin request with no PIN", async () => {
+    const { photographerToken } = await setUpPhotographer("nopin");
+    const { clientToken, crmClientId } = await setUpLinkedClient(
+      photographerToken,
+      "nopin",
+    );
+
+    const gallery = await createReadyGallery(photographerToken, crmClientId, {
+      visibility: "password",
+      accessPin: "1234",
+    });
+
+    await api()
+      .post(`/api/client/galleries/${gallery.id}/verify-pin`)
+      .set("Authorization", `Bearer ${clientToken}`)
+      .send({})
+      .expect(400);
+  });
+
   it("allows the gallery PIN header through CORS preflight", async () => {
     const response = await api()
       .options("/api/client/galleries/some-id")
