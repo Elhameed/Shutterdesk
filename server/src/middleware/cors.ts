@@ -42,6 +42,9 @@ export function createCorsMiddleware(env: Env) {
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    // `X-Gallery-Access-Pin` carries the client's gallery PIN — omitting it here
+    // fails the preflight, and the frontend is cross-origin in every environment
+    // including local dev (5173 → 5000).
+    allowedHeaders: ["Content-Type", "Authorization", "X-Gallery-Access-Pin"],
   });
 }

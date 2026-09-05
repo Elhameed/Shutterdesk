@@ -216,7 +216,7 @@ export async function createPhotographerGallery(
     allowDownloads,
     showPhotographerCredit: input.showPhotographerCredit ?? true,
     emailNotifications: input.emailNotifications ?? true,
-    expirationDate: input.expirationDate ?? "2026-08-30",
+    expirationDate: input.expirationDate?.trim() || null,
     slug: input.slug ?? "",
     ...(accessPin ? { accessPin } : {}),
   };

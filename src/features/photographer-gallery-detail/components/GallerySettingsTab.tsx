@@ -62,7 +62,9 @@ export function GallerySettingsTab({
         allowDownloads: settings.allowDownloads,
         showPhotographerCredit: settings.showPhotographerCredit,
         emailNotifications: settings.emailNotifications,
-        expirationDate: settings.expirationDate,
+        // This panel always submits the whole form, so an empty field is a
+        // deliberate "no expiry" rather than "leave unchanged".
+        expirationDate: settings.expirationDate ?? "",
         slug: settings.slug,
         accessPin: settings.accessPin,
       });
@@ -116,9 +118,11 @@ export function GallerySettingsTab({
 
             <div className="space-y-2">
               <Label>{panel.expirationDate}</Label>
+              {/* Empty means "never expires" — clearing the field sends "",
+                  which the API stores as no expiry. */}
               <Input
                 type="date"
-                value={settings.expirationDate}
+                value={settings.expirationDate ?? ""}
                 onChange={(event) =>
                   updateSettings("expirationDate", event.target.value)
                 }
