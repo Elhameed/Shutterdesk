@@ -16,8 +16,8 @@ function AuthLoadingScreen() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f7f7f5]">
       <div className="text-center">
-        <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-2 border-gold border-t-transparent" />
-        <p className="text-sm text-muted">Loading your session…</p>
+        <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+        <p className="text-sm text-ink-soft">Loading your session…</p>
       </div>
     </div>
   );

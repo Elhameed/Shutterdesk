@@ -58,10 +58,10 @@ export function RoleSelectionView() {
       />
 
       <div className="mx-auto w-full max-w-3xl text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-charcoal sm:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
           {copy.title}
         </h1>
-        <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted sm:text-base">
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-ink-soft sm:text-base">
           {copy.subtitle}
         </p>
       </div>
@@ -84,7 +84,7 @@ export function RoleSelectionView() {
           className={cn(
             "w-full",
             selectedRole
-              ? "bg-charcoal text-white hover:bg-charcoal/90"
+              ? "bg-ink text-panel hover:bg-ink/90"
               : "bg-[#c8c8c8] text-white hover:bg-[#c8c8c8]",
           )}
           disabled={!selectedRole || isSubmitting}
@@ -94,9 +94,9 @@ export function RoleSelectionView() {
           <ArrowRight className="size-4" />
         </Button>
         {error ? (
-          <p className="mt-3 text-center text-sm text-red-700">{error}</p>
+          <p className="mt-3 text-center text-sm text-bad-fg">{error}</p>
         ) : null}
-        <p className="mt-5 text-center text-xs text-muted-light">
+        <p className="mt-5 text-center text-xs text-ink-faint">
           {copy.settingsNote}
         </p>
       </div>

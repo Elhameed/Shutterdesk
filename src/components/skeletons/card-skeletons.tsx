@@ -1,24 +1,22 @@
+import { FrameCell, FrameGrid } from "@/components/ui/card";
 import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-/** Dashboard stat card — mirrors `StatCard` (rounded-xl border p-5). */
+/** Dashboard stat cell — mirrors `StatCard` inside a `FrameGrid`. */
 export function StatCardSkeleton() {
   return (
-    <div className="rounded-xl border border-border bg-white p-5" aria-hidden>
-      <div className="flex items-start justify-between gap-3">
-        <Skeleton className="h-3 w-24" />
-        <Skeleton className="size-9 rounded-lg" />
-      </div>
-      <Skeleton className="mt-3 h-8 w-20" />
+    <FrameCell aria-hidden>
+      <Skeleton className="h-3 w-24" />
+      <Skeleton className="mt-2.5 h-7 w-20" />
       <Skeleton className="mt-2 h-3 w-16" />
-    </div>
+    </FrameCell>
   );
 }
 
 export function StatCardGridSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <div
-      className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+    <FrameGrid
+      className="sm:grid-cols-2 xl:grid-cols-4"
       role="status"
       aria-busy
       aria-label="Loading statistics"
@@ -26,14 +24,14 @@ export function StatCardGridSkeleton({ count = 4 }: { count?: number }) {
       {Array.from({ length: count }, (_, index) => (
         <StatCardSkeleton key={index} />
       ))}
-    </div>
+    </FrameGrid>
   );
 }
 
 /** Analytics KPI / metric card. */
 export function AnalyticsCardSkeleton() {
   return (
-    <div className="rounded-xl border border-border bg-white p-5" aria-hidden>
+    <div className="border-border bg-panel rounded-md border p-4" aria-hidden>
       <Skeleton className="h-3 w-28" />
       <Skeleton className="mt-3 h-9 w-32" />
       <div className="mt-4 flex items-center gap-2">
@@ -48,7 +46,7 @@ export function AnalyticsCardSkeleton() {
 export function GalleryCardSkeleton() {
   return (
     <article
-      className="flex flex-col overflow-hidden rounded-xl border border-border bg-white shadow-card"
+      className="flex flex-col overflow-hidden rounded-md border border-border bg-panel"
       aria-hidden
     >
       <Skeleton className="aspect-[5/4] w-full rounded-none" />
@@ -69,7 +67,7 @@ export function GalleryCardSkeleton() {
 export function ClientGalleryCardSkeleton() {
   return (
     <article
-      className="overflow-hidden rounded-xl border border-border bg-white shadow-card"
+      className="overflow-hidden rounded-md border border-border bg-panel"
       aria-hidden
     >
       <Skeleton className="aspect-[4/3] w-full rounded-none" />
@@ -85,7 +83,7 @@ export function ClientGalleryCardSkeleton() {
 export function ServicePackageCardSkeleton() {
   return (
     <article
-      className="flex flex-col overflow-hidden rounded-xl border border-border bg-white shadow-card"
+      className="flex flex-col overflow-hidden rounded-md border border-border bg-panel"
       aria-hidden
     >
       <Skeleton className="h-44 w-full rounded-none sm:h-48" />
@@ -115,7 +113,7 @@ export function ServicePackageCardSkeleton() {
 export function ClientCardSkeleton() {
   return (
     <article
-      className="overflow-hidden rounded-xl border border-border bg-white shadow-card"
+      className="overflow-hidden rounded-md border border-border bg-panel"
       aria-hidden
     >
       <Skeleton className="h-24 w-full rounded-none sm:h-28" />
@@ -137,8 +135,8 @@ export function ClientCardSkeleton() {
             </div>
           </div>
           <div className="mt-4 flex items-center gap-2">
-            <Skeleton className="h-9 flex-1 rounded-lg" />
-            <Skeleton className="size-9 rounded-lg" />
+            <Skeleton className="h-9 flex-1 rounded-sm" />
+            <Skeleton className="size-9 rounded-sm" />
           </div>
         </div>
       </div>
@@ -150,7 +148,7 @@ export function ClientCardSkeleton() {
 export function BookingCardSkeleton() {
   return (
     <article
-      className="flex items-center gap-4 rounded-xl border border-border bg-white p-4 shadow-card"
+      className="flex items-center gap-4 rounded-md border border-border bg-panel p-4"
       aria-hidden
     >
       <Skeleton className="size-12 shrink-0 rounded-full" />
@@ -170,7 +168,7 @@ export function BookingCardSkeleton() {
 export function PaymentCardSkeleton() {
   return (
     <article
-      className="rounded-xl border border-border bg-white p-5 shadow-card"
+      className="rounded-md border border-border bg-panel p-5"
       aria-hidden
     >
       <div className="flex items-start justify-between gap-3">
@@ -183,8 +181,8 @@ export function PaymentCardSkeleton() {
       </div>
       <Skeleton className="mt-4 h-3 w-24" />
       <div className="mt-4 flex flex-wrap gap-3">
-        <Skeleton className="h-10 w-28 rounded-lg" />
-        <Skeleton className="h-10 w-28 rounded-lg" />
+        <Skeleton className="h-10 w-28 rounded-sm" />
+        <Skeleton className="h-10 w-28 rounded-sm" />
       </div>
     </article>
   );

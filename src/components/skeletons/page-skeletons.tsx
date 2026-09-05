@@ -1,3 +1,4 @@
+import { FrameCell, FrameGrid } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   ActivityFeedSkeleton,
@@ -24,7 +25,7 @@ export function PageHeaderSkeleton({ withAction = true }: { withAction?: boolean
         <Skeleton className="h-6 w-48" />
         <Skeleton className="h-3.5 w-64" />
       </div>
-      {withAction ? <Skeleton className="h-10 w-32 rounded-lg" /> : null}
+      {withAction ? <Skeleton className="h-10 w-32 rounded-sm" /> : null}
     </div>
   );
 }
@@ -33,7 +34,7 @@ export function PageHeaderSkeleton({ withAction = true }: { withAction?: boolean
 export function FilterBarSkeleton() {
   return (
     <div className="space-y-4" aria-hidden>
-      <Skeleton className="h-11 w-full rounded-lg" />
+      <Skeleton className="h-11 w-full rounded-sm" />
       <div className="flex flex-wrap gap-2">
         {Array.from({ length: 4 }, (_, index) => (
           <Skeleton key={index} className="h-8 w-24 rounded-full" />
@@ -98,13 +99,15 @@ export function PhotographerDashboardSkeleton() {
       <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[7fr_3fr] lg:items-start">
         <TableRowsSkeleton rows={5} />
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-white p-5" aria-hidden>
-            <Skeleton className="h-4 w-1/3" />
-            <div className="mt-4 grid grid-cols-2 gap-3">
+          <div aria-hidden>
+            <Skeleton className="mb-3 h-4 w-1/3" />
+            <FrameGrid className="grid-cols-2">
               {Array.from({ length: 4 }, (_, index) => (
-                <Skeleton key={index} className="h-16 rounded-lg" />
+                <FrameCell key={index} className="py-4">
+                  <Skeleton className="h-4 w-full" />
+                </FrameCell>
               ))}
-            </div>
+            </FrameGrid>
           </div>
           <ActivityFeedSkeleton rows={4} />
         </div>
@@ -125,13 +128,13 @@ export function ClientDashboardSkeleton() {
       <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[3fr_2fr] lg:items-start">
         <ActivityFeedSkeleton rows={5} />
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-white p-5" aria-hidden>
+          <div className="rounded-md border border-border bg-panel p-5" aria-hidden>
             <Skeleton className="h-4 w-1/3" />
-            <Skeleton className="mt-4 h-24 w-full rounded-lg" />
+            <Skeleton className="mt-4 h-24 w-full rounded-sm" />
           </div>
-          <div className="rounded-xl border border-border bg-white p-5" aria-hidden>
+          <div className="rounded-md border border-border bg-panel p-5" aria-hidden>
             <Skeleton className="h-4 w-1/3" />
-            <Skeleton className="mt-4 h-24 w-full rounded-lg" />
+            <Skeleton className="mt-4 h-24 w-full rounded-sm" />
           </div>
         </div>
       </div>
@@ -161,7 +164,7 @@ export function DetailPageSkeleton({ sidebar = "wide" }: DetailPageSkeletonProps
 
       <div className={cn("mt-6 grid min-w-0 gap-6 lg:items-start", grid)}>
         <div className="min-w-0 space-y-6">
-          <div className="rounded-xl border border-border bg-white p-5" aria-hidden>
+          <div className="rounded-md border border-border bg-panel p-5" aria-hidden>
             <Skeleton className="h-4 w-1/4" />
             <div className="mt-4 space-y-3">
               <Skeleton className="h-3.5 w-full" />
@@ -169,20 +172,20 @@ export function DetailPageSkeleton({ sidebar = "wide" }: DetailPageSkeletonProps
               <Skeleton className="h-3.5 w-4/6" />
             </div>
           </div>
-          <div className="rounded-xl border border-border bg-white p-5" aria-hidden>
+          <div className="rounded-md border border-border bg-panel p-5" aria-hidden>
             <Skeleton className="h-4 w-1/4" />
-            <Skeleton className="mt-4 h-40 w-full rounded-lg" />
+            <Skeleton className="mt-4 h-40 w-full rounded-sm" />
           </div>
         </div>
         <div className="min-w-0 space-y-6">
           {Array.from({ length: 2 }, (_, index) => (
             <div
               key={index}
-              className="rounded-xl border border-border bg-white p-5"
+              className="rounded-md border border-border bg-panel p-5"
               aria-hidden
             >
               <Skeleton className="h-4 w-1/3" />
-              <Skeleton className="mt-4 h-20 w-full rounded-lg" />
+              <Skeleton className="mt-4 h-20 w-full rounded-sm" />
             </div>
           ))}
         </div>
@@ -197,7 +200,7 @@ export function FormSkeleton({ fields = 5 }: { fields?: number }) {
     <div className={PAGE_WRAPPER}>
       <PageHeaderSkeleton withAction={false} />
       <div
-        className="mt-6 space-y-6 rounded-xl border border-border bg-white p-5 sm:p-6"
+        className="mt-6 space-y-6 rounded-md border border-border bg-panel p-5 sm:p-6"
         role="status"
         aria-busy
         aria-label="Loading form"
@@ -205,13 +208,13 @@ export function FormSkeleton({ fields = 5 }: { fields?: number }) {
         {Array.from({ length: fields }, (_, index) => (
           <div key={index} className="space-y-2">
             <Skeleton className="h-3 w-28" />
-            <Skeleton className="h-11 w-full rounded-lg" />
+            <Skeleton className="h-11 w-full rounded-sm" />
           </div>
         ))}
-        <Skeleton className="h-24 w-full rounded-lg" />
+        <Skeleton className="h-24 w-full rounded-sm" />
         <div className="flex justify-end gap-3">
-          <Skeleton className="h-11 w-24 rounded-lg" />
-          <Skeleton className="h-11 w-32 rounded-lg" />
+          <Skeleton className="h-11 w-24 rounded-sm" />
+          <Skeleton className="h-11 w-32 rounded-sm" />
         </div>
       </div>
     </div>
@@ -225,26 +228,26 @@ export function CalendarSkeleton() {
       <div className="mb-6 flex items-center justify-between gap-4" aria-hidden>
         <Skeleton className="h-6 w-40" />
         <div className="flex gap-2">
-          <Skeleton className="h-9 w-24 rounded-lg" />
-          <Skeleton className="h-9 w-24 rounded-lg" />
+          <Skeleton className="h-9 w-24 rounded-sm" />
+          <Skeleton className="h-9 w-24 rounded-sm" />
         </div>
       </div>
       <div className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-start">
         <div
-          className="rounded-xl border border-border bg-white p-4"
+          className="rounded-md border border-border bg-panel p-4"
           role="status"
           aria-busy
           aria-label="Loading calendar"
         >
           <div className="grid grid-cols-7 gap-2">
             {Array.from({ length: 42 }, (_, index) => (
-              <Skeleton key={index} className="aspect-square rounded-lg" />
+              <Skeleton key={index} className="aspect-square rounded-sm" />
             ))}
           </div>
         </div>
-        <div className="rounded-xl border border-border bg-white p-5" aria-hidden>
+        <div className="rounded-md border border-border bg-panel p-5" aria-hidden>
           <Skeleton className="h-4 w-1/3" />
-          <Skeleton className="mt-4 h-32 w-full rounded-lg" />
+          <Skeleton className="mt-4 h-32 w-full rounded-sm" />
         </div>
       </div>
     </div>
@@ -262,11 +265,11 @@ export function NotificationsPageSkeleton({
       <PageHeaderSkeleton />
       {withSidebar ? (
         <div className="mt-6 grid gap-6 lg:grid-cols-[260px_1fr] lg:items-start">
-          <div className="rounded-xl border border-border bg-white p-5" aria-hidden>
+          <div className="rounded-md border border-border bg-panel p-5" aria-hidden>
             <Skeleton className="h-3 w-20" />
             <div className="mt-4 space-y-3">
               {Array.from({ length: 5 }, (_, index) => (
-                <Skeleton key={index} className="h-8 w-full rounded-lg" />
+                <Skeleton key={index} className="h-8 w-full rounded-sm" />
               ))}
             </div>
           </div>
@@ -293,11 +296,11 @@ export function AppShellSkeleton() {
       aria-busy
       aria-label="Loading"
     >
-      <aside className="hidden w-64 shrink-0 flex-col gap-6 border-r border-border bg-white p-5 lg:flex">
+      <aside className="hidden w-64 shrink-0 flex-col gap-6 border-r border-border bg-panel p-5 lg:flex">
         <Skeleton className="h-8 w-32" />
         <div className="space-y-2">
           {Array.from({ length: 7 }, (_, index) => (
-            <Skeleton key={index} className="h-9 w-full rounded-lg" />
+            <Skeleton key={index} className="h-9 w-full rounded-sm" />
           ))}
         </div>
         <div className="mt-auto flex items-center gap-3">

@@ -139,12 +139,12 @@ export function PhotographerProfileForm() {
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-white p-6 shadow-card sm:p-8 lg:p-10">
+    <div className="rounded-md border border-border bg-panel p-6 sm:p-8 lg:p-10">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
           {copy.title}
         </h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted sm:text-base">
+        <p className="mt-2 text-sm leading-relaxed text-ink-soft sm:text-base">
           {copy.subtitle}
         </p>
       </div>
@@ -162,7 +162,7 @@ export function PhotographerProfileForm() {
                     className="size-full object-cover"
                   />
                 ) : (
-                  <User className="size-7 text-muted-light" strokeWidth={1.5} />
+                  <User className="size-7 text-ink-faint" strokeWidth={1.5} />
                 )}
               </div>
               <div>
@@ -178,11 +178,11 @@ export function PhotographerProfileForm() {
                 <button
                   type="button"
                   onClick={() => profileInputRef.current?.click()}
-                  className="text-sm font-semibold text-gold underline-offset-4 hover:text-gold-hover hover:underline"
+                  className="text-sm font-semibold text-accent underline-offset-4 hover:text-accent-hover hover:underline"
                 >
                   {copy.uploadImage}
                 </button>
-                <p className="mt-1 text-xs text-muted-light">
+                <p className="mt-1 text-xs text-ink-faint">
                   {copy.profilePhotoHint}
                 </p>
               </div>
@@ -202,7 +202,7 @@ export function PhotographerProfileForm() {
               type="button"
               onClick={() => qrInputRef.current?.click()}
               className={cn(
-                "flex h-[88px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-[#f7f7f5] transition-colors hover:bg-[#f0f0ee]",
+                "flex h-[88px] w-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-[#f7f7f5] transition-colors hover:bg-[#f0f0ee]",
               )}
             >
               {qrPreview ? (
@@ -213,8 +213,8 @@ export function PhotographerProfileForm() {
                 />
               ) : (
                 <>
-                  <QrCode className="size-5 text-muted-light" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted">
+                  <QrCode className="size-5 text-ink-faint" />
+                  <span className="text-xs font-medium text-ink-soft">
                     {copy.uploadQr}
                   </span>
                 </>
@@ -271,10 +271,10 @@ export function PhotographerProfileForm() {
           />
         </div>
 
-        <div className="rounded-xl bg-[#f7f7f5] p-5 sm:p-6">
+        <div className="rounded-md bg-[#f7f7f5] p-5 sm:p-6">
           <div className="mb-4 flex items-center gap-2">
-            <Banknote className="size-4 text-gold" />
-            <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-charcoal">
+            <Banknote className="size-4 text-accent" />
+            <h2 className="text-xs font-medium text-ink">
               {copy.paymentDetails}
             </h2>
           </div>
@@ -298,13 +298,13 @@ export function PhotographerProfileForm() {
         </div>
 
         {error && (
-          <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p className="rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
             {error}
           </p>
         )}
 
         <div className="flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="flex items-center gap-1 text-xs text-muted-light">
+          <p className="flex items-center gap-1 text-xs text-ink-faint">
             <Lock className="size-3 shrink-0" aria-hidden />
             {copy.securityNote}
           </p>
@@ -323,7 +323,7 @@ export function PhotographerProfileForm() {
               type="button"
               variant="link"
               size="sm"
-              className="text-muted-light hover:text-muted"
+              className="text-ink-faint hover:text-ink-soft"
               onClick={() => void handleSkip()}
               disabled={isSubmitting}
             >
