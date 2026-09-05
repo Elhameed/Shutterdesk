@@ -10,16 +10,18 @@ export function BrowserFrame({ children, className }: BrowserFrameProps) {
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl border border-border bg-white shadow-elevated",
+        "border-border bg-panel overflow-hidden rounded-md border",
         className,
       )}
     >
-      <div className="flex items-center gap-2 border-b border-border bg-gray-50 px-4 py-3">
-        <span className="size-3 rounded-full bg-[#ff5f57]" />
-        <span className="size-3 rounded-full bg-[#febc2e]" />
-        <span className="size-3 rounded-full bg-[#28c840]" />
+      {/* Muted window dots — three saturated traffic-light colors were the
+          loudest thing on the page, competing with the screenshot inside. */}
+      <div className="border-border bg-paper-dim flex items-center gap-2 border-b px-4 py-3">
+        <span className="bg-border-strong size-2.5 rounded-full" />
+        <span className="bg-border-strong size-2.5 rounded-full" />
+        <span className="bg-border-strong size-2.5 rounded-full" />
       </div>
-      <div className="bg-charcoal">{children}</div>
+      <div className="bg-rail-bg">{children}</div>
     </div>
   );
 }

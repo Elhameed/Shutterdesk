@@ -38,14 +38,14 @@ export function AuthSplitLayout({
             )}
           />
         ) : (
-          <div className="absolute inset-0 bg-charcoal" />
+          <div className="bg-rail-bg absolute inset-0" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
 
         <div className="relative flex h-full flex-col justify-between p-10 xl:p-12">
-          <AuthBrandLogo variant={logoVariant} />
+          <AuthBrandLogo variant={logoVariant} tone="light" />
           <div className="max-w-md">
-            <h2 className="text-3xl font-bold leading-tight text-white xl:text-4xl">
+            <h2 className="font-display text-3xl leading-tight text-white xl:text-4xl">
               {headline}
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-white/70 xl:text-base">
@@ -57,7 +57,7 @@ export function AuthSplitLayout({
 
       {/* Right panel — form */}
       <main className="flex w-full flex-1 flex-col lg:w-1/2">
-        <div className="flex items-center border-b border-border p-6 lg:hidden">
+        <div className="border-border flex items-center border-b p-6 lg:hidden">
           <AuthBrandLogo variant={logoVariant} />
         </div>
         <div className="flex flex-1 items-center justify-center overflow-y-auto px-6 py-10 sm:px-10">

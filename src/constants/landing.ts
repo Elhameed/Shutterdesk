@@ -11,7 +11,7 @@ import {
 
 export const LANDING_NAV = [
   { label: "Features", href: "#features" },
-  { label: "How It Works", href: "#how-it-works" },
+  { label: "How it works", href: "#how-it-works" },
   { label: "Pricing", href: "#pricing" },
   { label: "Contact", href: "#contact" },
 ] as const;
@@ -30,13 +30,13 @@ export type FeatureItem = {
 
 export const PLATFORM_FEATURES: FeatureItem[] = [
   {
-    title: "Booking Management",
+    title: "Booking management",
     description:
       "Integrated booking engine that handles session types, deposits, and scheduling without the back-and-forth.",
     icon: CalendarPlus,
   },
   {
-    title: "Availability Calendar",
+    title: "Availability calendar",
     description:
       "Sync multiple calendars to prevent double bookings and manage your personal time effectively.",
     icon: Calendar,
@@ -48,74 +48,74 @@ export const PLATFORM_FEATURES: FeatureItem[] = [
     icon: Users,
   },
   {
-    title: "Payment Verification",
+    title: "Payment verification",
     description:
       "Instant invoice generation and automated payment tracking with secure Stripe integration.",
     icon: CheckCircle2,
   },
   {
-    title: "Gallery Delivery",
+    title: "Gallery delivery",
     description:
       "Beautifully curated online galleries for clients to download high-res images and order prints.",
     icon: Images,
   },
   {
-    title: "Automated Notifications",
+    title: "Automated notifications",
     description:
       "Smart reminders for clients about upcoming sessions, pending payments, and gallery expiration.",
     icon: Bell,
   },
   {
-    title: "Business Analytics",
+    title: "Business analytics",
     description:
       "Track bookings, payments, revenue, and client activity.",
     icon: BarChart3,
   },
 ];
 
-export const WORKFLOW_LABEL = "Photographer Journey";
+export const WORKFLOW_LABEL = "Photographer journey";
 
 export const WORKFLOW_STEPS = [
   {
     step: 1,
-    title: "Receive Booking",
+    title: "Receive booking",
     description: "Get notified when a client requests a session.",
   },
   {
     step: 2,
-    title: "Approve Request",
+    title: "Approve request",
     description: "Review details and confirm the booking.",
   },
   {
     step: 3,
-    title: "Verify Payment",
+    title: "Verify payment",
     description: "Confirm deposit or full payment before the shoot.",
   },
   {
     step: 4,
-    title: "Conduct Session",
+    title: "Conduct session",
     description: "Focus on the shoot while Shutterdesk handles the admin.",
   },
   {
     step: 5,
-    title: "Deliver Gallery",
+    title: "Deliver gallery",
     description: "Upload, curate, and share photos with your client.",
   },
 ] as const;
 
 export const EXCELLENCE_FEATURES = [
   {
-    title: "Unified Photographer Dashboard",
+    title: "Unified photographer dashboard",
     description:
       "Real-time revenue tracking and pending tasks at a glance.",
   },
   {
-    title: "Advanced CRM Interface",
+    title: "Advanced CRM interface",
     description:
       "Manage client relationships with sophisticated filtering.",
   },
   {
-    title: "Premium Gallery Management",
+    title: "Premium gallery management",
     description:
       "Curate and deliver shoots with editorial-grade layouts.",
   },
@@ -124,17 +124,17 @@ export const EXCELLENCE_FEATURES = [
 export const PRICING_PLANS = [
   {
     name: "Starter",
-    status: "Coming Soon",
+    status: "Coming soon",
     highlighted: false,
   },
   {
     name: "Professional",
-    status: "Coming Soon",
+    status: "Coming soon",
     highlighted: true,
   },
   {
     name: "Studio",
-    status: "Coming Soon",
+    status: "Coming soon",
     highlighted: false,
   },
 ] as const;
@@ -165,16 +165,16 @@ export const FOOTER_LINKS = {
     { label: "Roadmap", href: "#" },
   ],
   company: [
-    { label: "About Us", href: "#" },
+    { label: "About us", href: "#" },
     { label: "Careers", href: "#" },
     { label: "Press", href: "#" },
     { label: "Contact", href: "#contact" },
   ],
   resources: [
-    { label: "Help Center", href: "#" },
+    { label: "Help center", href: "#" },
     { label: "Guides", href: "#" },
     { label: "Community", href: "#" },
-    { label: "API Docs", href: "#" },
+    { label: "API docs", href: "#" },
   ],
   legal: [
     { label: "Privacy", href: "#" },

@@ -11,14 +11,14 @@ type AuthBackLinkProps = {
 
 export function AuthBackLink({
   to = ROUTES.home,
-  label = "Back to Website",
+  label = "Back to website",
   className,
 }: AuthBackLinkProps) {
   return (
     <Link
       to={to}
       className={cn(
-        "mb-8 inline-flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-charcoal",
+        "text-ink-soft hover:text-ink mb-8 inline-flex items-center gap-1.5 text-xs transition-colors",
         className,
       )}
     >

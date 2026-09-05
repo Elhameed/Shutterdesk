@@ -5,10 +5,10 @@ import { cn } from "@/lib/utils";
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="bg-white py-16 sm:py-20 lg:py-24">
+    <section id="pricing" className="bg-panel py-16 sm:py-20 lg:py-24">
       <PageContainer>
         <SectionHeader label="Plans" title="Flexible pricing for your growth" />
-        <p className="mx-auto mt-4 max-w-xl text-center text-sm text-muted">
+        <p className="text-ink-soft mx-auto mt-4 max-w-xl text-center text-sm">
           Pricing plans are being finalized for launch. Check back soon.
         </p>
 
@@ -17,17 +17,15 @@ export function PricingSection() {
             <article
               key={plan.name}
               className={cn(
-                "relative flex flex-col items-center rounded-xl border bg-white p-8 text-center shadow-card",
-                plan.highlighted
-                  ? "border-gold ring-1 ring-gold lg:scale-[1.02]"
-                  : "border-border",
+                "bg-paper relative flex flex-col items-center rounded-md border p-8 text-center",
+                plan.highlighted ? "border-accent" : "border-border",
               )}
             >
-              <h3 className="text-lg font-bold text-charcoal">{plan.name}</h3>
-              <p className="mt-6 text-2xl font-bold tracking-tight text-gold">
+              <h3 className="font-display text-ink text-lg">{plan.name}</h3>
+              <p className="font-display text-accent mt-6 text-2xl">
                 {plan.status}
               </p>
-              <p className="mt-4 text-sm text-muted">
+              <p className="text-ink-soft mt-4 text-sm">
                 Full plan details will be available at launch.
               </p>
             </article>
