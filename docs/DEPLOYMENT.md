@@ -246,6 +246,33 @@ GitHub Actions ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs 
 
 ---
 
+## A wedged migration advisory lock
+
+`prisma migrate deploy` serialises itself with a **session-scoped** advisory
+lock. If it ever ran against the pooled endpoint, that lock can be left held
+forever: the client abandons the acquire after 10s and disconnects, but
+PgBouncer had already handed the statement to a backend, which is granted the
+lock and returned to the pool still holding it. Nothing releases it, and every
+later deploy blocks on the same lock id — including ones using the direct
+connection.
+
+The service is configured with `PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK=true`
+(see [`render.yaml`](../render.yaml)), so migrations no longer wait on that lock
+at all. Deploys here are single-instance and sequential, so the lock protects
+nothing we rely on.
+
+To clear a leaked lock instead of bypassing it, either restart the Neon compute
+endpoint — which terminates every backend and drops all advisory locks — or run
+this against the **direct** connection:
+
+```sql
+SELECT pid, pg_terminate_backend(pid)
+FROM pg_locks
+WHERE locktype = 'advisory' AND objid = 72707369;
+```
+
+---
+
 ## Troubleshooting
 
 | Symptom | Fix |
@@ -259,5 +286,5 @@ GitHub Actions ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs 
 | Cold start delay (Render free) | First request after idle may take ~30s. Neon also auto-suspends when idle, so the very first request after a quiet period pays both. Subsequent requests are normal. |
 | Vercel build fails: `VITE_API_URL is not set` | Working as intended — set the variable in Project Settings and redeploy. See step 2. |
 | `Too many connections` from Postgres | `DATABASE_URL` is the unpooled Neon string. Use the pooled one (host contains `-pooler`). |
-| `P1002 ... Timed out trying to acquire a postgres advisory lock` | `DIRECT_DATABASE_URL` is unset, or set to the pooled string. Migrations need the **unpooled** connection — see step 0. |
+| `P1002 ... Timed out trying to acquire a postgres advisory lock` | First check `DIRECT_DATABASE_URL` is set to the **unpooled** string (step 0). If it is correct and the log's `Datasource` line already shows a host without `-pooler`, the lock has been leaked by an earlier pooled attempt — see below. |
 | Uploads fail but everything else works | Cloudinary vars are unset on Render. See [CLOUDINARY.md](./CLOUDINARY.md). |
