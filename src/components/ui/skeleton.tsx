@@ -15,7 +15,7 @@ export function Skeleton({ className, style }: SkeletonProps) {
   return (
     <div
       className={cn(
-        "skeleton-shimmer relative overflow-hidden rounded-md bg-gray-200/80",
+        "skeleton-shimmer bg-paper-dim relative overflow-hidden rounded-sm",
         className,
       )}
       style={style}
@@ -65,7 +65,7 @@ export function SkeletonCircle({ className }: SkeletonCircleProps) {
 }
 
 export function SkeletonButton({ className }: SkeletonProps) {
-  return <Skeleton className={cn("h-11 w-28 rounded-lg", className)} />;
+  return <Skeleton className={cn("h-11 w-28 rounded-sm", className)} />;
 }
 
 export function SkeletonBadge({ className }: SkeletonProps) {
@@ -85,7 +85,7 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
 export function CardSkeleton() {
   return (
     <div
-      className="rounded-xl border border-border bg-white p-5"
+      className="border-border bg-panel rounded-md border p-4"
       role="status"
       aria-busy
       aria-label="Loading content"

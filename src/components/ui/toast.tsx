@@ -51,23 +51,26 @@ const variantStyles: Record<
   { container: string; icon: string; Icon: typeof Info }
 > = {
   success: {
-    container: "border-emerald-200 bg-emerald-50",
-    icon: "text-emerald-600",
+    container: "border-ok/30 bg-ok-tint",
+    icon: "text-ok-fg",
     Icon: CheckCircle2,
   },
   info: {
-    container: "border-gold/30 bg-white",
-    icon: "text-gold",
+    container: "border-border bg-panel",
+    icon: "text-accent",
     Icon: Info,
   },
+  /* Warning and error share the brick family — attention needed, at two
+     intensities — separated by border weight and icon. The palette has no
+     fifth hue, and reusing ochre here would collide with success. */
   warning: {
-    container: "border-amber-200 bg-amber-50",
-    icon: "text-amber-600",
+    container: "border-bad/25 bg-bad-tint",
+    icon: "text-bad-fg",
     Icon: AlertTriangle,
   },
   error: {
-    container: "border-red-200 bg-red-50",
-    icon: "text-red-600",
+    container: "border-bad/70 bg-bad-tint",
+    icon: "text-bad",
     Icon: AlertCircle,
   },
 };
@@ -94,23 +97,23 @@ function ToastItem({
       role="status"
       aria-live="polite"
       className={cn(
-        "toast-enter pointer-events-auto w-full max-w-sm rounded-xl border p-4 shadow-elevated",
+        "toast-enter pointer-events-auto w-full max-w-sm rounded-md border p-4",
         styles.container,
       )}
     >
       <div className="flex items-start gap-3">
         <Icon className={cn("mt-0.5 size-5 shrink-0", styles.icon)} aria-hidden />
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-charcoal">{toast.title}</p>
+          <p className="text-ink text-sm font-semibold">{toast.title}</p>
           {toast.description ? (
-            <p className="mt-1 text-sm leading-relaxed text-muted">
+            <p className="text-ink-soft mt-1 text-sm leading-relaxed">
               {toast.description}
             </p>
           ) : null}
           {toast.href && toast.actionLabel ? (
             <Link
               to={toast.href}
-              className="mt-2 inline-flex text-sm font-semibold text-gold hover:text-gold-hover"
+              className="text-accent hover:text-accent-hover mt-2 inline-flex text-sm font-medium"
               onClick={() => onDismiss(toast.id)}
             >
               {toast.actionLabel}
@@ -119,7 +122,7 @@ function ToastItem({
         </div>
         <button
           type="button"
-          className="shrink-0 rounded-md p-1 text-muted transition-colors hover:bg-black/5 hover:text-charcoal"
+          className="text-ink-faint hover:text-ink shrink-0 rounded-sm p-1 transition-colors hover:bg-black/5"
           aria-label="Dismiss notification"
           onClick={() => onDismiss(toast.id)}
         >

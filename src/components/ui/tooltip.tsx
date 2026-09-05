@@ -20,7 +20,7 @@ export function Tooltip({
       <span
         role="tooltip"
         className={cn(
-          "pointer-events-none absolute left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-md bg-charcoal px-2.5 py-1.5 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity group-hover/tooltip:opacity-100 group-focus-within/tooltip:opacity-100",
+          "bg-rail-bg text-rail-text-active pointer-events-none absolute left-1/2 z-50 -translate-x-1/2 rounded-sm px-2.5 py-1.5 text-[11px] font-medium whitespace-nowrap opacity-0 transition-opacity group-hover/tooltip:opacity-100 group-focus-within/tooltip:opacity-100",
           side === "top" ? "bottom-full mb-2" : "top-full mt-2",
         )}
       >
