@@ -22,12 +22,10 @@ export function SectionHeader({
         className,
       )}
     >
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-        {label}
-      </p>
+      <p className="text-ink-faint text-xs">{label}</p>
       <h2
         className={cn(
-          "mt-3 text-3xl font-bold tracking-tight text-charcoal sm:text-4xl",
+          "font-display text-ink mt-2 text-3xl sm:text-4xl",
           titleClassName,
         )}
       >

@@ -19,13 +19,11 @@ export function LocalTimeBadge() {
   }, []);
 
   return (
-    <div className="text-right">
-      <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
-        {LOCAL_TIME_COPY.localTimeLabel}
-      </p>
-      <p className="mt-0.5 text-sm font-semibold text-charcoal">
+    <div className="border-border text-ink-soft inline-flex shrink-0 items-center gap-1.5 self-start rounded-full border px-3 py-1.5 text-xs sm:self-auto">
+      <span className="text-ink-faint">{LOCAL_TIME_COPY.localTimeLabel}</span>
+      <span>
         {LOCAL_TIME_COPY.city}, {formatKigaliTime(now)} {LOCAL_TIME_COPY.timezone}
-      </p>
+      </span>
     </div>
   );
 }

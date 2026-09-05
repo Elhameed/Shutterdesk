@@ -9,7 +9,9 @@ export function NotificationNavBadge({ count }: NotificationNavBadgeProps) {
 
   return (
     <span
-      className="ml-auto inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-[10px] font-bold leading-none text-white"
+      // Sits on the dark rail, so it needs a light chip: filled accent would
+      // be near-invisible against the rail background.
+      className="bg-accent-tint text-accent-fg ml-auto inline-flex min-h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] leading-none font-semibold"
       aria-label={`${count} unread notifications`}
     >
       {label}

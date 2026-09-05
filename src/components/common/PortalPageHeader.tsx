@@ -24,10 +24,8 @@ export function PortalPageHeader({
   return (
     <div className={cn("flex flex-col gap-4", rowClass, className)}>
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
-          {title}
-        </h1>
-        {subtitle && <p className="mt-1 text-sm text-muted">{subtitle}</p>}
+        <h1 className="font-display text-ink text-2xl sm:text-3xl">{title}</h1>
+        {subtitle && <p className="text-ink-soft mt-1 text-sm">{subtitle}</p>}
       </div>
       {actions && (
         <div className="flex shrink-0 flex-wrap gap-2">{actions}</div>

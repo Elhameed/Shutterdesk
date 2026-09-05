@@ -17,7 +17,7 @@ export function PortalBreadcrumbs({ items, className }: PortalBreadcrumbsProps) 
   return (
     <nav
       aria-label="Breadcrumb"
-      className={cn("flex items-center gap-1.5 text-sm text-muted", className)}
+      className={cn("text-ink-soft flex items-center gap-1.5 text-sm", className)}
     >
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
@@ -28,7 +28,7 @@ export function PortalBreadcrumbs({ items, className }: PortalBreadcrumbsProps) 
             {!isLast && item.href && (
               <Link
                 to={item.href}
-                className="transition-colors hover:text-charcoal"
+                className="hover:text-ink transition-colors"
               >
                 {item.label}
               </Link>
@@ -37,7 +37,7 @@ export function PortalBreadcrumbs({ items, className }: PortalBreadcrumbsProps) 
               <button
                 type="button"
                 onClick={item.onClick}
-                className="transition-colors hover:text-charcoal"
+                className="hover:text-ink transition-colors"
               >
                 {item.label}
               </button>
@@ -46,7 +46,7 @@ export function PortalBreadcrumbs({ items, className }: PortalBreadcrumbsProps) 
               <span>{item.label}</span>
             )}
             {isLast && (
-              <span className="font-medium text-charcoal">{item.label}</span>
+              <span className="text-ink font-medium">{item.label}</span>
             )}
           </span>
         );

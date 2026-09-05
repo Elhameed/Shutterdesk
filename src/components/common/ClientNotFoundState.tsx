@@ -14,7 +14,7 @@ export function ClientNotFoundState({
 }: ClientNotFoundStateProps) {
   return (
     <div className="flex min-h-[40vh] flex-col items-center justify-center p-8 text-center">
-      <p className="text-sm text-muted">{message}</p>
+      <p className="text-ink-soft text-sm">{message}</p>
       <Button variant="outline" size="sm" className="mt-4" asChild>
         <Link to={actionHref}>{actionLabel}</Link>
       </Button>
