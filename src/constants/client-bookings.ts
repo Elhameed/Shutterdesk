@@ -22,7 +22,7 @@ export const CLIENT_BOOKINGS_COPY = {
   viewGallery: "View gallery",
   noResults: "No bookings match your search.",
   emptyTitle: "No bookings yet",
-  emptyBody: "Book your first session to get started with imani uwase photography.",
+  emptyBody: "Book your first session to get started with Imani Uwase Photography.",
   bookSession: "Book a session",
   nextSession: "Next session",
   noUpcomingSession: "No upcoming session",

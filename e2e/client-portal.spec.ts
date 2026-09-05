@@ -6,6 +6,11 @@ const DEMO_CLIENT = {
   firstName: "Immaculée",
 };
 
+/** Sidebar landmark — see the note in photographer-portal.spec.ts. */
+function nav(page: import("@playwright/test").Page) {
+  return page.getByRole("navigation");
+}
+
 async function loginAsDemoClient(page: import("@playwright/test").Page) {
   await page.goto("/login");
   await page.getByLabel("Email Address").fill(DEMO_CLIENT.email);
@@ -31,21 +36,26 @@ test.describe("Client portal golden path", () => {
   }) => {
     await loginAsDemoClient(page);
 
-    await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+    // The client dashboard headline is the greeting, not the word "Dashboard".
+    await expect(
+      page.getByRole("heading", {
+        name: new RegExp(`Welcome back, ${DEMO_CLIENT.firstName}`, "i"),
+      }),
+    ).toBeVisible();
 
-    await page.getByRole("link", { name: "My Bookings" }).click();
+    await nav(page).getByRole("link", { name: "My Bookings" }).click();
     await expect(page).toHaveURL(/\/client\/bookings/);
     await expect(page.getByRole("heading", { name: "My Bookings" })).toBeVisible();
 
-    await page.getByRole("link", { name: "Payments" }).click();
+    await nav(page).getByRole("link", { name: "Payments" }).click();
     await expect(page).toHaveURL(/\/client\/payments/);
     await expect(page.getByRole("heading", { name: "Payments" })).toBeVisible();
 
-    await page.getByRole("link", { name: "Galleries" }).click();
+    await nav(page).getByRole("link", { name: "Galleries" }).click();
     await expect(page).toHaveURL(/\/client\/galleries/);
     await expect(page.getByRole("heading", { name: "My Galleries" })).toBeVisible();
 
-    await page.getByRole("link", { name: "Notifications" }).click();
+    await nav(page).getByRole("link", { name: "Notifications" }).click();
     await expect(page).toHaveURL(/\/client\/notifications/);
     await expect(page.getByRole("heading", { name: "Notifications" })).toBeVisible();
   });
@@ -53,8 +63,12 @@ test.describe("Client portal golden path", () => {
   test("book session marketplace entry is reachable", async ({ page }) => {
     await loginAsDemoClient(page);
 
-    await page.getByRole("link", { name: "Book Session" }).click();
+    // "Book session" is both a nav item and a call to action in the page body,
+    // so scope to the sidebar or the locator is ambiguous.
+    await nav(page).getByRole("link", { name: "Book session" }).click();
     await expect(page).toHaveURL(/\/client\/book/);
-    await expect(page.getByRole("heading", { name: "Book a Session" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Select your session type" }),
+    ).toBeVisible();
   });
 });

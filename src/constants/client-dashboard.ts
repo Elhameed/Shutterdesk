@@ -84,7 +84,7 @@ export const CLIENT_DASHBOARD_COPY = {
   },
   needHelp: {
     title: "Need help?",
-    body: "Reach imani uwase photography for booking or gallery questions.",
+    body: "Reach Imani Uwase Photography for booking or gallery questions.",
     cta: "Email support",
   },
   stats: {
