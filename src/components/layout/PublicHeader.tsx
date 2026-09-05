@@ -12,7 +12,7 @@ export function PublicHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-white">
+    <header className="border-border bg-paper sticky top-0 z-50 border-b">
       <PageContainer className="flex h-[72px] items-center justify-between">
         <Logo />
 
@@ -24,7 +24,7 @@ export function PublicHeader() {
             <a
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-muted transition-colors hover:text-charcoal"
+              className="text-ink-soft hover:text-ink text-sm font-medium transition-colors"
             >
               {item.label}
             </a>
@@ -34,18 +34,18 @@ export function PublicHeader() {
         <div className="hidden items-center gap-4 lg:flex">
           <Link
             to={ROUTES.login}
-            className="text-sm font-medium text-charcoal hover:text-charcoal/80"
+            className="text-ink hover:text-accent text-sm font-medium transition-colors"
           >
-            Login
+            Log in
           </Link>
           <Button asChild>
-            <Link to={ROUTES.register}>Get Started</Link>
+            <Link to={ROUTES.register}>Get started</Link>
           </Button>
         </div>
 
         <button
           type="button"
-          className="inline-flex size-10 items-center justify-center rounded-lg text-charcoal lg:hidden"
+          className="text-ink inline-flex size-10 items-center justify-center rounded-sm lg:hidden"
           aria-expanded={mobileOpen}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           onClick={() => setMobileOpen((open) => !open)}
@@ -56,7 +56,7 @@ export function PublicHeader() {
 
       <div
         className={cn(
-          "border-t border-border bg-white lg:hidden",
+          "border-border bg-paper border-t lg:hidden",
           mobileOpen ? "block" : "hidden",
         )}
       >
@@ -65,23 +65,23 @@ export function PublicHeader() {
             <a
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-muted"
+              className="text-ink-soft text-sm font-medium"
               onClick={() => setMobileOpen(false)}
             >
               {item.label}
             </a>
           ))}
-          <div className="flex flex-col gap-3 border-t border-border pt-4">
+          <div className="border-border flex flex-col gap-3 border-t pt-4">
             <Link
               to={ROUTES.login}
-              className="text-sm font-medium text-charcoal"
+              className="text-ink text-sm font-medium"
               onClick={() => setMobileOpen(false)}
             >
-              Login
+              Log in
             </Link>
             <Button asChild>
               <Link to={ROUTES.register} onClick={() => setMobileOpen(false)}>
-                Get Started
+                Get started
               </Link>
             </Button>
           </div>

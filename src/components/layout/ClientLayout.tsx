@@ -30,11 +30,11 @@ export function ClientLayout() {
   }
 
   return (
-    <div className="flex min-h-screen overflow-x-hidden bg-[#f7f7f5]">
+    <div className="bg-paper flex min-h-screen overflow-x-hidden">
       {drawerOpen && (
         <button
           type="button"
-          className="fixed inset-0 z-40 bg-charcoal/40 lg:hidden"
+          className="bg-ink/40 fixed inset-0 z-40 lg:hidden"
           aria-label="Close menu"
           onClick={closeDrawer}
         />
@@ -58,10 +58,10 @@ export function ClientLayout() {
       />
 
       <div className="flex min-w-0 flex-1 flex-col lg:pl-60">
-        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 border-b border-border bg-white px-4 lg:hidden">
+        <header className="border-border bg-panel sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 border-b px-4 lg:hidden">
           <button
             type="button"
-            className="rounded-lg p-2 text-charcoal transition-colors hover:bg-gray-100"
+            className="text-ink hover:bg-paper-dim rounded-sm p-2 transition-colors"
             aria-label="Open menu"
             aria-expanded={drawerOpen}
             onClick={() => setDrawerOpen(true)}

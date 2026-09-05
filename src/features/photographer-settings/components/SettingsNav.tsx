@@ -14,6 +14,10 @@ import {
   SETTINGS_TABS,
   type SettingsTab,
 } from "@/constants/photographer-settings";
+import {
+  PANEL_NAV_ITEM,
+  panelNavItemState,
+} from "@/components/layout/rail-nav";
 import { DEFAULT_STORAGE_SETTINGS } from "@/constants/storage";
 import { cn } from "@/lib/utils";
 
@@ -50,16 +54,15 @@ export function SettingsNav({ activeTab, onTabChange }: SettingsNavProps) {
                 type="button"
                 onClick={() => onTabChange(tab)}
                 className={cn(
-                  "flex shrink-0 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors lg:w-full",
-                  isActive
-                    ? "bg-gray-100 text-charcoal"
-                    : "text-muted hover:bg-gray-50 hover:text-charcoal",
+                  PANEL_NAV_ITEM,
+                  panelNavItemState(isActive),
+                  "lg:w-full",
                 )}
               >
                 <Icon
                   className={cn(
                     "size-[18px] shrink-0",
-                    isActive ? "text-gold" : "text-muted",
+                    isActive ? "text-accent" : "text-ink-faint",
                   )}
                   aria-hidden
                 />
@@ -70,18 +73,20 @@ export function SettingsNav({ activeTab, onTabChange }: SettingsNavProps) {
         </div>
       </nav>
 
-      <div className="mt-auto border-t border-border p-4">
-        <div className="flex items-center justify-between text-[10px] font-bold tracking-wider text-muted-light uppercase">
+      <div className="border-border mt-auto border-t p-4">
+        <div className="text-ink-soft flex items-center justify-between text-xs">
           <span>{copy.storage.label}</span>
-          <span className="text-charcoal">{DEFAULT_STORAGE_SETTINGS.percent}%</span>
+          <span className="font-display text-ink">
+            {DEFAULT_STORAGE_SETTINGS.percent}%
+          </span>
         </div>
-        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-200">
+        <div className="bg-paper-dim mt-2 h-1.5 overflow-hidden rounded-full">
           <div
-            className="h-full rounded-full bg-charcoal transition-all"
+            className="bg-accent h-full rounded-full transition-all"
             style={{ width: `${DEFAULT_STORAGE_SETTINGS.percent}%` }}
           />
         </div>
-        <p className="mt-2 text-xs text-muted">
+        <p className="text-ink-faint mt-2 text-xs">
           {copy.storage.used(
             DEFAULT_STORAGE_SETTINGS.usedGb,
             DEFAULT_STORAGE_SETTINGS.totalGb,
