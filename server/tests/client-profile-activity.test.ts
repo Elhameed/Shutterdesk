@@ -16,6 +16,19 @@ const baseClient = {
   createdAt: new Date("2024-10-01T10:00:00Z"),
 } as StudioClient;
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * `buildProjects` and `buildTimeline` classify a session by comparing
+ * `sessionAt` against `new Date()`, so a fixture pinned to a literal date is a
+ * time bomb: it asserts "upcoming" until that date passes and then fails
+ * forever with no code change. This suite was pinned to 2026-07-15 and started
+ * failing on 2026-07-15. Anchor session dates to the run instead.
+ */
+function daysFromNow(days: number) {
+  return new Date(Date.now() + days * DAY_MS);
+}
+
 describe("client profile activity builders", () => {
   it("builds projects from bookings", () => {
     const projects = buildProjects(
@@ -23,9 +36,10 @@ describe("client profile activity builders", () => {
         {
           id: "booking-1",
           packageName: "Golden Hour Wedding",
+          // Display-only; the builders classify on sessionAt, not this label.
           sessionDateLabel: "Jun 15, 2026",
           sessionTime: "10:00 AM",
-          sessionAt: new Date("2026-07-15T10:00:00Z"),
+          sessionAt: daysFromNow(30),
           status: "confirmed",
           servicePackage: { category: "wedding", coverAssetKey: "cover-1" },
           gallery: {
@@ -82,7 +96,7 @@ describe("client profile activity builders", () => {
           packageName: "Golden Hour Wedding",
           sessionDateLabel: "Jun 15, 2026",
           sessionTime: "10:00 AM",
-          sessionAt: new Date("2026-07-15T10:00:00Z"),
+          sessionAt: daysFromNow(30),
           status: "confirmed",
           servicePackage: null,
           gallery: null,

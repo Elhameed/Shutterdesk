@@ -16,6 +16,24 @@ cp server/.env.test.example server/.env.test
 - `DATABASE_URL` — a **dedicated** database (local Postgres, or a Neon *test branch*). A local Postgres is strongly recommended for speed (sub-ms round trips vs. seconds to a remote cloud DB).
 - `JWT_SECRET` — any value ≥ 32 characters.
 
+No local Postgres? One throwaway container is enough. Port 5433 avoids clashing
+with an existing local server on 5432:
+
+```bash
+docker run -d --name shutterdesk-test-db \
+  -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=shutterdesk_test -p 5433:5432 postgres:16-alpine
+```
+
+```bash
+# server/.env.test
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/shutterdesk_test?schema=public"
+JWT_SECRET="local-throwaway-test-secret-value-32-chars-min"
+NODE_ENV="test"
+```
+
+Remove it with `docker rm -f shutterdesk-test-db` when you're done.
+
 As a safety net, the suite **refuses to run** if `server/.env.test` is missing and `CI` is not set — this prevents accidentally running the destructive suite against the database in `server/.env`.
 
 In CI, `.env.test` is absent; set `CI=1` and provide `DATABASE_URL` via the environment (the GitHub Actions Postgres service already does this).
