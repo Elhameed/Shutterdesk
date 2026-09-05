@@ -30,16 +30,16 @@ export function FileUploadDropzone({
       type="button"
       onClick={() => inputRef.current?.click()}
       className={cn(
-        "flex w-full flex-col items-center justify-center rounded-xl",
-        "border border-dashed border-border bg-gray-50/80 px-4 py-10 text-center",
-        "transition-colors hover:border-muted hover:bg-gray-50",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/20",
+        "flex w-full flex-col items-center justify-center rounded-md",
+        "border border-dashed border-border bg-paper-dim/80 px-4 py-10 text-center",
+        "transition-colors hover:border-border-strong hover:bg-paper-dim",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20",
         className,
       )}
     >
-      <span className="text-muted">{icon}</span>
-      <p className="mt-3 text-sm text-charcoal">{title}</p>
-      <p className="mt-1 text-[10px] font-medium tracking-wider text-muted-light uppercase">
+      <span className="text-ink-soft">{icon}</span>
+      <p className="mt-3 text-sm text-ink">{title}</p>
+      <p className="mt-1 text-[10px] font-medium text-ink-faint">
         {hint}
       </p>
       <input

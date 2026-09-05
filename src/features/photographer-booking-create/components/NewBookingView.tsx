@@ -141,29 +141,29 @@ export function NewBookingView() {
   };
 
   return (
-    <div className="min-w-0 max-w-full bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+    <div className="min-w-0 max-w-full bg-paper-dim/50 p-4 sm:p-6 lg:p-8">
       <nav
         aria-label="Breadcrumb"
-        className="flex items-center gap-1.5 text-sm text-muted"
+        className="flex items-center gap-1.5 text-sm text-ink-soft"
       >
         <Link
           to={ROUTES.photographer.bookings}
-          className="transition-colors hover:text-charcoal"
+          className="transition-colors hover:text-ink"
         >
           {copy.breadcrumbBookings}
         </Link>
         <ChevronRight className="size-3.5" aria-hidden />
-        <span className="font-medium text-charcoal">{copy.breadcrumbCurrent}</span>
+        <span className="font-medium text-ink">{copy.breadcrumbCurrent}</span>
       </nav>
 
       <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             {copy.title}
           </h1>
-          <p className="mt-1 text-sm text-muted">{copy.subtitle}</p>
+          <p className="mt-1 text-sm text-ink-soft">{copy.subtitle}</p>
           {submitError ? (
-            <p className="mt-2 text-sm font-medium text-red-600" role="alert">
+            <p className="mt-2 text-sm font-medium text-bad-fg" role="alert">
               {submitError}
             </p>
           ) : null}
@@ -210,7 +210,7 @@ export function NewBookingView() {
               <button
                 type="button"
                 onClick={() => setAddClientOpen(true)}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-gray-50/50 px-4 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-gray-50"
+                className="flex w-full items-center justify-center gap-2 rounded-sm border border-dashed border-border bg-paper-dim/50 px-4 py-3 text-sm font-semibold text-ink transition-colors hover:bg-paper-dim"
               >
                 <Plus className="size-4" />
                 {copy.addNewClient}
@@ -223,7 +223,7 @@ export function NewBookingView() {
               <Label>{copy.shootPackage}</Label>
               <div className="grid gap-3 sm:grid-cols-3">
                 {servicePackages.length === 0 ? (
-                  <p className="col-span-full text-sm text-muted">
+                  <p className="col-span-full text-sm text-ink-soft">
                     Create a service package first to attach it to this booking.
                   </p>
                 ) : null}
@@ -236,22 +236,22 @@ export function NewBookingView() {
                       type="button"
                       onClick={() => handlePackageSelect(pkg)}
                       className={cn(
-                        "rounded-xl border p-4 text-left transition-colors",
+                        "rounded-md border p-4 text-left transition-colors",
                         isSelected
-                          ? "border-gold bg-gold-light/30"
-                          : "border-border bg-white hover:bg-gray-50",
+                          ? "border-accent bg-accent-tint/30"
+                          : "border-border bg-panel hover:bg-paper-dim",
                       )}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <p className="text-sm font-bold text-charcoal">
+                        <p className="text-sm font-bold text-ink">
                           {pkg.title}
                         </p>
                         <span
                           className={cn(
                             "flex size-5 shrink-0 items-center justify-center rounded-full border",
                             isSelected
-                              ? "border-gold bg-gold text-white"
-                              : "border-border bg-white",
+                              ? "border-accent bg-accent text-on-accent"
+                              : "border-border bg-panel",
                           )}
                         >
                           {isSelected && (
@@ -259,8 +259,8 @@ export function NewBookingView() {
                           )}
                         </span>
                       </div>
-                      <p className="mt-1 text-xs text-muted">{pkg.description}</p>
-                      <p className="mt-3 text-sm font-bold text-charcoal">
+                      <p className="mt-1 text-xs text-ink-soft">{pkg.description}</p>
+                      <p className="mt-3 text-sm font-bold text-ink">
                         {formatRwf(pkg.price)}
                       </p>
                     </button>
@@ -299,7 +299,7 @@ export function NewBookingView() {
               <div className="space-y-2">
                 <Label>{copy.locationName}</Label>
                 <div className="relative">
-                  <MapPin className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
+                  <MapPin className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-soft" />
                   <Input
                     value={locationName}
                     onChange={(event) => setLocationName(event.target.value)}
@@ -324,7 +324,7 @@ export function NewBookingView() {
               <div className="space-y-2">
                 <Label>{copy.basePrice}</Label>
                 <div className="relative">
-                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-xs font-medium text-muted">
+                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-xs font-medium text-ink-soft">
                     RWF
                   </span>
                   <Input
@@ -339,7 +339,7 @@ export function NewBookingView() {
               <div className="space-y-2">
                 <Label>{copy.depositRequired}</Label>
                 <div className="relative">
-                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-xs font-medium text-muted">
+                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-xs font-medium text-ink-soft">
                     RWF
                   </span>
                   <Input
@@ -368,9 +368,9 @@ export function NewBookingView() {
                 <Checkbox
                   checked={applyTax}
                   onChange={(event) => setApplyTax(event.target.checked)}
-                  className="accent-gold"
+                  className="accent-accent"
                 />
-                <span className="text-sm text-charcoal">{copy.autoApplyTax}</span>
+                <span className="text-sm text-ink">{copy.autoApplyTax}</span>
               </label>
             </div>
           </FormSection>
@@ -421,10 +421,10 @@ function FormSection({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <section className="rounded-md border border-border bg-panel p-5">
       <div className="mb-4 flex items-center gap-2">
-        <Icon className="size-4 text-gold" aria-hidden />
-        <h2 className="text-sm font-bold text-charcoal">{title}</h2>
+        <Icon className="size-4 text-accent" aria-hidden />
+        <h2 className="text-sm font-bold text-ink">{title}</h2>
       </div>
       {children}
     </section>

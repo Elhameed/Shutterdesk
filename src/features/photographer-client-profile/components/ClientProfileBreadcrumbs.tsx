@@ -15,16 +15,16 @@ export function ClientProfileBreadcrumbs({
   return (
     <nav
       aria-label="Breadcrumb"
-      className="flex items-center gap-1.5 text-sm text-muted"
+      className="flex items-center gap-1.5 text-sm text-ink-soft"
     >
       <Link
         to={ROUTES.photographer.clients}
-        className="transition-colors hover:text-charcoal"
+        className="transition-colors hover:text-ink"
       >
         {copy.breadcrumbClients}
       </Link>
       <ChevronRight className="size-3.5" aria-hidden />
-      <span className="font-medium text-charcoal">{clientName}</span>
+      <span className="font-medium text-ink">{clientName}</span>
     </nav>
   );
 }

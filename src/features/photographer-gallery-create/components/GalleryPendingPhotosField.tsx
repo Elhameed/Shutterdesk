@@ -86,21 +86,21 @@ export function GalleryPendingPhotosField({
     <div>
       <div
         className={cn(
-          "rounded-xl border border-dashed border-border bg-gray-50/50 px-4 py-8 text-center",
+          "rounded-md border border-dashed border-border bg-paper-dim/50 px-4 py-8 text-center",
           disabled && "opacity-60",
         )}
       >
         {isUploading ? (
-          <Loader2 className="mx-auto size-8 animate-spin text-gold" aria-hidden />
+          <Loader2 className="mx-auto size-8 animate-spin text-accent" aria-hidden />
         ) : (
-          <CloudUpload className="mx-auto size-8 text-muted" aria-hidden />
+          <CloudUpload className="mx-auto size-8 text-ink-soft" aria-hidden />
         )}
-        <p className="mt-3 text-sm font-semibold text-charcoal">
+        <p className="mt-3 text-sm font-semibold text-ink">
           {isUploading
             ? `Uploading ${uploadingCount} photo${uploadingCount === 1 ? "" : "s"}…`
             : copy.photoDropTitle}
         </p>
-        <p className="mt-1 text-xs text-muted">{copy.photoDropHint}</p>
+        <p className="mt-1 text-xs text-ink-soft">{copy.photoDropHint}</p>
         <Button
           type="button"
           size="sm"
@@ -122,7 +122,7 @@ export function GalleryPendingPhotosField({
       </div>
 
       {error ? (
-        <p className="mt-2 text-xs text-red-600" role="alert">
+        <p className="mt-2 text-xs text-bad-fg" role="alert">
           {error}
         </p>
       ) : null}
@@ -132,7 +132,7 @@ export function GalleryPendingPhotosField({
           {photos.map((photo) => (
             <div
               key={photo.id}
-              className="group relative aspect-square overflow-hidden rounded-lg border border-border bg-gray-100"
+              className="group relative aspect-square overflow-hidden rounded-sm border border-border bg-paper-dim"
             >
               <img
                 src={photo.url}
@@ -141,7 +141,7 @@ export function GalleryPendingPhotosField({
               />
               <button
                 type="button"
-                className="absolute top-2 right-2 rounded-full bg-charcoal/80 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
+                className="absolute top-2 right-2 rounded-full bg-ink/80 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
                 aria-label={`Remove ${photo.name}`}
                 onClick={() => removePhoto(photo.id)}
               >

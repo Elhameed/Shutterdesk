@@ -15,17 +15,17 @@ export function SettingsBreadcrumbs({
   return (
     <nav
       aria-label="Breadcrumb"
-      className="flex items-center gap-1.5 text-sm text-muted"
+      className="flex items-center gap-1.5 text-sm text-ink-soft"
     >
       <button
         type="button"
         onClick={onNavigateRoot}
-        className="transition-colors hover:text-charcoal"
+        className="transition-colors hover:text-ink"
       >
         {copy.breadcrumbRoot}
       </button>
       <ChevronRight className="size-3.5" aria-hidden />
-      <span className="font-medium text-charcoal">{copy.tabs[activeTab]}</span>
+      <span className="font-medium text-ink">{copy.tabs[activeTab]}</span>
     </nav>
   );
 }

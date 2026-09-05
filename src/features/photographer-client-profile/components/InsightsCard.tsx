@@ -16,16 +16,16 @@ export function InsightsCard({ insights }: InsightsCardProps) {
   ];
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
-      <h2 className="text-[10px] font-bold tracking-wider text-muted-light uppercase">
+    <section className="rounded-md border border-border bg-panel p-5">
+      <h2 className="text-[10px] font-medium text-ink-faint">
         {copy.insights}
       </h2>
 
       <dl className="mt-4 space-y-3">
         {rows.map((row) => (
           <div key={row.label} className="flex items-center justify-between gap-3 text-sm">
-            <dt className="text-muted">{row.label}</dt>
-            <dd className="font-bold text-charcoal">{row.value}</dd>
+            <dt className="text-ink-soft">{row.label}</dt>
+            <dd className="font-bold text-ink">{row.value}</dd>
           </div>
         ))}
       </dl>

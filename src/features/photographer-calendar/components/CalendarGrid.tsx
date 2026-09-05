@@ -23,12 +23,12 @@ export function CalendarGrid({ focusDate, onSelectDay }: CalendarGridProps) {
   const days = getMonthCalendarDays(focusDate.year, focusDate.monthIndex);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-white">
-      <div className="grid grid-cols-7 border-b border-border bg-gray-50">
+    <div className="overflow-hidden rounded-md border border-border bg-panel">
+      <div className="grid grid-cols-7 border-b border-border bg-paper-dim">
         {CALENDAR_WEEKDAYS.map((day) => (
           <div
             key={day}
-            className="px-2 py-2.5 text-center text-[10px] font-semibold tracking-wider text-muted-light sm:px-3"
+            className="px-2 py-2.5 text-center text-[10px] font-semibold tracking-wider text-ink-faint sm:px-3"
           >
             {day}
           </div>
@@ -81,26 +81,26 @@ export function CalendarGrid({ focusDate, onSelectDay }: CalendarGridProps) {
               className={cn(
                 "min-h-[72px] border-r border-b border-border p-1.5 text-left transition-colors sm:min-h-[100px] sm:p-2",
                 "last:border-r-0",
-                !isCurrent && "bg-gray-50/50",
-                isCurrent && "hover:bg-gray-50",
-                isSelected && "bg-gold-light/60",
-                manuallyBlocked && !isSelected && "bg-charcoal/5 ring-1 ring-inset ring-charcoal/10",
-                blocked && !manuallyBlocked && !isSelected && "bg-gray-100",
+                !isCurrent && "bg-paper-dim/50",
+                isCurrent && "hover:bg-paper-dim",
+                isSelected && "bg-accent-tint/60",
+                manuallyBlocked && !isSelected && "bg-ink/5 ring-1 ring-inset ring-accent/10",
+                blocked && !manuallyBlocked && !isSelected && "bg-paper-dim",
               )}
             >
               <span
                 className={cn(
                   "inline-flex size-6 items-center justify-center text-xs font-semibold sm:text-sm",
-                  !isCurrent && "text-muted-light",
-                  isCurrent && "text-charcoal",
-                  today && "rounded-full bg-gold text-white",
+                  !isCurrent && "text-ink-faint",
+                  isCurrent && "text-ink",
+                  today && "rounded-full bg-accent text-on-accent",
                 )}
               >
                 {day.date}
               </span>
 
               {manuallyBlocked ? (
-                <span className="mt-0.5 inline-block rounded px-1 py-0.5 text-[9px] font-bold tracking-wide text-charcoal/70 uppercase">
+                <span className="mt-0.5 inline-block rounded-full px-1 py-0.5 text-[9px] font-medium text-ink/70">
                   {copy.dayBlockedLabel}
                 </span>
               ) : null}

@@ -34,9 +34,9 @@ export function SecuritySettingsPanel({
     <div className="space-y-8 p-5 sm:p-6 lg:p-8">
       <SettingsPanelHeader title={copy.title} subtitle={copy.subtitle} />
 
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-hidden rounded-md border border-border">
         <div className="space-y-4 p-5 sm:p-6">
-          <h3 className="text-sm font-semibold text-charcoal">
+          <h3 className="text-sm font-semibold text-ink">
             {copy.changePassword}
           </h3>
           <div className="space-y-2">
@@ -69,43 +69,43 @@ export function SecuritySettingsPanel({
               }
               autoComplete="new-password"
               aria-invalid={passwordsMismatch}
-              className={cn(passwordsMismatch && "border-red-300")}
+              className={cn(passwordsMismatch && "border-bad/40")}
             />
             {passwordsMismatch ? (
-              <p className="text-xs text-red-600">New passwords do not match.</p>
+              <p className="text-xs text-bad-fg">New passwords do not match.</p>
             ) : null}
           </div>
         </div>
 
         <div className="flex flex-col gap-4 border-t border-border p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div>
-            <p className="text-sm font-semibold text-charcoal">
+            <p className="text-sm font-semibold text-ink">
               {copy.twoFactor.title}
             </p>
-            <p className="mt-0.5 text-xs text-muted">
+            <p className="mt-0.5 text-xs text-ink-soft">
               {copy.twoFactor.description}
             </p>
           </div>
-          <span className="shrink-0 self-start rounded-full bg-gray-100 px-3 py-1 text-[10px] font-bold tracking-wider text-muted uppercase sm:self-auto">
+          <span className="shrink-0 self-start rounded-full bg-paper-dim px-3 py-1 text-[10px] font-medium text-ink-soft sm:self-auto">
             {copy.twoFactor.comingSoon}
           </span>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-hidden rounded-md border border-border">
         <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div>
-            <p className="text-sm font-semibold text-charcoal">
+            <p className="text-sm font-semibold text-ink">
               {copy.account.title}
             </p>
-            <p className="mt-0.5 text-xs text-muted">{copy.account.description}</p>
+            <p className="mt-0.5 text-xs text-ink-soft">{copy.account.description}</p>
           </div>
           <Button
             type="button"
             variant="outline"
             size="sm"
             disabled={isDeactivating}
-            className="shrink-0 self-start border-red-200 text-red-700 hover:bg-red-50 sm:self-auto"
+            className="shrink-0 self-start border-bad/30 text-bad-fg hover:bg-bad-tint sm:self-auto"
             onClick={onDeactivate}
           >
             {isDeactivating ? "Deactivating…" : copy.account.deactivate}
@@ -113,13 +113,13 @@ export function SecuritySettingsPanel({
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-hidden rounded-md border border-border">
         <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div>
-            <p className="text-sm font-semibold text-charcoal">
+            <p className="text-sm font-semibold text-ink">
               {copy.session.title}
             </p>
-            <p className="mt-0.5 text-xs text-muted">{copy.session.description}</p>
+            <p className="mt-0.5 text-xs text-ink-soft">{copy.session.description}</p>
           </div>
           <LogoutButton className="shrink-0 self-start sm:self-auto" />
         </div>

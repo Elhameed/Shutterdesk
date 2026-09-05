@@ -101,10 +101,10 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
   if (error || !booking) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-8 text-center">
-        <p className="text-sm text-muted">{error ?? copy.notFound}</p>
+        <p className="text-sm text-ink-soft">{error ?? copy.notFound}</p>
         <Link
           to={ROUTES.photographer.bookings}
-          className="text-sm font-semibold text-gold hover:text-gold-hover"
+          className="text-sm font-semibold text-accent hover:text-accent-hover"
         >
           {copy.back}
         </Link>
@@ -119,7 +119,7 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
     Boolean(booking.galleryId);
 
   return (
-    <div className="min-w-0 max-w-full bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+    <div className="min-w-0 max-w-full bg-paper-dim/50 p-4 sm:p-6 lg:p-8">
       <BookingDetailHeader
         booking={booking}
         isUpdating={isUpdating}
@@ -128,7 +128,7 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
       />
 
       {error ? (
-        <p className="mt-4 text-sm text-red-600" role="alert">
+        <p className="mt-4 text-sm text-bad-fg" role="alert">
           {error}
         </p>
       ) : null}

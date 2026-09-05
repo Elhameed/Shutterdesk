@@ -69,10 +69,10 @@ export function ClientProfileView({ clientId }: ClientProfileViewProps) {
   if (error) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-8 text-center">
-        <p className="text-sm text-red-700">{error}</p>
+        <p className="text-sm text-bad-fg">{error}</p>
         <Link
           to={ROUTES.photographer.clients}
-          className="text-sm font-semibold text-gold hover:text-gold-hover"
+          className="text-sm font-semibold text-accent hover:text-accent-hover"
         >
           {copy.backToClients}
         </Link>
@@ -83,10 +83,10 @@ export function ClientProfileView({ clientId }: ClientProfileViewProps) {
   if (!profile) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-8 text-center">
-        <p className="text-sm text-muted">{copy.notFound}</p>
+        <p className="text-sm text-ink-soft">{copy.notFound}</p>
         <Link
           to={ROUTES.photographer.clients}
-          className="text-sm font-semibold text-gold hover:text-gold-hover"
+          className="text-sm font-semibold text-accent hover:text-accent-hover"
         >
           {copy.backToClients}
         </Link>
@@ -95,7 +95,7 @@ export function ClientProfileView({ clientId }: ClientProfileViewProps) {
   }
 
   return (
-    <div className="min-w-0 max-w-full bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+    <div className="min-w-0 max-w-full bg-paper-dim/50 p-4 sm:p-6 lg:p-8">
       <ClientProfileBreadcrumbs clientName={profile.name} />
 
       <div className="mt-4">

@@ -28,26 +28,26 @@ export function PaymentsStats({ verifications }: PaymentsStatsProps) {
         label={copy.pendingVerifications}
         value={String(stats.pendingCount)}
         subtext={copy.highPriority(stats.highPriorityCount)}
-        subtextClassName="text-gold"
+        subtextClassName="text-accent"
         icon={
-          <span className="relative inline-flex text-gold">
+          <span className="relative inline-flex text-accent">
             <ClipboardList className="size-4" aria-hidden />
             <Clock
-              className="absolute -right-1 -bottom-1 size-2.5 rounded-full bg-gold-light"
+              className="absolute -right-1 -bottom-1 size-2.5 rounded-full bg-accent-tint"
               aria-hidden
             />
           </span>
         }
-        iconClassName="bg-gold-light text-gold"
+        iconClassName="bg-accent-tint text-accent"
       />
 
       <StatCard
         label={copy.approvedToday}
         value={formatRwf(stats.approvedToday)}
         subtext={copy.approvedChange}
-        subtextClassName="text-green-600"
+        subtextClassName="text-ok-fg"
         icon={<Banknote className="size-4" aria-hidden />}
-        iconClassName="bg-gold-light text-gold"
+        iconClassName="bg-accent-tint text-accent"
         subtextIcon={<TrendingUp className="size-3" aria-hidden />}
       />
 
@@ -56,7 +56,7 @@ export function PaymentsStats({ verifications }: PaymentsStatsProps) {
         value={String(stats.rejectedThisWeek)}
         subtext={copy.viewHistory}
         icon={<CircleX className="size-4" aria-hidden />}
-        iconClassName="bg-gray-100 text-muted"
+        iconClassName="bg-paper-dim text-ink-soft"
         subtextIcon={<Clock className="size-3" aria-hidden />}
       />
     </div>
@@ -81,14 +81,14 @@ function StatCard({
   subtextIcon?: ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <div className="rounded-md border border-border bg-panel p-5">
       <div className="flex items-start justify-between gap-3">
-        <p className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+        <p className="text-[11px] font-medium text-ink-faint">
           {label}
         </p>
         <div
           className={cn(
-            "flex size-9 shrink-0 items-center justify-center rounded-lg",
+            "flex size-9 shrink-0 items-center justify-center rounded-sm",
             iconClassName,
           )}
         >
@@ -96,14 +96,14 @@ function StatCard({
         </div>
       </div>
 
-      <p className="mt-3 text-3xl font-bold tracking-tight text-charcoal">
+      <p className="mt-3 text-3xl font-bold tracking-tight text-ink">
         {value}
       </p>
 
       <p
         className={cn(
           "mt-1 flex items-center gap-1 text-xs font-medium",
-          subtextClassName ?? "text-muted",
+          subtextClassName ?? "text-ink-soft",
         )}
       >
         {subtextIcon}

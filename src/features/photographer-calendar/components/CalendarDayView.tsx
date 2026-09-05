@@ -22,15 +22,15 @@ export function CalendarDayView({ focusDate }: CalendarDayViewProps) {
   const heading = formatPeriodLabel(focusDate, "day");
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-white">
+    <div className="overflow-hidden rounded-md border border-border bg-panel">
       <div className="border-b border-border px-5 py-4">
-        <h2 className="text-lg font-bold text-charcoal">{heading}</h2>
-        <p className="mt-1 text-sm text-muted">{copy.dayViewHint}</p>
+        <h2 className="text-lg font-bold text-ink">{heading}</h2>
+        <p className="mt-1 text-sm text-ink-soft">{copy.dayViewHint}</p>
       </div>
 
       <div className="p-5">
         {events.length === 0 ? (
-          <p className="text-sm text-muted">{copy.noSessionsDay}</p>
+          <p className="text-sm text-ink-soft">{copy.noSessionsDay}</p>
         ) : (
           <CalendarEventList events={events} />
         )}

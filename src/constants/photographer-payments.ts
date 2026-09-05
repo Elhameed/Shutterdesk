@@ -1,18 +1,18 @@
 import { formatRwf } from "@/lib/currency";
 
 export const PAYMENTS_COPY = {
-  title: "Payment Verification",
+  title: "Payment verification",
   subtitle: "Review and validate incoming client bank transfers and receipts.",
   searchPlaceholder: "Search by client, booking, or amount...",
   stats: {
-    pendingVerifications: "Pending Verifications",
+    pendingVerifications: "Pending verifications",
     highPriority: (count: number) => `${count} high priority`,
-    approvedToday: "Approved Today",
+    approvedToday: "Approved today",
     approvedChange: "+18% from yesterday",
-    rejectedThisWeek: "Rejected This Week",
+    rejectedThisWeek: "Rejected this week",
     viewHistory: "View history",
   },
-  queueTitle: "Verification Queue",
+  queueTitle: "Verification queue",
   filter: "Filter",
   columns: {
     client: "Client",
@@ -22,17 +22,17 @@ export const PAYMENTS_COPY = {
     status: "Status",
   },
   detail: {
-    title: "Payment Detail",
-    receiptEvidence: "Receipt Evidence",
+    title: "Payment detail",
+    receiptEvidence: "Receipt evidence",
     expand: "Expand",
     transactionId: "Transaction ID",
     client: "Client",
-    bookingDate: "Booking Date",
+    bookingDate: "Booking date",
     package: "Package",
-    totalFee: "Total Fee",
-    approvePayment: "Approve Payment",
-    rejectPayment: "Reject Payment",
-    requestNewReceipt: "Request New Receipt Compliance",
+    totalFee: "Total fee",
+    approvePayment: "Approve payment",
+    rejectPayment: "Reject payment",
+    requestNewReceipt: "Request new receipt compliance",
     requestNewReceiptSuccess:
       "Receipt resubmission request sent to the client.",
     requestNewReceiptError:

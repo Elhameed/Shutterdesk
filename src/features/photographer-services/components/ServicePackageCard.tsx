@@ -47,16 +47,16 @@ export function ServicePackageCard({
   const actionsDisabled = isDuplicating || isDeleting;
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-xl border border-border bg-white shadow-card">
+    <article className="flex flex-col overflow-hidden rounded-md border border-border bg-panel">
       <div className="relative h-44 sm:h-48">
         {service.hasCoverImage && service.coverImage ? (
           <AppImage src={service.coverImage} alt={service.title} />
         ) : (
           <div
-            className="flex size-full items-center justify-center bg-gray-100"
+            className="flex size-full items-center justify-center bg-paper-dim"
             aria-hidden
           >
-            <ImageIcon className="size-10 text-muted-light" />
+            <ImageIcon className="size-10 text-ink-faint" />
           </div>
         )}
 
@@ -66,7 +66,7 @@ export function ServicePackageCard({
               <span
                 key={badge}
                 className={cn(
-                  "rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                  "rounded-full px-2 py-0.5 text-[10px] font-medium",
                   SERVICE_BADGE_STYLES[badge],
                 )}
               >
@@ -82,7 +82,7 @@ export function ServicePackageCard({
           <div className="absolute top-3 left-3 z-10">
             <span
               className={cn(
-                "rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                "rounded-full px-2 py-0.5 text-[10px] font-medium",
                 SERVICE_BADGE_STYLES.draft,
               )}
             >
@@ -94,7 +94,7 @@ export function ServicePackageCard({
         <Tooltip label={copy.edit} className="absolute top-3 right-3 z-10">
           <Link
             to={ROUTES.photographer.servicePackageEdit(service.id)}
-            className="flex size-8 items-center justify-center rounded-full border border-border/50 bg-white text-charcoal shadow-sm transition-colors hover:bg-gray-50"
+            className="flex size-8 items-center justify-center rounded-full border border-border/50 bg-panel text-ink transition-colors hover:bg-paper-dim"
             aria-label={copy.edit}
           >
             <Pencil className="size-3.5" strokeWidth={2} />
@@ -104,18 +104,18 @@ export function ServicePackageCard({
 
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-sm font-bold text-charcoal">{service.title}</h3>
-          <p className="shrink-0 text-sm font-bold text-charcoal">
+          <h3 className="text-sm font-bold text-ink">{service.title}</h3>
+          <p className="shrink-0 text-sm font-bold text-ink">
             {copy.priceDisplay(service.price)}
           </p>
         </div>
 
-        <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-muted">
+        <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-ink-soft">
           {service.description}
         </p>
 
         <div className="mt-4 border-t border-border pt-4">
-          <div className="flex items-center justify-between gap-3 text-xs text-muted">
+          <div className="flex items-center justify-between gap-3 text-xs text-ink-soft">
             {service.details.map((detail) => {
               const Icon = detailIcons[detail.icon];
 
@@ -134,10 +134,10 @@ export function ServicePackageCard({
 
         <div className="mt-4 flex items-end justify-between border-t border-border pt-4">
           <div>
-            <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+            <p className="text-[10px] font-medium text-ink-faint">
               {copy.totalRevenue}
             </p>
-            <p className="mt-0.5 text-lg font-bold text-charcoal">
+            <p className="mt-0.5 text-lg font-bold text-ink">
               {copy.revenueDisplay(service.totalRevenue)}
             </p>
           </div>
@@ -148,7 +148,7 @@ export function ServicePackageCard({
                 type="button"
                 onClick={() => onDuplicate?.(service)}
                 disabled={actionsDisabled}
-                className="rounded-lg p-1.5 text-muted transition-colors hover:bg-gray-50 hover:text-charcoal disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-sm p-1.5 text-ink-soft transition-colors hover:bg-paper-dim hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                 aria-label={copy.duplicate}
               >
                 <Copy className="size-4" />
@@ -159,7 +159,7 @@ export function ServicePackageCard({
                 type="button"
                 onClick={() => onDelete?.(service)}
                 disabled={actionsDisabled}
-                className="rounded-lg p-1.5 text-muted transition-colors hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-sm p-1.5 text-ink-soft transition-colors hover:bg-bad-tint hover:text-bad-fg disabled:cursor-not-allowed disabled:opacity-50"
                 aria-label={copy.delete}
               >
                 <Trash2 className="size-4" />

@@ -39,14 +39,14 @@ export function AvailabilityManageTrigger({ onOpen }: AvailabilityManageTriggerP
   const copy = CALENDAR_COPY;
 
   return (
-    <section className="rounded-xl border border-border bg-white p-4 shadow-card">
-      <p className="text-xs leading-relaxed text-muted">{copy.manageAvailabilityHint}</p>
+    <section className="rounded-md border border-border bg-panel p-4">
+      <p className="text-xs leading-relaxed text-ink-soft">{copy.manageAvailabilityHint}</p>
       <button
         type="button"
         onClick={onOpen}
-        className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-white px-4 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-gray-50"
+        className="mt-3 flex w-full items-center justify-center gap-2 rounded-sm border border-border bg-panel px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-paper-dim"
       >
-        <CalendarClock className="size-4 text-gold" aria-hidden />
+        <CalendarClock className="size-4 text-accent" aria-hidden />
         {copy.manageAvailability}
       </button>
     </section>

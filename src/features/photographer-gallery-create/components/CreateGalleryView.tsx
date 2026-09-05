@@ -43,7 +43,7 @@ export function CreateGalleryView() {
   if (!initialValues) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center p-8">
-        <p className="text-sm text-muted">Preparing gallery form…</p>
+        <p className="text-sm text-ink-soft">Preparing gallery form…</p>
       </div>
     );
   }

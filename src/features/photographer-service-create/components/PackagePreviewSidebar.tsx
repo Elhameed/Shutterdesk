@@ -26,8 +26,8 @@ export function PackagePreviewSidebar({
 
   return (
     <aside className="flex flex-col gap-4">
-      <section className="overflow-hidden rounded-xl border border-border bg-white shadow-card">
-        <p className="border-b border-border px-5 py-4 text-sm font-bold text-charcoal">
+      <section className="overflow-hidden rounded-md border border-border bg-panel">
+        <p className="border-b border-border px-5 py-4 text-sm font-bold text-ink">
           {copy.packagePreview}
         </p>
 
@@ -40,26 +40,26 @@ export function PackagePreviewSidebar({
               aria-hidden
             />
           ) : (
-            <div className="flex size-full items-center justify-center bg-gray-100">
-              <ImageIcon className="size-10 text-muted-light" aria-hidden />
+            <div className="flex size-full items-center justify-center bg-paper-dim">
+              <ImageIcon className="size-10 text-ink-faint" aria-hidden />
             </div>
           )}
-          <span className="absolute top-3 left-3 rounded-full bg-gold-light px-2 py-0.5 text-[10px] font-bold tracking-wide text-charcoal uppercase">
+          <span className="absolute top-3 left-3 rounded-full bg-accent-tint px-2 py-0.5 text-[10px] font-medium text-ink">
             {copy.preview}
           </span>
         </div>
 
         <div className="p-5">
           <div className="flex items-start justify-between gap-3">
-            <h3 className="text-base font-bold text-charcoal">
+            <h3 className="text-base font-bold text-ink">
               {packageName || copy.defaultPackageName}
             </h3>
-            <p className="text-base font-bold text-charcoal">
+            <p className="text-base font-bold text-ink">
               {copy.priceDisplay(price)}
             </p>
           </div>
 
-          <div className="mt-3 flex items-center gap-3 text-xs text-muted">
+          <div className="mt-3 flex items-center gap-3 text-xs text-ink-soft">
             <span className="flex items-center gap-1.5">
               <Clock className="size-3.5" />
               {durationLabel}
@@ -75,10 +75,10 @@ export function PackagePreviewSidebar({
             {includes.map((item) => (
               <li
                 key={item}
-                className="flex items-start gap-2 text-sm text-charcoal"
+                className="flex items-start gap-2 text-sm text-ink"
               >
                 <Check
-                  className="mt-0.5 size-4 shrink-0 text-green-500"
+                  className="mt-0.5 size-4 shrink-0 text-ok-fg"
                   strokeWidth={3}
                 />
                 <span>{item}</span>
@@ -86,18 +86,18 @@ export function PackagePreviewSidebar({
             ))}
           </ul>
 
-          <p className="mt-4 text-center text-[10px] font-medium tracking-wider text-muted-light uppercase">
+          <p className="mt-4 text-center text-[10px] font-medium text-ink-faint">
             {footerNote ?? copy.autoSaved}
           </p>
         </div>
       </section>
 
-      <section className="rounded-xl border border-border border-l-4 border-l-gold bg-gray-50 p-4">
+      <section className="rounded-md border border-border border-l-4 border-l-gold bg-paper-dim p-4">
         <div className="flex gap-3">
-          <Lightbulb className="size-5 shrink-0 text-gold" aria-hidden />
+          <Lightbulb className="size-5 shrink-0 text-accent" aria-hidden />
           <div>
-            <p className="text-sm font-bold text-charcoal">{copy.proTipTitle}</p>
-            <p className="mt-1 text-xs leading-relaxed text-muted">
+            <p className="text-sm font-bold text-ink">{copy.proTipTitle}</p>
+            <p className="mt-1 text-xs leading-relaxed text-ink-soft">
               {copy.proTipBody}
             </p>
           </div>

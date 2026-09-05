@@ -8,8 +8,8 @@ export function UpcomingNextList() {
   const { upcomingNext } = useCalendarData();
 
   return (
-    <section className="rounded-xl border border-border bg-white p-4 shadow-card">
-      <h2 className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+    <section className="rounded-md border border-border bg-panel p-4">
+      <h2 className="text-[11px] font-medium text-ink-faint">
         {copy.upcomingNext}
       </h2>
 
@@ -19,22 +19,22 @@ export function UpcomingNextList() {
             key={item.id}
             className={cn(
               "py-3 first:pt-0 last:pb-0",
-              item.highlighted && "rounded-lg bg-gold-light/40 px-2 -mx-2",
+              item.highlighted && "rounded-sm bg-accent-tint/40 px-2 -mx-2",
             )}
           >
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-charcoal">
+                <p className="truncate text-sm font-semibold text-ink">
                   {item.clientName}
                 </p>
-                <p className="truncate text-xs text-muted">{item.sessionType}</p>
-                <p className="mt-1 text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+                <p className="truncate text-xs text-ink-soft">{item.sessionType}</p>
+                <p className="mt-1 text-[10px] font-medium text-ink-faint">
                   {item.dateTime}
                 </p>
               </div>
               <span
                 className={cn(
-                  "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                  "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium",
                   SESSION_STATUS_BADGE_STYLES[item.status],
                 )}
               >

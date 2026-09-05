@@ -107,8 +107,8 @@ export function StudioSettingsPanel({
                     aria-label={`Select brand color ${color}`}
                     onClick={() => onChange("brandAccentColor", color)}
                     className={cn(
-                      "size-10 rounded-lg transition-shadow",
-                      isSelected && "ring-2 ring-gold ring-offset-2",
+                      "size-10 rounded-sm transition-shadow",
+                      isSelected && "ring-2 ring-accent ring-offset-2",
                     )}
                     style={{ backgroundColor: color }}
                   />
@@ -129,7 +129,7 @@ export function StudioSettingsPanel({
         <div className="space-y-2">
           <Label>{copy.primaryLogo}</Label>
           {values.logoAssetKey ? (
-            <div className="mb-3 overflow-hidden rounded-xl border border-border bg-gray-50 p-4">
+            <div className="mb-3 overflow-hidden rounded-md border border-border bg-paper-dim p-4">
               <img
                 src={resolveMediaUrl(values.logoAssetKey)}
                 alt="Studio logo"
@@ -160,7 +160,7 @@ export function StudioSettingsPanel({
         <div className="space-y-2">
           <Label>{copy.galleryWatermark}</Label>
           {values.watermarkAssetKey ? (
-            <div className="mb-3 overflow-hidden rounded-xl border border-border bg-gray-50 p-4">
+            <div className="mb-3 overflow-hidden rounded-md border border-border bg-paper-dim p-4">
               <img
                 src={resolveMediaUrl(values.watermarkAssetKey)}
                 alt="Gallery watermark"
@@ -184,7 +184,7 @@ export function StudioSettingsPanel({
         </div>
       </div>
 
-      {uploadError ? <p className="text-sm text-red-600">{uploadError}</p> : null}
+      {uploadError ? <p className="text-sm text-bad-fg">{uploadError}</p> : null}
     </div>
   );
 }

@@ -29,26 +29,26 @@ export function ClientProfileHeader({ profile }: ClientProfileHeaderProps) {
             className="size-20 rounded-full object-cover sm:size-24"
           />
           <span
-            className="absolute right-1 bottom-1 size-3.5 rounded-full border-2 border-white bg-green-500"
+            className="absolute right-1 bottom-1 size-3.5 rounded-full border-2 border-white bg-ok"
             aria-hidden
           />
         </div>
 
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
               {profile.name}
             </h1>
             <span
               className={cn(
-                "inline-flex rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                "inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium",
                 CLIENT_TIER_BADGE_STYLES[profile.tier],
               )}
             >
               {CLIENTS_COPY.status[profile.tier]}
             </span>
             {profile.rating === "excellent" && (
-              <span className="inline-flex items-center gap-1 rounded bg-green-50 px-2 py-0.5 text-[10px] font-bold tracking-wide text-green-700 uppercase">
+              <span className="inline-flex items-center gap-1 rounded-full bg-ok-tint px-2 py-0.5 text-[10px] font-medium text-ok-fg">
                 <Check className="size-3" strokeWidth={3} aria-hidden />
                 {copy.excellent}
               </span>
@@ -59,7 +59,7 @@ export function ClientProfileHeader({ profile }: ClientProfileHeaderProps) {
             {contacts.map(({ icon: Icon, value }) => (
               <li
                 key={value}
-                className="flex items-center gap-2 text-sm text-muted"
+                className="flex items-center gap-2 text-sm text-ink-soft"
               >
                 <Icon className="size-3.5 shrink-0" aria-hidden />
                 <span className="truncate">{value}</span>

@@ -87,7 +87,7 @@ export function GalleriesView() {
   if (error) {
     return (
       <div className="min-w-0 max-w-full p-4 sm:p-6 lg:p-8">
-        <p className="text-sm text-red-700" role="alert">
+        <p className="text-sm text-bad-fg" role="alert">
           {getQueryErrorMessage(error, "Unable to load galleries.")}
         </p>
       </div>
@@ -99,15 +99,15 @@ export function GalleriesView() {
       <GalleriesHeader totalCount={galleries.length} />
 
       {clientFilterId && (
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-white px-4 py-3">
-          <p className="text-sm text-charcoal">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-panel px-4 py-3">
+          <p className="text-sm text-ink">
             {filteredClientName
               ? copy.showingClientGalleries(filteredClientName)
               : copy.noClientGalleries("this client")}
           </p>
           <Link
             to={ROUTES.photographer.galleries}
-            className="text-sm font-semibold text-gold hover:text-gold-hover"
+            className="text-sm font-semibold text-accent hover:text-accent-hover"
           >
             {copy.clearClientFilter}
           </Link>
@@ -150,7 +150,7 @@ export function GalleriesView() {
         <div className="mt-6 flex justify-center">
           <Button
             variant="outline"
-            className="min-w-[240px] rounded-xl"
+            className="min-w-[240px] rounded-md"
             onClick={() =>
               setVisibleCount((count) => count + GALLERY_LIST_PAGE_SIZE)
             }

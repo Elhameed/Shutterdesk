@@ -262,7 +262,7 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
 
   if (isLoading) {
     return (
-      <div className="min-w-0 max-w-full bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+      <div className="min-w-0 max-w-full bg-paper-dim/50 p-4 sm:p-6 lg:p-8">
         <CardSkeleton />
         <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
           <CardSkeleton />
@@ -275,10 +275,10 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
   if (!detail) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-8 text-center">
-        <p className="text-sm text-muted">{copy.notFound}</p>
+        <p className="text-sm text-ink-soft">{copy.notFound}</p>
         <Link
           to={ROUTES.photographer.galleries}
-          className="text-sm font-semibold text-gold hover:text-gold-hover"
+          className="text-sm font-semibold text-accent hover:text-accent-hover"
         >
           {copy.backToGalleries}
         </Link>
@@ -289,7 +289,7 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
   const { gallery, meta } = detail;
 
   return (
-    <div className="min-w-0 max-w-full bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+    <div className="min-w-0 max-w-full bg-paper-dim/50 p-4 sm:p-6 lg:p-8">
       <GalleryDetailBreadcrumbs galleryTitle={gallery.title} />
 
       <div className="mt-4">

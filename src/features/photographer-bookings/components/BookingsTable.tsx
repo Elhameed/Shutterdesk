@@ -27,7 +27,7 @@ function PaymentBadge({ payment }: { payment: Booking["payment"] }) {
   return (
     <span
       className={cn(
-        "inline-flex rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+        "inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium",
         PAYMENT_BADGE_STYLES[payment],
       )}
     >
@@ -42,7 +42,7 @@ function StatusBadge({ status }: { status: Booking["status"] }) {
   return (
     <span
       className={cn(
-        "inline-flex rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+        "inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium",
         BOOKING_STATUS_BADGE_STYLES[status],
       )}
     >
@@ -60,8 +60,8 @@ function ClientCell({ booking }: { booking: Booking }) {
         className="size-10 shrink-0 rounded-full object-cover"
       />
       <div className="min-w-0">
-        <p className="text-sm font-semibold text-charcoal">{booking.clientName}</p>
-        <p className="truncate text-xs text-muted">{booking.email}</p>
+        <p className="text-sm font-semibold text-ink">{booking.clientName}</p>
+        <p className="truncate text-xs text-ink-soft">{booking.email}</p>
       </div>
     </div>
   );
@@ -86,14 +86,14 @@ export function BookingsTable({
 
   if (bookings.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-white p-8 text-center text-sm text-muted">
+      <div className="rounded-md border border-border bg-panel p-8 text-center text-sm text-ink-soft">
         No bookings found for this filter.
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-white">
+    <div className="overflow-hidden rounded-md border border-border bg-panel">
       {/* Mobile cards */}
       <ul className="divide-y divide-border md:hidden">
         {bookings.map((booking) => (
@@ -101,7 +101,7 @@ export function BookingsTable({
             <button
               type="button"
               onClick={() => openBooking(booking.id)}
-              className="w-full p-4 text-left transition-colors hover:bg-gray-50"
+              className="w-full p-4 text-left transition-colors hover:bg-paper-dim"
             >
               <div className="flex items-start justify-between gap-3">
                 <ClientCell booking={booking} />
@@ -114,13 +114,13 @@ export function BookingsTable({
 
               <div className="mt-3 space-y-2">
                 <div>
-                  <p className="text-sm font-semibold text-charcoal">
+                  <p className="text-sm font-semibold text-ink">
                     {booking.packageName}
                   </p>
-                  <p className="text-xs text-muted">{booking.packageDetail}</p>
+                  <p className="text-xs text-ink-soft">{booking.packageDetail}</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="font-medium text-charcoal">
+                  <span className="font-medium text-ink">
                     {booking.date} • {booking.time}
                   </span>
                 </div>
@@ -146,23 +146,23 @@ export function BookingsTable({
             <col className="w-[12%]" />
           </colgroup>
           <thead>
-            <tr className="border-b border-border bg-gray-50">
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+            <tr className="border-b border-border">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.client}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.servicePackage}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.dateTime}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.payment}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.status}
               </th>
-              <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <th className="px-5 py-3 text-left text-[11px] font-medium text-ink-faint">
                 {copy.columns.actions}
               </th>
             </tr>
@@ -171,7 +171,7 @@ export function BookingsTable({
             {bookings.map((booking) => (
               <tr
                 key={booking.id}
-                className="cursor-pointer transition-colors hover:bg-gray-50"
+                className="cursor-pointer transition-colors hover:bg-paper-dim"
               >
                 <td
                   className="px-5 py-4 align-top"
@@ -183,19 +183,19 @@ export function BookingsTable({
                   className="px-5 py-4 align-top"
                   onClick={() => openBooking(booking.id)}
                 >
-                  <p className="text-sm font-semibold text-charcoal">
+                  <p className="text-sm font-semibold text-ink">
                     {booking.packageName}
                   </p>
-                  <p className="text-xs text-muted">{booking.packageDetail}</p>
+                  <p className="text-xs text-ink-soft">{booking.packageDetail}</p>
                 </td>
                 <td
                   className="px-5 py-4 align-top"
                   onClick={() => openBooking(booking.id)}
                 >
-                  <p className="text-sm font-semibold text-charcoal">
+                  <p className="text-sm font-semibold text-ink">
                     {booking.date}
                   </p>
-                  <p className="text-xs text-muted">{booking.time}</p>
+                  <p className="text-xs text-ink-soft">{booking.time}</p>
                 </td>
                 <td
                   className="px-5 py-4 align-top"

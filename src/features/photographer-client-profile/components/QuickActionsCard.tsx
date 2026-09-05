@@ -55,9 +55,9 @@ export function QuickActionsCard({ clientId, clientName }: QuickActionsCardProps
           key={key}
           type="button"
           onClick={() => handleAction(route)}
-          className="flex w-full items-center gap-3 rounded-xl border border-border bg-gray-50 px-4 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-gray-100"
+          className="flex w-full items-center gap-3 rounded-md border border-border bg-paper-dim px-4 py-3 text-sm font-semibold text-ink transition-colors hover:bg-paper-dim"
         >
-          <Icon className="size-4 text-muted" aria-hidden />
+          <Icon className="size-4 text-ink-soft" aria-hidden />
           {copy[key]}
         </button>
       ))}

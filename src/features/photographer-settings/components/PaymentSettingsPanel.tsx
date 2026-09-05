@@ -26,18 +26,18 @@ export function PaymentSettingsPanel({
     <div className="space-y-8 p-5 sm:p-6 lg:p-8">
       <SettingsPanelHeader title={copy.title} subtitle={copy.subtitle} />
 
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-hidden rounded-md border border-border">
         <div className="p-5 sm:p-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 items-start gap-3">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-gold/15 text-gold">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-sm bg-accent/15 text-accent">
                 <Building2 className="size-5" strokeWidth={1.75} />
               </span>
               <div>
-                <p className="text-sm font-semibold text-charcoal">
+                <p className="text-sm font-semibold text-ink">
                   {copy.bankTransfer.title}
                 </p>
-                <p className="mt-0.5 text-xs text-muted">
+                <p className="mt-0.5 text-xs text-ink-soft">
                   {copy.bankTransfer.description}
                 </p>
               </div>
@@ -77,14 +77,14 @@ export function PaymentSettingsPanel({
         <div className="border-t border-border p-5 sm:p-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 items-start gap-3">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-muted">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-sm bg-paper-dim text-ink-soft">
                 <QrCode className="size-5" strokeWidth={1.75} />
               </span>
               <div>
-                <p className="text-sm font-semibold text-charcoal">
+                <p className="text-sm font-semibold text-ink">
                   {copy.mobileMoney.title}
                 </p>
-                <p className="mt-0.5 text-xs text-muted">
+                <p className="mt-0.5 text-xs text-ink-soft">
                   {copy.mobileMoney.description}
                 </p>
               </div>
@@ -146,7 +146,7 @@ export function PaymentSettingsPanel({
       </div>
 
       <div className="space-y-4">
-        <Label className="text-[10px] tracking-wider text-muted-light uppercase">
+        <Label className="text-[10px] text-ink-faint">
           {copy.depositRequirements}
         </Label>
         <div className="space-y-3">
@@ -163,10 +163,10 @@ export function PaymentSettingsPanel({
               <label
                 key={value}
                 className={cn(
-                  "flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors",
+                  "flex cursor-pointer items-start gap-3 rounded-md border p-4 transition-colors",
                   isSelected
-                    ? "border-charcoal bg-gray-50/80"
-                    : "border-border hover:border-muted",
+                    ? "border-border-strong bg-paper-dim/80"
+                    : "border-border hover:border-border-strong",
                 )}
               >
                 <input
@@ -174,13 +174,13 @@ export function PaymentSettingsPanel({
                   name="depositRequirement"
                   checked={isSelected}
                   onChange={() => onChange("depositRequirement", value)}
-                  className="mt-0.5 size-4 shrink-0 accent-charcoal"
+                  className="mt-0.5 size-4 shrink-0 accent-accent"
                 />
                 <div>
-                  <p className="text-sm font-semibold text-charcoal">
+                  <p className="text-sm font-semibold text-ink">
                     {option.title}
                   </p>
-                  <p className="mt-0.5 text-xs text-muted">
+                  <p className="mt-0.5 text-xs text-ink-soft">
                     {option.description}
                   </p>
                 </div>

@@ -46,8 +46,8 @@ export function InternalMemoCard({
   }
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
-      <h2 className="mb-3 text-[10px] font-bold tracking-wider text-muted-light uppercase">
+    <section className="rounded-md border border-border bg-panel p-5">
+      <h2 className="mb-3 text-[10px] font-medium text-ink-faint">
         {copy.internalMemo}
       </h2>
 
@@ -55,14 +55,14 @@ export function InternalMemoCard({
         value={notes}
         onChange={(event) => setNotes(event.target.value)}
         placeholder={copy.memoPlaceholder}
-        className="min-h-[100px] bg-gray-50"
+        className="min-h-[100px] bg-paper-dim"
       />
 
       <div className="mt-3 flex justify-end">
         <Button
           variant="default"
           size="sm"
-          className="text-xs font-bold uppercase"
+          className="text-xs font-medium"
           disabled={isSaving}
           onClick={() => void handleSave()}
         >

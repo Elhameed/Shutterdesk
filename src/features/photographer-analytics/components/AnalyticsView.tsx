@@ -63,7 +63,7 @@ export function AnalyticsView() {
   if (error && !analytics) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center p-8">
-        <p className="text-sm text-red-600" role="alert">
+        <p className="text-sm text-bad-fg" role="alert">
           {error}
         </p>
       </div>

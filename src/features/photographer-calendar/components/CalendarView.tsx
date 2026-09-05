@@ -99,7 +99,7 @@ export function CalendarView() {
   if (error) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center p-8">
-        <p className="max-w-md text-center text-sm text-red-700" role="alert">
+        <p className="max-w-md text-center text-sm text-bad-fg" role="alert">
           {error}
         </p>
       </div>

@@ -59,7 +59,7 @@ export function GalleryCoverUploadField({
     <div>
       <div
         className={cn(
-          "relative overflow-hidden rounded-xl border border-dashed border-border bg-gray-50/80 px-4 py-10 text-center",
+          "relative overflow-hidden rounded-md border border-dashed border-border bg-paper-dim/80 px-4 py-10 text-center",
           disabled && "opacity-60",
         )}
       >
@@ -74,14 +74,14 @@ export function GalleryCoverUploadField({
         />
         <div className="relative">
           {isUploading ? (
-            <Loader2 className="mx-auto size-8 animate-spin text-gold" aria-hidden />
+            <Loader2 className="mx-auto size-8 animate-spin text-accent" aria-hidden />
           ) : (
-            <CloudUpload className="mx-auto size-8 text-muted" aria-hidden />
+            <CloudUpload className="mx-auto size-8 text-ink-soft" aria-hidden />
           )}
-          <p className="mt-3 text-sm font-semibold text-charcoal">
+          <p className="mt-3 text-sm font-semibold text-ink">
             {value ? copy.coverReplaceTitle : copy.coverDropTitle}
           </p>
-          <p className="mt-1 text-xs text-muted">{copy.coverDropHint}</p>
+          <p className="mt-1 text-xs text-ink-soft">{copy.coverDropHint}</p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             <Button
               type="button"
@@ -116,7 +116,7 @@ export function GalleryCoverUploadField({
         />
       </div>
       {error ? (
-        <p className="mt-2 text-xs text-red-600" role="alert">
+        <p className="mt-2 text-xs text-bad-fg" role="alert">
           {error}
         </p>
       ) : null}

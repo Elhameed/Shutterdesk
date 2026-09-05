@@ -112,23 +112,23 @@ export function GalleryDeliveryTab({
 
   return (
     <div className="space-y-5">
-      <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+      <section className="rounded-md border border-border bg-panel p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-[10px] font-bold tracking-wider text-muted-light uppercase">
+            <p className="text-[10px] font-medium text-ink-faint">
               {panel.statusTitle}
             </p>
-            <p className="mt-2 text-sm text-muted">
+            <p className="mt-2 text-sm text-ink-soft">
               {delivery.deliveryNotes}
             </p>
           </div>
           <span
             className={cn(
-              "inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold tracking-wide uppercase",
+              "inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-medium",
               GALLERY_WORKFLOW_BADGE_STYLES[gallery.workflowStatus],
             )}
           >
-            <span className="size-1.5 rounded-full bg-gold" aria-hidden />
+            <span className="size-1.5 rounded-full bg-accent" aria-hidden />
             {copy.workflowStatus[gallery.workflowStatus]}
           </span>
         </div>
@@ -154,10 +154,10 @@ export function GalleryDeliveryTab({
                       className={cn(
                         "flex size-[18px] items-center justify-center rounded-full",
                         step.status === "upcoming"
-                          ? "border border-border bg-white"
+                          ? "border border-border bg-panel"
                           : step.status === "current"
-                            ? "bg-gold text-white"
-                            : "bg-charcoal text-white",
+                            ? "bg-accent text-on-accent"
+                            : "bg-ink text-panel",
                       )}
                     >
                       {step.status === "current" ? (
@@ -165,7 +165,7 @@ export function GalleryDeliveryTab({
                       ) : step.status === "completed" ? (
                         <Check className="size-2.5" strokeWidth={3} />
                       ) : (
-                        <span className="size-1.5 rounded-full bg-muted-light" />
+                        <span className="size-1.5 rounded-full bg-ink-faint" />
                       )}
                     </span>
                   </div>
@@ -175,14 +175,14 @@ export function GalleryDeliveryTab({
                       className={cn(
                         "text-sm font-semibold leading-5",
                         step.status === "upcoming"
-                          ? "text-muted"
-                          : "text-charcoal",
+                          ? "text-ink-soft"
+                          : "text-ink",
                       )}
                     >
                       {step.label}
                     </p>
                     {step.date && (
-                      <p className="mt-0.5 text-xs text-muted">{step.date}</p>
+                      <p className="mt-0.5 text-xs text-ink-soft">{step.date}</p>
                     )}
                   </div>
                 </li>
@@ -194,11 +194,11 @@ export function GalleryDeliveryTab({
         <GalleryTabSection title={panel.accessTitle}>
           <div className="space-y-4">
             <div>
-              <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <p className="text-[10px] font-medium text-ink-faint">
                 {panel.privateLink}
               </p>
               <div className="mt-2 flex gap-2">
-                <div className="min-w-0 flex-1 rounded-lg border border-border bg-gray-50 px-3 py-2 text-sm text-charcoal">
+                <div className="min-w-0 flex-1 rounded-sm border border-border bg-paper-dim px-3 py-2 text-sm text-ink">
                   {delivery.privateLink}
                 </div>
                 <Button
@@ -224,10 +224,10 @@ export function GalleryDeliveryTab({
                 />
               </div>
               <div>
-                <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+                <p className="text-[10px] font-medium text-ink-faint">
                   {panel.expiresAt}
                 </p>
-                <p className="mt-1 text-sm font-bold text-charcoal">
+                <p className="mt-1 text-sm font-bold text-ink">
                   {delivery.expiresAt}
                 </p>
               </div>
@@ -284,12 +284,12 @@ export function GalleryDeliveryTab({
         />
       </GalleryTabSection>
 
-      <section className="rounded-xl border border-border border-l-4 border-l-gold bg-gray-50 p-4">
+      <section className="rounded-md border border-border border-l-4 border-l-gold bg-paper-dim p-4">
         <div className="flex gap-3">
-          <Lightbulb className="size-5 shrink-0 text-gold" aria-hidden />
+          <Lightbulb className="size-5 shrink-0 text-accent" aria-hidden />
           <div>
-            <p className="text-sm font-bold text-charcoal">{panel.proTipTitle}</p>
-            <p className="mt-1 text-xs leading-relaxed text-muted">
+            <p className="text-sm font-bold text-ink">{panel.proTipTitle}</p>
+            <p className="mt-1 text-xs leading-relaxed text-ink-soft">
               {panel.proTipBody}
             </p>
           </div>
@@ -297,9 +297,9 @@ export function GalleryDeliveryTab({
       </section>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-muted">
+        <p className="text-xs text-ink-soft">
           {saveError ? (
-            <span className="text-red-700" role="alert">
+            <span className="text-bad-fg" role="alert">
               {saveError}
             </span>
           ) : saved ? (

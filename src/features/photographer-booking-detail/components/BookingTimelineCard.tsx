@@ -11,8 +11,8 @@ export function BookingTimelineCard({ timeline }: BookingTimelineCardProps) {
   const copy = BOOKING_DETAIL_COPY;
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
-      <h2 className="mb-4 text-sm font-bold text-charcoal">
+    <section className="rounded-md border border-border bg-panel p-5">
+      <h2 className="mb-4 text-sm font-bold text-ink">
         {copy.bookingTimeline}
       </h2>
 
@@ -26,7 +26,7 @@ export function BookingTimelineCard({ timeline }: BookingTimelineCardProps) {
                 <span
                   className={cn(
                     "absolute top-[19px] left-[8px] h-[calc(100%-19px)] w-px",
-                    step.state === "upcoming" ? "bg-border" : "bg-gold/40",
+                    step.state === "upcoming" ? "bg-border" : "bg-accent/40",
                   )}
                   aria-hidden
                 />
@@ -38,7 +38,7 @@ export function BookingTimelineCard({ timeline }: BookingTimelineCardProps) {
                 <p
                   className={cn(
                     "text-sm font-semibold leading-5",
-                    step.state === "upcoming" ? "text-muted-light" : "text-charcoal",
+                    step.state === "upcoming" ? "text-ink-faint" : "text-ink",
                   )}
                 >
                   {step.title}
@@ -46,13 +46,13 @@ export function BookingTimelineCard({ timeline }: BookingTimelineCardProps) {
                 <p
                   className={cn(
                     "mt-0.5 text-xs leading-4",
-                    step.state === "upcoming" ? "text-muted-light" : "text-muted",
+                    step.state === "upcoming" ? "text-ink-faint" : "text-ink-soft",
                   )}
                 >
                   {step.timestamp}
                 </p>
                 {step.note && (
-                  <p className="mt-2 rounded-lg bg-gray-50 px-3 py-2 text-xs italic text-muted">
+                  <p className="mt-2 rounded-sm bg-paper-dim px-3 py-2 text-xs italic text-ink-soft">
                     &ldquo;{step.note}&rdquo;
                   </p>
                 )}
@@ -69,7 +69,7 @@ function TimelineIcon({ state }: { state: TimelineStep["state"] }) {
   if (state === "completed") {
     return (
       <div className="relative z-10 flex h-[2.375rem] w-[18px] shrink-0 items-center justify-center">
-        <span className="flex size-[18px] items-center justify-center rounded-full bg-charcoal text-white">
+        <span className="flex size-[18px] items-center justify-center rounded-full bg-ink text-panel">
           <Check className="size-2.5" strokeWidth={3} aria-hidden />
         </span>
       </div>
@@ -79,7 +79,7 @@ function TimelineIcon({ state }: { state: TimelineStep["state"] }) {
   if (state === "current") {
     return (
       <div className="relative z-10 flex h-[2.375rem] w-[18px] shrink-0 items-center justify-center">
-        <span className="flex size-[18px] items-center justify-center rounded-full bg-gold text-white">
+        <span className="flex size-[18px] items-center justify-center rounded-full bg-accent text-on-accent">
           <Hourglass className="size-2.5" strokeWidth={3} aria-hidden />
         </span>
       </div>
@@ -89,7 +89,7 @@ function TimelineIcon({ state }: { state: TimelineStep["state"] }) {
   return (
     <div className="relative z-10 flex h-[2.375rem] w-[18px] shrink-0 items-center justify-center">
       <span
-        className="size-[18px] rounded-full border-2 border-border bg-white"
+        className="size-[18px] rounded-full border-2 border-border bg-panel"
         aria-hidden
       />
     </div>

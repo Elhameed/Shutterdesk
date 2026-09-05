@@ -81,10 +81,10 @@ export function ActivityHistoryView() {
       />
 
       <div className="max-w-3xl">
-        <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
           {copy.title}
         </h1>
-        <p className="mt-2 text-sm text-muted">{copy.subtitle}</p>
+        <p className="mt-2 text-sm text-ink-soft">{copy.subtitle}</p>
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
@@ -100,7 +100,7 @@ export function ActivityHistoryView() {
             <ActivityFeedSkeleton rows={8} />
           ) : isLoading ? null : error ? (
             <div
-              className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+              className="rounded-md border border-bad/30 bg-bad-tint p-4 text-sm text-bad-fg"
               role="alert"
             >
               {error}

@@ -31,10 +31,10 @@ const activityIcons: Record<GalleryActivityType, LucideIcon> = {
 };
 
 const activityIconStyles: Record<GalleryActivityType, string> = {
-  favorite: "bg-gold-light text-gold",
-  share: "bg-charcoal text-white",
-  download: "bg-gray-100 text-muted",
-  view: "bg-gray-100 text-muted",
+  favorite: "bg-accent-tint text-accent-fg",
+  share: "bg-paper-dim text-ink-soft",
+  download: "bg-paper-dim text-ink-soft",
+  view: "bg-paper-dim text-ink-soft",
 };
 
 type GalleryDetailSidebarProps = {
@@ -57,8 +57,8 @@ function SidebarSection({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
-      <p className="text-[10px] font-bold tracking-wider text-muted-light uppercase">
+    <section className="rounded-md border border-border bg-panel p-5">
+      <p className="text-[10px] font-medium text-ink-faint">
         {title}
       </p>
       <div className="mt-4">{children}</div>
@@ -84,14 +84,14 @@ export function GalleryDetailSidebar({
     <aside className="flex flex-col gap-4">
       <SidebarSection title={copy.clientInfo}>
         <div className="flex items-center gap-3">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gold-light text-sm font-bold text-charcoal">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent-tint text-sm font-bold text-ink">
             {meta.clientInitials}
           </span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-charcoal">
+            <p className="truncate text-sm font-bold text-ink">
               {gallery.clientName}
             </p>
-            <p className="truncate text-xs text-muted">{meta.clientEmail}</p>
+            <p className="truncate text-xs text-ink-soft">{meta.clientEmail}</p>
           </div>
         </div>
         <Button variant="outline" size="sm" className="mt-4 w-full" asChild>
@@ -104,18 +104,18 @@ export function GalleryDetailSidebar({
       <SidebarSection title={copy.summary}>
         <dl className="space-y-4">
           <div>
-            <dt className="flex items-center gap-2 text-xs font-semibold text-charcoal">
-              <Calendar className="size-3.5 text-muted" aria-hidden />
+            <dt className="flex items-center gap-2 text-xs font-semibold text-ink">
+              <Calendar className="size-3.5 text-ink-soft" aria-hidden />
               {copy.shootDate}
             </dt>
-            <dd className="mt-1 pl-6 text-xs text-muted">{meta.shootDate}</dd>
+            <dd className="mt-1 pl-6 text-xs text-ink-soft">{meta.shootDate}</dd>
           </div>
           <div>
-            <dt className="flex items-center gap-2 text-xs font-semibold text-charcoal">
-              <MapPin className="size-3.5 text-muted" aria-hidden />
+            <dt className="flex items-center gap-2 text-xs font-semibold text-ink">
+              <MapPin className="size-3.5 text-ink-soft" aria-hidden />
               {copy.location}
             </dt>
-            <dd className="mt-1 pl-6 text-xs text-muted">{meta.location}</dd>
+            <dd className="mt-1 pl-6 text-xs text-ink-soft">{meta.location}</dd>
           </div>
         </dl>
       </SidebarSection>
@@ -144,7 +144,7 @@ export function GalleryDetailSidebar({
         <Button
           variant="outline"
           size="sm"
-          className="w-full gap-2 text-red-600 hover:bg-red-50 hover:text-red-700"
+          className="w-full gap-2 text-bad-fg hover:bg-bad-tint hover:text-bad-fg"
           disabled={isArchived || isArchiveLoading}
           onClick={onArchiveGallery}
         >
@@ -155,7 +155,7 @@ export function GalleryDetailSidebar({
 
       <SidebarSection title={copy.activityLog}>
         {meta.activities.length === 0 ? (
-          <p className="text-xs text-muted">{copy.noActivity}</p>
+          <p className="text-xs text-ink-soft">{copy.noActivity}</p>
         ) : (
           <ol className="space-y-0">
             {meta.activities.slice(0, 5).map((activity, index, items) => (
@@ -169,7 +169,7 @@ export function GalleryDetailSidebar({
         )}
         <button
           type="button"
-          className="mt-4 w-full text-center text-xs font-bold text-charcoal transition-colors hover:text-gold"
+          className="mt-4 w-full text-center text-xs font-bold text-ink transition-colors hover:text-accent"
           onClick={onViewAllActivity}
         >
           {copy.viewAllActivity}
@@ -205,8 +205,8 @@ function ActivityItem({
         <Icon className="size-3.5" aria-hidden />
       </span>
       <div className="min-w-0 flex-1 pt-0.5">
-        <p className="text-sm text-charcoal">{activity.description}</p>
-        <p className="mt-0.5 text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+        <p className="text-sm text-ink">{activity.description}</p>
+        <p className="mt-0.5 text-[10px] font-medium text-ink-faint">
           {activity.timestamp}
         </p>
       </div>

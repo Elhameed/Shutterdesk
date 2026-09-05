@@ -65,7 +65,7 @@ export function BookingActions({
           <button
             type="button"
             onClick={viewBooking}
-            className="rounded-lg p-1.5 text-muted transition-colors hover:bg-gray-100 hover:text-charcoal"
+            className="rounded-sm p-1.5 text-ink-soft transition-colors hover:bg-paper-dim hover:text-ink"
             aria-label={copy.viewBooking}
           >
             <Eye className="size-4" />
@@ -79,7 +79,7 @@ export function BookingActions({
             type="button"
             disabled={isUpdating}
             onClick={() => setCancelOpen(true)}
-            className="rounded-lg border border-red-200 p-1.5 text-red-500 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-sm border border-bad/30 p-1.5 text-bad-fg transition-colors hover:bg-bad-tint disabled:cursor-not-allowed disabled:opacity-60"
             aria-label={copy.declineBooking}
           >
             <X className="size-3.5" strokeWidth={2.5} />

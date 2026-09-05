@@ -69,13 +69,13 @@ export function GalleryAnalyticsTab({
               >
                 <div className="flex w-full flex-1 items-end">
                   <div
-                    className="w-full rounded-t-md bg-charcoal transition-all"
+                    className="w-full rounded-t-md bg-ink transition-all"
                     style={{
                       height: `${Math.max(12, (entry.value / maxWeeklyViews) * 100)}%`,
                     }}
                   />
                 </div>
-                <span className="text-[10px] font-semibold text-muted">
+                <span className="text-[10px] font-semibold text-ink-soft">
                   {entry.day}
                 </span>
               </div>
@@ -87,22 +87,22 @@ export function GalleryAnalyticsTab({
           <div className="space-y-4">
             <div>
               <div className="flex items-end justify-between gap-3">
-                <p className="text-3xl font-bold tracking-tight text-charcoal">
+                <p className="text-3xl font-bold tracking-tight text-ink">
                   {analytics.engagementRate}%
                 </p>
-                <p className="text-xs text-muted">
+                <p className="text-xs text-ink-soft">
                   {panel.avgSession}:{" "}
-                  <span className="font-semibold text-charcoal">
+                  <span className="font-semibold text-ink">
                     {analytics.avgSessionDuration}
                   </span>
                 </p>
               </div>
-              <p className="mt-1 text-xs text-muted">{panel.engagementHint}</p>
+              <p className="mt-1 text-xs text-ink-soft">{panel.engagementHint}</p>
             </div>
 
-            <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+            <div className="h-2 overflow-hidden rounded-full bg-paper-dim">
               <div
-                className="h-full rounded-full bg-gold transition-all"
+                className="h-full rounded-full bg-accent transition-all"
                 style={{ width: `${analytics.engagementRate}%` }}
               />
             </div>
@@ -121,13 +121,13 @@ export function GalleryAnalyticsTab({
           <table className="w-full min-w-[420px] border-collapse">
             <thead>
               <tr className="border-b border-border">
-                <th className="pb-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+                <th className="pb-3 text-left text-[11px] font-medium text-ink-faint">
                   {panel.columns.photo}
                 </th>
-                <th className="pb-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+                <th className="pb-3 text-left text-[11px] font-medium text-ink-faint">
                   {panel.columns.views}
                 </th>
-                <th className="pb-3 text-left text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+                <th className="pb-3 text-left text-[11px] font-medium text-ink-faint">
                   {panel.columns.downloads}
                 </th>
               </tr>
@@ -135,16 +135,16 @@ export function GalleryAnalyticsTab({
             <tbody className="divide-y divide-border">
               {analytics.topPhotos.map((photo) => (
                 <tr key={photo.rank}>
-                  <td className="py-3 text-sm font-semibold text-charcoal">
-                    <span className="mr-2 text-xs font-bold text-muted">
+                  <td className="py-3 text-sm font-semibold text-ink">
+                    <span className="mr-2 text-xs font-bold text-ink-soft">
                       #{photo.rank}
                     </span>
                     {photo.label}
                   </td>
-                  <td className="py-3 text-sm text-muted">
+                  <td className="py-3 text-sm text-ink-soft">
                     {photo.views.toLocaleString()}
                   </td>
-                  <td className="py-3 text-sm text-muted">
+                  <td className="py-3 text-sm text-ink-soft">
                     {photo.downloads.toLocaleString()}
                   </td>
                 </tr>
@@ -156,13 +156,13 @@ export function GalleryAnalyticsTab({
 
       <GalleryTabSection title={panel.activityLog}>
         {activities.length === 0 ? (
-          <p className="text-sm text-muted">{panel.noActivity}</p>
+          <p className="text-sm text-ink-soft">{panel.noActivity}</p>
         ) : (
           <ol className="divide-y divide-border">
             {activities.map((activity) => (
               <li key={activity.id} className="py-3 first:pt-0 last:pb-0">
-                <p className="text-sm text-charcoal">{activity.description}</p>
-                <p className="mt-1 text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+                <p className="text-sm text-ink">{activity.description}</p>
+                <p className="mt-1 text-[10px] font-medium text-ink-faint">
                   {activity.timestamp}
                 </p>
               </li>
@@ -186,19 +186,19 @@ function AnalyticsKpiCard({
   icon: typeof Eye;
 }) {
   return (
-    <article className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <article className="rounded-md border border-border bg-panel p-5">
       <div className="flex items-start justify-between gap-3">
-        <div className="flex size-9 items-center justify-center rounded-lg bg-gold-light text-gold">
+        <div className="flex size-9 items-center justify-center rounded-sm bg-accent-tint text-accent">
           <Icon className="size-4" aria-hidden />
         </div>
-        <span className="inline-flex items-center gap-0.5 rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-semibold text-green-600">
+        <span className="inline-flex items-center gap-0.5 rounded-full bg-ok-tint px-2 py-0.5 text-[10px] font-semibold text-ok-fg">
           {trend}
         </span>
       </div>
-      <p className="mt-4 text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+      <p className="mt-4 text-[11px] font-medium text-ink-faint">
         {label}
       </p>
-      <p className="mt-1 text-3xl font-bold tracking-tight text-charcoal">
+      <p className="mt-1 text-3xl font-bold tracking-tight text-ink">
         {value}
       </p>
     </article>
@@ -207,11 +207,11 @@ function AnalyticsKpiCard({
 
 function MetricPill({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-lg bg-gray-50 px-3 py-2 text-center">
-      <dt className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+    <div className="rounded-sm bg-paper-dim px-3 py-2 text-center">
+      <dt className="text-[10px] font-medium text-ink-faint">
         {label}
       </dt>
-      <dd className="mt-1 text-sm font-bold text-charcoal">
+      <dd className="mt-1 text-sm font-bold text-ink">
         {value.toLocaleString()}
       </dd>
     </div>

@@ -42,9 +42,9 @@ export function NotificationsSidebar({
   const copy = NOTIFICATIONS_COPY;
 
   return (
-    <aside className="space-y-6 rounded-xl border border-border bg-white p-5 shadow-card lg:sticky lg:top-6">
+    <aside className="space-y-6 rounded-md border border-border bg-panel p-5 lg:sticky lg:top-6">
       <section>
-        <p className="text-[10px] font-bold tracking-wider text-muted-light uppercase">
+        <p className="text-[10px] font-medium text-ink-faint">
           {copy.status}
         </p>
         <div className="mt-3 space-y-1">
@@ -54,10 +54,10 @@ export function NotificationsSidebar({
               type="button"
               onClick={() => onStatusChange(key)}
               className={cn(
-                "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors",
+                "flex w-full items-center justify-between rounded-sm px-3 py-2.5 text-sm font-semibold transition-colors",
                 activeStatus === key
-                  ? "bg-gold text-charcoal"
-                  : "text-charcoal hover:bg-gray-50",
+                  ? "bg-accent text-ink"
+                  : "text-ink hover:bg-paper-dim",
               )}
             >
               <span className="flex items-center gap-2">
@@ -67,7 +67,7 @@ export function NotificationsSidebar({
               <span
                 className={cn(
                   "text-xs font-bold",
-                  activeStatus === key ? "text-charcoal" : "text-muted",
+                  activeStatus === key ? "text-ink" : "text-ink-soft",
                 )}
               >
                 {counts[key]}
@@ -78,14 +78,14 @@ export function NotificationsSidebar({
       </section>
 
       <section>
-        <p className="text-[10px] font-bold tracking-wider text-muted-light uppercase">
+        <p className="text-[10px] font-medium text-ink-faint">
           {copy.categories}
         </p>
         <div className="mt-3 space-y-3">
           {categoryItems.map((category) => (
             <label
               key={category}
-              className="flex cursor-pointer items-center gap-2.5 text-sm text-charcoal"
+              className="flex cursor-pointer items-center gap-2.5 text-sm text-ink"
             >
               <Checkbox
                 checked={categories[category]}

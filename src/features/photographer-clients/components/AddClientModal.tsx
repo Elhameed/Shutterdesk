@@ -88,10 +88,10 @@ export function AddClientModal({
       <div className="space-y-6">
         <section className="space-y-4">
           <div className="flex items-center gap-2">
-            <h3 className="text-xs font-semibold tracking-[0.12em] text-muted uppercase">
+            <h3 className="text-xs font-medium text-ink-soft">
               {copy.personalInformation}
             </h3>
-            <span className="rounded-full bg-gold-light px-2 py-0.5 text-[10px] font-bold tracking-wide text-charcoal uppercase">
+            <span className="rounded-full bg-accent-tint px-2 py-0.5 text-[10px] font-medium text-ink">
               {copy.required}
             </span>
           </div>
@@ -99,7 +99,7 @@ export function AddClientModal({
           <div className="space-y-2">
             <Label required>{copy.fullName}</Label>
             <div className="relative">
-              <Contact className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
+              <Contact className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-soft" />
               <Input
                 value={fullName}
                 onChange={(event) => setFullName(event.target.value)}
@@ -113,7 +113,7 @@ export function AddClientModal({
             <div className="space-y-2">
               <Label required>{copy.emailAddress}</Label>
               <div className="relative">
-                <Mail className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
+                <Mail className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-soft" />
                 <Input
                   type="email"
                   value={email}
@@ -126,7 +126,7 @@ export function AddClientModal({
             <div className="space-y-2">
               <Label required>{copy.phoneNumber}</Label>
               <div className="relative">
-                <Phone className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
+                <Phone className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-soft" />
                 <Input
                   type="tel"
                   value={phone}
@@ -140,13 +140,13 @@ export function AddClientModal({
         </section>
 
         <section className="space-y-4">
-          <h3 className="text-xs font-semibold tracking-[0.12em] text-muted uppercase">
+          <h3 className="text-xs font-medium text-ink-soft">
             {copy.clientClassification}
           </h3>
           <div className="space-y-2">
             <Label>{copy.clientCategory}</Label>
             <div className="relative">
-              <Shapes className="pointer-events-none absolute top-1/2 left-3 z-10 size-4 -translate-y-1/2 text-muted" />
+              <Shapes className="pointer-events-none absolute top-1/2 left-3 z-10 size-4 -translate-y-1/2 text-ink-soft" />
               <Select
                 value={category}
                 onChange={(event) => setCategory(event.target.value)}
@@ -167,21 +167,21 @@ export function AddClientModal({
           <button
             type="button"
             onClick={() => setOptionalOpen((open) => !open)}
-            className="flex w-full items-center justify-between rounded-lg border border-border bg-gray-50/50 px-4 py-3 text-left"
+            className="flex w-full items-center justify-between rounded-sm border border-border bg-paper-dim/50 px-4 py-3 text-left"
           >
-            <span className="flex items-center gap-2 text-xs font-semibold tracking-[0.12em] text-muted uppercase">
+            <span className="flex items-center gap-2 text-xs font-medium text-ink-soft">
               <Plus className="size-3.5" />
               {copy.optionalInformation}
             </span>
             {optionalOpen ? (
-              <ChevronUp className="size-4 text-muted" />
+              <ChevronUp className="size-4 text-ink-soft" />
             ) : (
-              <ChevronDown className="size-4 text-muted" />
+              <ChevronDown className="size-4 text-ink-soft" />
             )}
           </button>
 
           {optionalOpen && (
-            <div className="mt-4 space-y-4 rounded-lg border border-border bg-white p-4">
+            <div className="mt-4 space-y-4 rounded-sm border border-border bg-panel p-4">
               <div className="space-y-2">
                 <Label>{copy.address}</Label>
                 <Textarea

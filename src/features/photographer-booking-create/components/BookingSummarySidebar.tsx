@@ -34,17 +34,17 @@ export function BookingSummarySidebar({
 
   return (
     <aside className="flex flex-col gap-4">
-      <section className="overflow-hidden rounded-xl border border-border bg-white shadow-card">
-        <div className="relative h-28 bg-charcoal">
+      <section className="overflow-hidden rounded-md border border-border bg-panel">
+        <div className="relative h-28 bg-ink">
           <img
             src={landingAssets.experience.architecturePhoto}
             alt=""
             className="size-full object-cover opacity-60"
             aria-hidden
           />
-          <div className="absolute inset-0 bg-linear-to-t from-charcoal/80 to-charcoal/20" />
+          <div className="absolute inset-0 bg-linear-to-t from-ink/80 to-ink/20" />
           <div className="absolute inset-x-0 bottom-0 p-4">
-            <span className="inline-flex rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold tracking-wide text-white uppercase backdrop-blur-sm">
+            <span className="inline-flex rounded-full bg-panel/20 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
               {copy.reviewing}
             </span>
             <h2 className="mt-2 text-base font-bold text-white">
@@ -67,15 +67,15 @@ export function BookingSummarySidebar({
               className="mt-2"
             />
             <div className="mt-3 flex items-center justify-between">
-              <span className="font-bold text-charcoal">{copy.totalCost}</span>
-              <span className="text-lg font-bold text-charcoal">
+              <span className="font-bold text-ink">{copy.totalCost}</span>
+              <span className="text-lg font-bold text-ink">
                 {copy.money(total)}
               </span>
             </div>
           </div>
 
-          <div className="rounded-lg bg-gold p-4 text-white">
-            <p className="text-[10px] font-semibold tracking-wider text-white/80 uppercase">
+          <div className="rounded-sm bg-accent p-4 text-white">
+            <p className="text-[10px] font-medium text-white/80">
               {copy.depositDueNow}
             </p>
             <p className="mt-1 text-xl font-bold">{copy.money(deposit)}</p>
@@ -85,18 +85,18 @@ export function BookingSummarySidebar({
           <Button variant="default" className="w-full" onClick={onCreate}>
             {copy.createAndSend}
           </Button>
-          <p className="text-center text-[11px] leading-relaxed text-muted">
+          <p className="text-center text-[11px] leading-relaxed text-ink-soft">
             {copy.inviteDisclaimer}
           </p>
         </div>
       </section>
 
-      <section className="rounded-xl border border-border border-l-4 border-l-gold bg-gray-50 p-4">
+      <section className="rounded-md border border-border border-l-4 border-l-gold bg-paper-dim p-4">
         <div className="flex gap-3">
-          <Lightbulb className="size-5 shrink-0 text-gold" aria-hidden />
+          <Lightbulb className="size-5 shrink-0 text-accent" aria-hidden />
           <div>
-            <p className="text-sm font-bold text-charcoal">{copy.proTipTitle}</p>
-            <p className="mt-1 text-xs leading-relaxed text-muted">
+            <p className="text-sm font-bold text-ink">{copy.proTipTitle}</p>
+            <p className="mt-1 text-xs leading-relaxed text-ink-soft">
               {copy.proTipBody}
             </p>
           </div>
@@ -117,8 +117,8 @@ function SummaryRow({
 }) {
   return (
     <div className={`flex items-center justify-between gap-3 ${className ?? ""}`}>
-      <span className="text-muted">{label}</span>
-      <span className="text-right font-medium text-charcoal">{value}</span>
+      <span className="text-ink-soft">{label}</span>
+      <span className="text-right font-medium text-ink">{value}</span>
     </div>
   );
 }

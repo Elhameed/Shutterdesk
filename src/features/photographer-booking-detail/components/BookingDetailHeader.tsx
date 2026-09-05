@@ -75,38 +75,38 @@ export function BookingDetailHeader({
     <>
       <nav
         aria-label="Breadcrumb"
-        className="flex items-center gap-1.5 text-sm text-muted"
+        className="flex items-center gap-1.5 text-sm text-ink-soft"
       >
         <Link
           to={ROUTES.photographer.bookings}
-          className="transition-colors hover:text-charcoal"
+          className="transition-colors hover:text-ink"
         >
           {copy.breadcrumbBookings}
         </Link>
         <ChevronRight className="size-3.5" aria-hidden />
-        <span className="font-medium text-charcoal">{booking.reference}</span>
+        <span className="font-medium text-ink">{booking.reference}</span>
       </nav>
 
       <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
               {booking.reference}
             </h1>
             <span
               className={cn(
-                "inline-flex rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                "inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium",
                 BOOKING_STATUS_BADGE_STYLES[booking.detailStatus],
               )}
             >
               {copy.status[booking.detailStatus]}
             </span>
           </div>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-ink-soft">
             {copy.requestedOn(booking.requestedDate, booking.sessionLabel)}
           </p>
           {booking.statusMessage ? (
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
               {booking.statusMessage}
             </p>
           ) : null}

@@ -19,7 +19,7 @@ export function NotificationsFeed({
 
   if (notifications.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-border bg-white px-6 py-16 text-center text-sm text-muted">
+      <div className="rounded-md border border-dashed border-border bg-panel px-6 py-16 text-center text-sm text-ink-soft">
         {copy.empty}
       </div>
     );
@@ -44,7 +44,7 @@ export function NotificationsFeed({
         return (
           <section key={group}>
             <div className="mb-4 flex items-center gap-3">
-              <span className="rounded-full bg-gray-100 px-3 py-1 text-[10px] font-bold tracking-wider text-muted uppercase">
+              <span className="rounded-full bg-paper-dim px-3 py-1 text-[10px] font-medium text-ink-soft">
                 {copy.groups[group]}
               </span>
               <span className="h-px flex-1 bg-border" aria-hidden />

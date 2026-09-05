@@ -15,16 +15,16 @@ export function GalleryDetailBreadcrumbs({
   return (
     <nav
       aria-label="Breadcrumb"
-      className="flex items-center gap-1.5 text-sm text-muted"
+      className="flex items-center gap-1.5 text-sm text-ink-soft"
     >
       <Link
         to={ROUTES.photographer.galleries}
-        className="transition-colors hover:text-charcoal"
+        className="transition-colors hover:text-ink"
       >
         {copy.title}
       </Link>
       <ChevronRight className="size-3.5" aria-hidden />
-      <span className="font-medium text-charcoal">{galleryTitle}</span>
+      <span className="font-medium text-ink">{galleryTitle}</span>
     </nav>
   );
 }

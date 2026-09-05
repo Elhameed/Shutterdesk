@@ -127,7 +127,7 @@ export function ClientsView() {
       </div>
 
       {error && (
-        <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="mt-4 rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
           {error}
         </p>
       )}
@@ -140,8 +140,8 @@ export function ClientsView() {
             <TableRowsSkeleton rows={8} />
           )
         ) : isLoading ? null : paginatedClients.length === 0 ? (
-          <div className="flex min-h-48 items-center justify-center rounded-xl border border-border bg-white">
-            <p className="text-sm text-muted">No clients match your filters.</p>
+          <div className="flex min-h-48 items-center justify-center rounded-md border border-border bg-panel">
+            <p className="text-sm text-ink-soft">No clients match your filters.</p>
           </div>
         ) : view === "card" ? (
           <ClientsGrid clients={paginatedClients} />

@@ -37,15 +37,15 @@ function FilterPill({
         onChange={(event) => onChange(event.target.value)}
         aria-label={ariaLabel}
         className={cn(
-          "h-9 cursor-pointer appearance-none rounded-full border border-border bg-white py-0 pr-8 pl-4 text-xs font-medium text-charcoal",
-          "transition-colors hover:bg-gray-50",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/20",
+          "h-9 cursor-pointer appearance-none rounded-full border border-border bg-panel py-0 pr-8 pl-4 text-xs font-medium text-ink",
+          "transition-colors hover:bg-paper-dim",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20",
         )}
       >
         {children}
       </select>
       <ChevronDown
-        className="pointer-events-none absolute top-1/2 right-3 size-3.5 -translate-y-1/2 text-muted"
+        className="pointer-events-none absolute top-1/2 right-3 size-3.5 -translate-y-1/2 text-ink-soft"
         aria-hidden
       />
     </div>
@@ -66,7 +66,7 @@ export function ClientsFilterBar({
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="flex min-w-0 flex-wrap items-center gap-3">
-        <span className="flex shrink-0 items-center gap-1.5 text-[10px] font-bold tracking-wider text-muted-light uppercase">
+        <span className="flex shrink-0 items-center gap-1.5 text-[10px] font-medium text-ink-faint">
           <Filter className="size-3.5" aria-hidden />
           {copy.filters}
         </span>
@@ -109,7 +109,7 @@ export function ClientsFilterBar({
       <button
         type="button"
         onClick={onReset}
-        className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-muted transition-colors hover:text-charcoal"
+        className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-ink-soft transition-colors hover:text-ink"
       >
         <RotateCcw className="size-3.5" aria-hidden />
         {copy.reset}

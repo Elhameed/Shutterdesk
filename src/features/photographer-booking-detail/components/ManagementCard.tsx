@@ -17,7 +17,7 @@ export function ManagementCard({ booking }: ManagementCardProps) {
   });
 
   return (
-    <section className="rounded-xl bg-charcoal p-5 text-white shadow-card">
+    <section className="rounded-md bg-ink p-5 text-white">
       <h2 className="text-sm font-bold">{copy.management}</h2>
 
       <p className="mt-3 text-sm leading-relaxed text-white/75">
@@ -25,7 +25,7 @@ export function ManagementCard({ booking }: ManagementCardProps) {
       </p>
 
       <div className="mt-4">
-        <Button variant="gold" className="h-12 w-full text-xs font-bold tracking-wide uppercase" asChild>
+        <Button variant="gold" className="h-12 w-full text-xs font-medium" asChild>
           <Link to={paymentsHref}>
             <Check className="size-4" strokeWidth={3} />
             {copy.openPaymentsQueue}
@@ -34,7 +34,7 @@ export function ManagementCard({ booking }: ManagementCardProps) {
         </Button>
       </div>
 
-      <p className="mt-4 text-center text-[9px] font-semibold tracking-widest text-white/50 uppercase">
+      <p className="mt-4 text-center text-[9px] font-medium text-white/50">
         {copy.managementFooter}
       </p>
     </section>

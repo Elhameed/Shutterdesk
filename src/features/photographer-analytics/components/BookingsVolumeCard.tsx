@@ -11,10 +11,10 @@ export function BookingsVolumeCard({ data, totalBookings }: BookingsVolumeCardPr
   const maxValue = Math.max(...data.map((item) => item.value), 1);
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <section className="rounded-md border border-border bg-panel p-5">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-sm font-bold text-charcoal">{copy.bookingsVolume}</h2>
-        <p className="text-xs font-medium text-muted">
+        <h2 className="text-sm font-bold text-ink">{copy.bookingsVolume}</h2>
+        <p className="text-xs font-medium text-ink-soft">
           {copy.totalShoots(totalBookings)}
         </p>
       </div>
@@ -26,10 +26,10 @@ export function BookingsVolumeCard({ data, totalBookings }: BookingsVolumeCardPr
             className="flex flex-1 flex-col items-center justify-end gap-2"
           >
             <div
-              className="w-full max-w-8 rounded-t-sm bg-gray-200"
+              className="w-full max-w-8 rounded-t-sm bg-border"
               style={{ height: `${(item.value / maxValue) * 100}%` }}
             />
-            <span className="text-[10px] font-medium text-muted">
+            <span className="text-[10px] font-medium text-ink-soft">
               {item.label}
             </span>
           </div>

@@ -16,27 +16,27 @@ export function PaymentVerificationCard({ booking }: PaymentVerificationCardProp
   });
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <section className="rounded-md border border-border bg-panel p-5">
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="text-sm font-bold text-charcoal">
+        <h2 className="text-sm font-bold text-ink">
           {copy.paymentVerification}
         </h2>
         <Link
           to={paymentsHref}
-          className="text-xs font-semibold text-gold transition-colors hover:text-gold-hover"
+          className="text-xs font-semibold text-accent transition-colors hover:text-accent-hover"
         >
           {copy.reviewInPayments}
         </Link>
       </div>
 
       <div className="mb-4 flex items-center gap-2">
-        <span className="size-2 shrink-0 rounded-full bg-gold" aria-hidden />
-        <p className="text-sm font-semibold text-charcoal">
+        <span className="size-2 shrink-0 rounded-full bg-accent" aria-hidden />
+        <p className="text-sm font-semibold text-ink">
           {payment.statusLabel}
         </p>
       </div>
 
-      <div className="relative flex min-h-[220px] items-center justify-center overflow-hidden rounded-xl bg-charcoal p-6 sm:min-h-[260px]">
+      <div className="relative flex min-h-[220px] items-center justify-center overflow-hidden rounded-md bg-ink p-6 sm:min-h-[260px]">
         <div
           className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent"
           aria-hidden
