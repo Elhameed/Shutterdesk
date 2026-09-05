@@ -27,6 +27,16 @@ services:
       # that transaction pooling cannot hold.
       - key: DIRECT_DATABASE_URL
         sync: false
+      # Prisma serialises `migrate deploy` with a session-scoped Postgres
+      # advisory lock. Neon's pooled endpoint is PgBouncer in transaction mode
+      # and cannot hold one; worse, an acquire that the client abandons there
+      # can leave the lock held by an idle pooled backend, which then blocks
+      # the direct connection too and wedges every later deploy.
+      #
+      # Deploys here are single-instance and sequential, so the lock buys
+      # nothing. See https://pris.ly/d/migrate-advisory-locking
+      - key: PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK
+        value: "true"
       - key: JWT_SECRET
         sync: false
       - key: JWT_EXPIRES_IN
