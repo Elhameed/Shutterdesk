@@ -144,13 +144,19 @@ curl https://YOUR-RENDER-URL.onrender.com/api/health
 Expected:
 
 ```json
-{"status":"ok","database":"connected","commit":"7032cb9","timestamp":"..."}
+{"status":"ok","database":"connected","uploads":"configured","commit":"b31d0cd","timestamp":"..."}
 ```
 
 `commit` is the deployed Git SHA (`RENDER_GIT_COMMIT`). Check it against the
 commit you expect: while a new deploy crash-loops, Render keeps serving the
 **previous** instance, so a healthy response alone does not prove your deploy
 went out.
+
+`uploads` reports whether the `CLOUDINARY_*` variables are present — never
+their values. `"unconfigured"` means receipt and gallery uploads will fail with
+503 while the rest of the app works normally. The upload endpoints are
+authenticated, so this is the only way to confirm the credentials landed
+without driving the UI.
 
 ### Optional: seed demo data on staging
 
