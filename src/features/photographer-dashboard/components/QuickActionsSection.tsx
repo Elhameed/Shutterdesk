@@ -1,6 +1,7 @@
 import { CalendarPlus, CreditCard, Image, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PHOTOGRAPHER_DASHBOARD_COPY } from "@/constants/photographer-dashboard";
+import { FrameGrid } from "@/components/ui/card";
 import { ROUTES } from "@/constants/routes";
 
 const actions = [
@@ -42,11 +43,9 @@ export function QuickActionsSection({
   return (
     <section className="min-w-0">
       {showHeader && (
-        <h2 className="mb-3 text-[11px] font-semibold tracking-wider text-muted-light uppercase">
-          {copy.title}
-        </h2>
+        <h2 className="font-display text-ink mb-3 text-base">{copy.title}</h2>
       )}
-      <div className="grid grid-cols-2 gap-3">
+      <FrameGrid className="grid-cols-2">
         {actions.map((action) => {
           const Icon = action.icon;
 
@@ -54,16 +53,16 @@ export function QuickActionsSection({
             <Link
               key={action.id}
               to={action.to}
-              className="flex flex-col items-center justify-center gap-2 rounded-xl border border-border bg-white px-3 py-5 text-center transition-colors hover:bg-gray-50"
+              className="bg-panel hover:bg-paper-dim flex items-center gap-2.5 px-3.5 py-3.5 transition-colors"
             >
-              <Icon className="size-5 text-charcoal" aria-hidden />
-              <span className="text-xs font-semibold text-charcoal">
+              <Icon className="text-ink-faint size-4 shrink-0" aria-hidden />
+              <span className="text-ink text-xs font-medium">
                 {copy[action.labelKey]}
               </span>
             </Link>
           );
         })}
-      </div>
+      </FrameGrid>
     </section>
   );
 }

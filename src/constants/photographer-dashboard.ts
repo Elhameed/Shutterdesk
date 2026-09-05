@@ -94,28 +94,28 @@ export const PHOTOGRAPHER_DASHBOARD_COPY = {
     subtitle: "Here's what's happening with your studio today.",
   },
   upcomingShoots: {
-    title: "Upcoming Shoots",
-    viewCalendar: "View Calendar",
+    title: "Upcoming shoots",
+    viewCalendar: "View calendar",
     columns: {
       client: "Client",
-      dateLocation: "Date & Location",
+      dateLocation: "Date & location",
       status: "Status",
     },
     statusConfirmed: "Confirmed",
     statusPaid: "Paid",
   },
   quickActions: {
-    title: "Quick Actions",
-    newBooking: "New Booking",
-    reviewPayments: "Review Payments",
-    createGallery: "Create Gallery",
-    addClient: "Add Client",
+    title: "Quick actions",
+    newBooking: "New booking",
+    reviewPayments: "Review payments",
+    createGallery: "Create gallery",
+    addClient: "Add client",
   },
   profileCompletion: {
-    title: "Profile Completion",
+    title: "Profile completion",
   },
   recentActivity: {
-    title: "Recent Activity",
+    title: "Recent activity",
     viewAll: "View all activity",
   },
 } as const;
