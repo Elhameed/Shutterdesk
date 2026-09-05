@@ -17,7 +17,7 @@ export function PaymentContextBanner({
   const copy = CLIENT_PAYMENTS_COPY.upload;
 
   return (
-    <section className="mt-6 rounded-xl border border-gold/30 bg-gold/5 p-5 shadow-card sm:p-6">
+    <section className="mt-6 rounded-md border border-accent/30 bg-accent-hover/5 p-5 sm:p-6">
       <div className="flex items-start gap-3">
         <img
           src={studioAvatar}
@@ -25,16 +25,16 @@ export function PaymentContextBanner({
           className="size-12 shrink-0 rounded-full object-cover ring-2 ring-white"
         />
         <div className="min-w-0">
-          <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+          <p className="text-[10px] font-medium text-ink-faint">
             {copy.payingLabel}
           </p>
-          <p className="mt-1 text-lg font-bold text-charcoal">{studioName}</p>
-          <p className="mt-3 text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+          <p className="mt-1 text-lg font-bold text-ink">{studioName}</p>
+          <p className="mt-3 text-[10px] font-medium text-ink-faint">
             {copy.forLabel}
           </p>
-          <p className="mt-1 text-sm font-medium text-charcoal">
+          <p className="mt-1 text-sm font-medium text-ink">
             {bookingTitle}{" "}
-            <span className="text-muted">· {bookingReference}</span>
+            <span className="text-ink-soft">· {bookingReference}</span>
           </p>
         </div>
       </div>

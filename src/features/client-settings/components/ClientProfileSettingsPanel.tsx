@@ -51,7 +51,7 @@ export function ClientProfileSettingsPanel({
           disabled
           readOnly
         />
-        <p className="text-xs text-muted">{CLIENT_SETTINGS_COPY.profile.emailHint}</p>
+        <p className="text-xs text-ink-soft">{CLIENT_SETTINGS_COPY.profile.emailHint}</p>
       </div>
 
       <div className="space-y-2">

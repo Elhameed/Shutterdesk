@@ -25,7 +25,7 @@ export function ClientGalleryCard({ gallery }: ClientGalleryCardProps) {
         : "editing";
 
   const image = (
-    <div className="relative aspect-[4/3] overflow-hidden rounded-t-xl bg-gray-100">
+    <div className="relative aspect-[4/3] overflow-hidden rounded-t-md bg-paper-dim">
       <AppImage
         src={gallery.coverImage}
         alt=""
@@ -37,25 +37,25 @@ export function ClientGalleryCard({ gallery }: ClientGalleryCardProps) {
       />
 
       {!isProcessing && (
-        <span className="absolute top-3 left-3 rounded-full bg-white px-3 py-1 text-[10px] font-bold tracking-wide text-charcoal uppercase shadow-sm">
+        <span className="absolute top-3 left-3 rounded-full bg-panel px-3 py-1 text-[10px] font-medium text-ink">
           {copy.badge[badgeKey]}
         </span>
       )}
 
       {isProcessing && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-charcoal/45">
-          <span className="flex size-11 items-center justify-center rounded-full bg-white/95 text-charcoal shadow-sm">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-ink/45">
+          <span className="flex size-11 items-center justify-center rounded-full bg-panel/95 text-ink">
             <Loader2 className="size-5 animate-spin" aria-hidden />
           </span>
-          <p className="mt-3 text-[10px] font-bold tracking-wider text-white uppercase">
+          <p className="mt-3 text-[10px] font-medium text-white">
             {copy.badge.editing}
           </p>
         </div>
       )}
 
       {isViewable && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-charcoal/0 opacity-0 transition-all group-hover:bg-charcoal/20 group-hover:opacity-100">
-          <span className="flex size-10 items-center justify-center rounded-full bg-white text-charcoal shadow-md">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all group-hover:bg-ink/20 group-hover:opacity-100">
+          <span className="flex size-10 items-center justify-center rounded-full bg-panel text-ink shadow-md">
             <Eye className="size-4" aria-hidden />
           </span>
         </div>
@@ -64,17 +64,17 @@ export function ClientGalleryCard({ gallery }: ClientGalleryCardProps) {
   );
 
   const footer = (
-    <div className="rounded-b-xl bg-white px-4 py-4">
+    <div className="rounded-b-md bg-panel px-4 py-4">
       <div className="flex items-center gap-2">
-        <h3 className="text-sm font-bold text-charcoal">{gallery.title}</h3>
+        <h3 className="text-sm font-bold text-ink">{gallery.title}</h3>
         {gallery.isNew ? (
           <span
-            className="size-2 shrink-0 rounded-full bg-gold"
+            className="size-2 shrink-0 rounded-full bg-accent"
             aria-label="New gallery"
           />
         ) : null}
       </div>
-      <p className="mt-1 text-xs text-muted">
+      <p className="mt-1 text-xs text-ink-soft">
         {isProcessing
           ? copy.processingSession
           : copy.photos(gallery.photoCount)}
@@ -84,7 +84,7 @@ export function ClientGalleryCard({ gallery }: ClientGalleryCardProps) {
 
   if (!isViewable) {
     return (
-      <article className="overflow-hidden rounded-xl border border-border bg-white shadow-card">
+      <article className="overflow-hidden rounded-md border border-border bg-panel">
         {image}
         {footer}
       </article>
@@ -92,7 +92,7 @@ export function ClientGalleryCard({ gallery }: ClientGalleryCardProps) {
   }
 
   return (
-    <article className="group overflow-hidden rounded-xl border border-border bg-white shadow-card transition-shadow hover:shadow-md">
+    <article className="group overflow-hidden rounded-md border border-border bg-panel transition-colors hover:border-border-strong">
       <Link
         to={ROUTES.client.galleryDetail(gallery.id)}
         className="block"
@@ -111,15 +111,15 @@ export function ClientNewSessionCard() {
   return (
     <Link
       to={ROUTES.client.bookSession}
-      className="group flex min-h-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-white px-6 py-10 text-center shadow-card transition-colors hover:border-gold/40 hover:bg-gray-50/80"
+      className="group flex min-h-full flex-col items-center justify-center rounded-md border-2 border-dashed border-border bg-panel px-6 py-10 text-center transition-colors hover:border-accent/40 hover:bg-paper-dim/80"
     >
-      <span className="flex size-14 items-center justify-center rounded-full bg-gray-100 text-muted transition-colors group-hover:bg-gold/10 group-hover:text-gold">
+      <span className="flex size-14 items-center justify-center rounded-full bg-paper-dim text-ink-soft transition-colors group-hover:bg-accent-hover/10 group-hover:text-accent">
         <ImagePlus className="size-6" aria-hidden />
       </span>
-      <p className="mt-4 text-xs font-bold tracking-wider text-muted uppercase">
+      <p className="mt-4 text-xs font-medium text-ink-soft">
         {copy.title}
       </p>
-      <p className="mt-2 max-w-[220px] text-xs leading-relaxed text-muted">
+      <p className="mt-2 max-w-[220px] text-xs leading-relaxed text-ink-soft">
         {copy.body}
       </p>
     </Link>

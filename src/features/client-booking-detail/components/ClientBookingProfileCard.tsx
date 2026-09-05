@@ -15,10 +15,10 @@ export function ClientBookingProfileCard({ client }: ClientBookingProfileCardPro
   ];
 
   return (
-    <section className="rounded-xl border border-border bg-white p-5 shadow-card">
+    <section className="rounded-md border border-border bg-panel p-5">
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="text-base font-bold text-charcoal">{copy.yourProfile}</h2>
-        <User className="size-4 shrink-0 text-muted" aria-hidden />
+        <h2 className="text-base font-bold text-ink">{copy.yourProfile}</h2>
+        <User className="size-4 shrink-0 text-ink-soft" aria-hidden />
       </div>
 
       <div className="flex items-center gap-4">
@@ -29,22 +29,22 @@ export function ClientBookingProfileCard({ client }: ClientBookingProfileCardPro
             className="size-14 shrink-0 rounded-full object-cover"
           />
         ) : (
-          <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-gold-light text-base font-bold text-gold">
+          <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-accent-tint text-base font-bold text-accent">
             {client.initials}
           </div>
         )}
         <div>
-          <p className="text-base font-bold text-charcoal">{client.name}</p>
-          <p className="text-xs text-muted">{copy.profileSyncedHint}</p>
+          <p className="text-base font-bold text-ink">{client.name}</p>
+          <p className="text-xs text-ink-soft">{copy.profileSyncedHint}</p>
         </div>
       </div>
 
       <ul className="mt-5 space-y-3">
         {fields.map(({ icon: Icon, label, value }) => (
-          <li key={label} className="flex items-start gap-3 text-sm text-charcoal">
-            <Icon className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden />
+          <li key={label} className="flex items-start gap-3 text-sm text-ink">
+            <Icon className="mt-0.5 size-4 shrink-0 text-ink-soft" aria-hidden />
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+              <p className="text-[10px] font-medium text-ink-faint">
                 {label}
               </p>
               <p className="truncate">{value}</p>

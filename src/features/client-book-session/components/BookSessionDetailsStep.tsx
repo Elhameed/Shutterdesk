@@ -44,28 +44,28 @@ export function BookSessionDetailsStep({
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-start">
-      <div className="rounded-xl border border-border bg-white p-5 sm:p-6">
-        <h2 className="text-xl font-bold text-charcoal">{copy.heading}</h2>
-        <p className="mt-2 text-sm text-muted">{copy.subheading}</p>
+      <div className="rounded-md border border-border bg-panel p-5 sm:p-6">
+        <h2 className="text-xl font-bold text-ink">{copy.heading}</h2>
+        <p className="mt-2 text-sm text-ink-soft">{copy.subheading}</p>
 
         <div className="mt-6 space-y-4">
-          <div className="rounded-xl border border-border bg-gray-50/80 p-4">
-            <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+          <div className="rounded-md border border-border bg-paper-dim/80 p-4">
+            <p className="text-[10px] font-medium text-ink-faint">
               {copy.contactHeading}
             </p>
-            <p className="mt-1 text-xs text-muted">{copy.contactHint}</p>
+            <p className="mt-1 text-xs text-ink-soft">{copy.contactHint}</p>
             <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
               <div>
-                <dt className="text-muted">{copy.fullName}</dt>
-                <dd className="font-medium text-charcoal">{fullName}</dd>
+                <dt className="text-ink-soft">{copy.fullName}</dt>
+                <dd className="font-medium text-ink">{fullName}</dd>
               </div>
               <div>
-                <dt className="text-muted">{copy.phone}</dt>
-                <dd className="font-medium text-charcoal">{phone}</dd>
+                <dt className="text-ink-soft">{copy.phone}</dt>
+                <dd className="font-medium text-ink">{phone}</dd>
               </div>
               <div className="sm:col-span-2">
-                <dt className="text-muted">{copy.email}</dt>
-                <dd className="font-medium text-charcoal">{email}</dd>
+                <dt className="text-ink-soft">{copy.email}</dt>
+                <dd className="font-medium text-ink">{email}</dd>
               </div>
             </dl>
           </div>
@@ -88,8 +88,8 @@ export function BookSessionDetailsStep({
               placeholder={copy.notesPlaceholder}
               rows={4}
               className={cn(
-                "w-full rounded-lg border border-border bg-gray-50 px-3 py-2.5 text-sm",
-                "placeholder:text-muted-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/20",
+                "w-full rounded-sm border border-border bg-paper-dim px-3 py-2.5 text-sm",
+                "placeholder:text-ink-faint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20",
               )}
             />
           </div>
@@ -107,31 +107,31 @@ export function BookSessionDetailsStep({
         </div>
       </div>
 
-      <aside className="overflow-hidden rounded-xl border border-border bg-white shadow-card">
+      <aside className="overflow-hidden rounded-md border border-border bg-panel">
         <div className="relative aspect-[16/10]">
           <img
             src={serviceCoverDisplayUrl(packageInfo.coverImage)}
             alt=""
             className="size-full object-cover"
           />
-          <span className="absolute top-3 right-3 rounded-full bg-gold px-2.5 py-1 text-[10px] font-bold tracking-wide text-charcoal uppercase">
+          <span className="absolute top-3 right-3 rounded-full bg-accent px-2.5 py-1 text-[10px] font-medium text-ink">
             {copy.confirmedSlot}
           </span>
         </div>
 
         <div className="p-5">
-          <h3 className="text-base font-bold text-charcoal">
+          <h3 className="text-base font-bold text-ink">
             {CLIENT_BOOK_SESSION_COPY.detailsStep.bookingSummary}
           </h3>
 
           <div className="mt-4 space-y-4">
             <div className="flex gap-3">
-              <Camera className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden />
+              <Camera className="mt-0.5 size-4 shrink-0 text-ink-soft" aria-hidden />
               <div>
-                <p className="text-sm font-semibold text-charcoal">
+                <p className="text-sm font-semibold text-ink">
                   {packageInfo.title}
                 </p>
-                <p className="text-xs text-muted">
+                <p className="text-xs text-ink-soft">
                   {packageInfo.details[0].label} · {packageInfo.editedPhotos}{" "}
                   retouched images
                 </p>
@@ -139,32 +139,32 @@ export function BookSessionDetailsStep({
             </div>
 
             <div className="flex gap-3">
-              <CalendarDays className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden />
+              <CalendarDays className="mt-0.5 size-4 shrink-0 text-ink-soft" aria-hidden />
               <div>
-                <p className="text-sm font-semibold text-charcoal">
+                <p className="text-sm font-semibold text-ink">
                   {formatBookSessionDate(selectedDate)}
                 </p>
-                <p className="text-xs text-muted">{selectedTime}</p>
+                <p className="text-xs text-ink-soft">{selectedTime}</p>
               </div>
             </div>
           </div>
 
           <dl className="mt-5 space-y-2 border-t border-border pt-4 text-sm">
-            <div className="flex justify-between text-muted">
+            <div className="flex justify-between text-ink-soft">
               <dt>{copy.sessionFee}</dt>
               <dd>{formatRwfPrice(packageInfo.price)}</dd>
             </div>
-            <div className="flex justify-between text-muted">
+            <div className="flex justify-between text-ink-soft">
               <dt>{copy.locationFee}</dt>
               <dd>{formatRwfPrice(0)}</dd>
             </div>
-            <div className="flex justify-between border-t border-border pt-2 font-bold text-charcoal">
+            <div className="flex justify-between border-t border-border pt-2 font-bold text-ink">
               <dt>{copy.total}</dt>
               <dd>{formatRwfPrice(packageInfo.price)}</dd>
             </div>
           </dl>
 
-          <p className="mt-4 flex gap-2 rounded-lg bg-gray-50 p-3 text-xs leading-relaxed text-muted">
+          <p className="mt-4 flex gap-2 rounded-sm bg-paper-dim p-3 text-xs leading-relaxed text-ink-soft">
             <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
             {copy.reserveNote}
           </p>

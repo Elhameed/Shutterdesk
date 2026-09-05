@@ -30,21 +30,21 @@ export function ClientNotificationSettingsPanel({
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-sm font-semibold text-charcoal">{copy.title}</h3>
-        <p className="mt-1 text-xs text-muted">{copy.subtitle}</p>
+        <h3 className="text-sm font-semibold text-ink">{copy.title}</h3>
+        <p className="mt-1 text-xs text-ink-soft">{copy.subtitle}</p>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[480px] border-collapse">
           <thead>
             <tr className="border-b border-border">
-              <th className="pb-3 text-left text-[10px] font-bold tracking-wider text-muted-light uppercase">
+              <th className="pb-3 text-left text-[10px] font-medium text-ink-faint">
                 {copy.columns.eventType}
               </th>
               {CLIENT_NOTIFICATION_CHANNELS.map((channel) => (
                 <th
                   key={channel}
-                  className="pb-3 text-center text-[10px] font-bold tracking-wider text-muted-light uppercase"
+                  className="pb-3 text-center text-[10px] font-medium text-ink-faint"
                 >
                   {copy.columns[channel]}
                 </th>
@@ -58,8 +58,8 @@ export function ClientNotificationSettingsPanel({
               return (
                 <tr key={eventKey} className="border-b border-border last:border-0">
                   <td className="py-4 pr-4">
-                    <p className="text-sm font-semibold text-charcoal">{event.title}</p>
-                    <p className="mt-0.5 text-xs text-muted">{event.description}</p>
+                    <p className="text-sm font-semibold text-ink">{event.title}</p>
+                    <p className="mt-0.5 text-xs text-ink-soft">{event.description}</p>
                   </td>
                   {CLIENT_NOTIFICATION_CHANNELS.map((channel) => (
                     <td key={channel} className="py-4 text-center">
@@ -69,7 +69,7 @@ export function ClientNotificationSettingsPanel({
                           onChange(eventKey, channel, event.target.checked)
                         }
                         aria-label={`${event.title} — ${copy.columns[channel]}`}
-                        className="mx-auto size-[18px] rounded-sm accent-charcoal"
+                        className="mx-auto size-[18px] rounded-sm accent-accent"
                       />
                     </td>
                   ))}

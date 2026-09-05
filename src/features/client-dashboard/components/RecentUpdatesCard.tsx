@@ -17,13 +17,13 @@ export function RecentUpdatesCard() {
   return (
     <section className="py-6 sm:py-8">
       <div className="mb-5 flex items-center justify-between gap-4 sm:mb-6">
-        <h2 className="text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+        <h2 className="text-[11px] font-medium text-ink-faint">
           {copy.recentNotifications}
         </h2>
         <div className="flex items-center gap-4">
           <Link
             to={ROUTES.client.notifications}
-            className="text-xs font-semibold text-charcoal transition-colors hover:text-gold"
+            className="text-xs font-semibold text-ink transition-colors hover:text-accent"
           >
             {copy.viewAllNotifications}
           </Link>
@@ -31,7 +31,7 @@ export function RecentUpdatesCard() {
             type="button"
             onClick={() => void markAllRead.mutate()}
             disabled={markAllRead.isPending}
-            className="text-xs font-semibold text-gold transition-colors hover:text-gold-hover"
+            className="text-xs font-semibold text-accent transition-colors hover:text-accent-hover"
           >
             {copy.markAllRead}
           </button>
@@ -46,23 +46,23 @@ export function RecentUpdatesCard() {
             <li key={item.id}>
               <Link
                 to={item.href ?? ROUTES.client.notifications}
-                className="flex items-center gap-4 rounded-xl border border-border bg-white px-4 py-4 shadow-card transition-colors hover:bg-gray-50 sm:px-5 sm:py-5"
+                className="flex items-center gap-4 rounded-md border border-border bg-panel px-4 py-4 transition-colors hover:bg-paper-dim sm:px-5 sm:py-5"
               >
                 <span
                   className={cn(
                     "flex size-9 shrink-0 items-center justify-center rounded-full",
-                    item.read ? "bg-gray-100 text-muted" : "bg-gold-light text-gold",
+                    item.read ? "bg-paper-dim text-ink-soft" : "bg-accent-tint text-accent",
                   )}
                 >
                   <Icon className="size-4" aria-hidden />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-charcoal">
+                  <p className="truncate text-sm font-semibold text-ink">
                     {item.title}
                   </p>
-                  <p className="truncate text-xs text-muted">{item.message}</p>
+                  <p className="truncate text-xs text-ink-soft">{item.message}</p>
                 </div>
-                <span className="shrink-0 text-xs text-muted-light">
+                <span className="shrink-0 text-xs text-ink-faint">
                   {item.timestamp}
                 </span>
               </Link>

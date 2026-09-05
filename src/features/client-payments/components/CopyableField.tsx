@@ -29,28 +29,28 @@ export function CopyableField({
 
   return (
     <div className={cn("space-y-1.5", className)}>
-      <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+      <p className="text-[10px] font-medium text-ink-faint">
         {label}
       </p>
-      <div className="flex items-center justify-between gap-2 rounded-lg border border-border bg-gray-50 px-3 py-2.5">
-        <span className="min-w-0 truncate text-sm font-medium text-charcoal">
+      <div className="flex items-center justify-between gap-2 rounded-sm border border-border bg-paper-dim px-3 py-2.5">
+        <span className="min-w-0 truncate text-sm font-medium text-ink">
           {value}
         </span>
         <button
           type="button"
           onClick={handleCopy}
-          className="flex size-8 shrink-0 items-center justify-center rounded-md text-muted transition-colors hover:bg-white hover:text-charcoal"
+          className="flex size-8 shrink-0 items-center justify-center rounded-md text-ink-soft transition-colors hover:bg-panel hover:text-ink"
           aria-label={`Copy ${label}`}
         >
           {copied ? (
-            <Check className="size-4 text-green-600" aria-hidden />
+            <Check className="size-4 text-ok-fg" aria-hidden />
           ) : (
             <Copy className="size-4" aria-hidden />
           )}
         </button>
       </div>
       {copied ? (
-        <p className="text-[10px] font-medium text-green-600">{copiedLabel}</p>
+        <p className="text-[10px] font-medium text-ok-fg">{copiedLabel}</p>
       ) : null}
     </div>
   );

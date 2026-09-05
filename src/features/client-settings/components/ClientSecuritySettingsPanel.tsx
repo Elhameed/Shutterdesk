@@ -37,12 +37,12 @@ export function ClientSecuritySettingsPanel({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-sm font-semibold text-charcoal">{copy.title}</h3>
-        <p className="mt-1 text-xs text-muted">{copy.subtitle}</p>
+        <h3 className="text-sm font-semibold text-ink">{copy.title}</h3>
+        <p className="mt-1 text-xs text-ink-soft">{copy.subtitle}</p>
       </div>
 
-      <div className="space-y-4 rounded-xl border border-border p-4">
-        <h4 className="text-sm font-semibold text-charcoal">{copy.changePassword}</h4>
+      <div className="space-y-4 rounded-md border border-border p-4">
+        <h4 className="text-sm font-semibold text-ink">{copy.changePassword}</h4>
         <div className="space-y-2">
           <Label htmlFor="current-password">{copy.currentPassword}</Label>
           <Input
@@ -62,10 +62,10 @@ export function ClientSecuritySettingsPanel({
             onChange={(event) => onChange("newPassword", event.target.value)}
             autoComplete="new-password"
             aria-invalid={passwordTooShort}
-            className={cn(passwordTooShort && "border-red-300")}
+            className={cn(passwordTooShort && "border-bad/40")}
           />
           {passwordTooShort ? (
-            <p className="text-xs text-red-600">{copy.passwordTooShort}</p>
+            <p className="text-xs text-bad-fg">{copy.passwordTooShort}</p>
           ) : null}
         </div>
         <div className="space-y-2">
@@ -77,28 +77,28 @@ export function ClientSecuritySettingsPanel({
             onChange={(event) => onChange("confirmPassword", event.target.value)}
             autoComplete="new-password"
             aria-invalid={passwordsMismatch}
-            className={cn(passwordsMismatch && "border-red-300")}
+            className={cn(passwordsMismatch && "border-bad/40")}
           />
           {passwordsMismatch ? (
-            <p className="text-xs text-red-600">{copy.passwordMismatch}</p>
+            <p className="text-xs text-bad-fg">{copy.passwordMismatch}</p>
           ) : null}
         </div>
       </div>
 
-      <div className="rounded-xl border border-border p-4">
-        <p className="text-sm font-semibold text-charcoal">{sessionCopy.title}</p>
-        <p className="mt-0.5 text-xs text-muted">{sessionCopy.description}</p>
+      <div className="rounded-md border border-border p-4">
+        <p className="text-sm font-semibold text-ink">{sessionCopy.title}</p>
+        <p className="mt-0.5 text-xs text-ink-soft">{sessionCopy.description}</p>
         <LogoutButton onComplete={onLogoutComplete} className="mt-3" />
       </div>
 
-      <div className="rounded-xl border border-border p-4">
-        <p className="text-sm font-semibold text-charcoal">{accountCopy.title}</p>
-        <p className="mt-0.5 text-xs text-muted">{accountCopy.description}</p>
+      <div className="rounded-md border border-border p-4">
+        <p className="text-sm font-semibold text-ink">{accountCopy.title}</p>
+        <p className="mt-0.5 text-xs text-ink-soft">{accountCopy.description}</p>
         <button
           type="button"
           disabled={isDeactivating}
           onClick={onDeactivate}
-          className="mt-3 text-sm font-semibold text-red-700 hover:text-red-800 disabled:opacity-60"
+          className="mt-3 text-sm font-semibold text-bad-fg hover:text-bad-fg disabled:opacity-60"
         >
           {isDeactivating ? "Deactivating…" : accountCopy.deactivate}
         </button>

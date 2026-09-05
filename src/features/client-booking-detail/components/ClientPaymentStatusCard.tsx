@@ -35,15 +35,15 @@ export function ClientPaymentStatusCard({
   const uploadHref = ROUTES.client.uploadReceiptForBooking(bookingId);
 
   return (
-    <section className="rounded-xl bg-charcoal p-5 text-white shadow-card sm:p-6">
+    <section className="rounded-md bg-ink p-5 text-white sm:p-6">
       <h2 className="text-base font-bold">{copy.paymentStatus}</h2>
 
-      <p className="mt-4 text-sm font-semibold text-gold">
+      <p className="mt-4 text-sm font-semibold text-accent">
         {payment.statusLabel}
       </p>
 
       <div className="mt-4">
-        <p className="text-[10px] font-semibold tracking-wider text-white/60 uppercase">
+        <p className="text-[10px] font-medium text-white/60">
           {copy.amountPaid}
         </p>
         <p className="mt-1 text-xl font-bold">
@@ -52,11 +52,11 @@ export function ClientPaymentStatusCard({
       </div>
 
       <div className="mt-5 border-t border-white/10 pt-5">
-        <p className="text-[10px] font-semibold tracking-wider text-white/60 uppercase">
+        <p className="text-[10px] font-medium text-white/60">
           {balance.label}
         </p>
         {balance.isPaidInFull ? (
-          <p className="mt-2 flex items-center gap-2 text-lg font-semibold text-gold">
+          <p className="mt-2 flex items-center gap-2 text-lg font-semibold text-accent">
             <CheckCircle2 className="size-5 shrink-0" aria-hidden />
             {balance.paidInFullLabel}
           </p>
@@ -69,7 +69,7 @@ export function ClientPaymentStatusCard({
 
       {canPay ? (
         <div className="mt-5 flex flex-col gap-2 border-t border-white/10 pt-5">
-          <Button variant="gold" className="w-full shadow-card" asChild>
+          <Button variant="gold" className="w-full" asChild>
             <Link to={uploadHref}>
               <Wallet className="size-4" aria-hidden />
               {copy.payNow}
@@ -78,7 +78,7 @@ export function ClientPaymentStatusCard({
           {showPayInFull ? (
             <Link
               to={`${uploadHref}&option=full`}
-              className="text-center text-xs font-semibold text-white/70 transition-colors hover:text-gold"
+              className="text-center text-xs font-semibold text-white/70 transition-colors hover:text-accent"
             >
               {copy.payInFull(formatRwf(payment.outstandingDue))}
             </Link>
@@ -86,7 +86,7 @@ export function ClientPaymentStatusCard({
         </div>
       ) : null}
 
-      <p className="mt-5 text-[10px] font-semibold tracking-wider text-white/40 uppercase">
+      <p className="mt-5 text-[10px] font-medium text-white/40">
         {copy.securedBy}
       </p>
     </section>

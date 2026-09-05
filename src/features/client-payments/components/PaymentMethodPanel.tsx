@@ -73,17 +73,17 @@ export function PaymentMethodPanel({
   if (showSkeleton) {
     return (
       <div
-        className="rounded-xl border border-border bg-white p-5 shadow-card sm:p-6"
+        className="rounded-md border border-border bg-panel p-5 sm:p-6"
         role="status"
         aria-busy
         aria-label="Loading payment methods"
       >
         <Skeleton className="h-4 w-32" />
         <div className="mt-4 flex gap-3">
-          <Skeleton className="h-10 flex-1 rounded-lg" />
-          <Skeleton className="h-10 flex-1 rounded-lg" />
+          <Skeleton className="h-10 flex-1 rounded-sm" />
+          <Skeleton className="h-10 flex-1 rounded-sm" />
         </div>
-        <Skeleton className="mt-4 h-24 w-full rounded-lg" />
+        <Skeleton className="mt-4 h-24 w-full rounded-sm" />
       </div>
     );
   }
@@ -94,8 +94,8 @@ export function PaymentMethodPanel({
 
   if (!config || availableMethods.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-white p-5 shadow-card sm:p-6">
-        <p className="text-sm text-muted">{copy.paymentMethods.noneConfigured}</p>
+      <div className="rounded-md border border-border bg-panel p-5 sm:p-6">
+        <p className="text-sm text-ink-soft">{copy.paymentMethods.noneConfigured}</p>
       </div>
     );
   }
@@ -103,8 +103,8 @@ export function PaymentMethodPanel({
   return (
     <div className="space-y-4">
       {availableMethods.length > 1 ? (
-        <div className="rounded-xl border border-border bg-white p-4 shadow-card sm:p-5">
-          <p className="text-[10px] font-semibold tracking-wider text-muted-light uppercase">
+        <div className="rounded-md border border-border bg-panel p-4 sm:p-5">
+          <p className="text-[10px] font-medium text-ink-faint">
             {copy.paymentMethods.title}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -120,10 +120,10 @@ export function PaymentMethodPanel({
                   type="button"
                   onClick={() => setSelectedMethod(option.id)}
                   className={cn(
-                    "inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-colors",
+                    "inline-flex items-center gap-2 rounded-sm border px-4 py-2.5 text-sm font-semibold transition-colors",
                     isSelected
-                      ? "border-charcoal bg-gray-50 text-charcoal"
-                      : "border-border text-muted hover:border-muted hover:text-charcoal",
+                      ? "border-border-strong bg-paper-dim text-ink"
+                      : "border-border text-ink-soft hover:border-border-strong hover:text-ink",
                   )}
                 >
                   <Icon className="size-4" aria-hidden />

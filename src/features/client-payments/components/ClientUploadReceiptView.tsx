@@ -131,7 +131,7 @@ export function ClientUploadReceiptView() {
   if (!activeRequest) {
     return (
       <div className="p-8 text-center">
-        <p className="text-muted">No payment obligation found.</p>
+        <p className="text-ink-soft">No payment obligation found.</p>
         <Button className="mt-4" asChild>
           <Link to={ROUTES.client.payments}>Back to Payments</Link>
         </Button>
@@ -187,7 +187,7 @@ export function ClientUploadReceiptView() {
               id="payment-request"
               value={paymentRequestId}
               onChange={(event) => setPaymentRequestId(event.target.value)}
-              className="h-11 w-full rounded-lg border border-border bg-gray-50 px-3 text-sm"
+              className="h-11 w-full rounded-sm border border-border bg-paper-dim px-3 text-sm"
             >
               {unpaidRequests.map((request) => (
                 <option key={request.id} value={request.id}>
@@ -209,7 +209,7 @@ export function ClientUploadReceiptView() {
         </div>
 
         {submitError ? (
-          <p className="text-sm text-red-600">{submitError}</p>
+          <p className="text-sm text-bad-fg">{submitError}</p>
         ) : null}
 
         <div className="flex flex-wrap gap-3">

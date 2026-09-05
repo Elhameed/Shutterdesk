@@ -47,9 +47,9 @@ export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
   const to = Math.min(safePage * CLIENT_PAYMENTS_PAGE_SIZE, filtered.length);
 
   return (
-    <section className="overflow-hidden rounded-xl border border-border bg-white shadow-card">
+    <section className="overflow-hidden rounded-md border border-border bg-panel">
       <div className="flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-base font-bold text-charcoal">{copy.paymentHistory}</h2>
+        <h2 className="text-base font-bold text-ink">{copy.paymentHistory}</h2>
         <div className="flex flex-wrap items-center gap-2">
           <select
             value={studioFilter}
@@ -57,7 +57,7 @@ export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
               setStudioFilter(event.target.value);
               setPage(1);
             }}
-            className="h-9 rounded-lg border border-border bg-gray-50 px-3 text-xs font-medium text-charcoal"
+            className="h-9 rounded-sm border border-border bg-paper-dim px-3 text-xs font-medium text-ink"
             aria-label="Filter by studio"
           >
             <option value="all">{copy.filterAllStudios}</option>
@@ -81,7 +81,7 @@ export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
               )
             }
             disabled={filtered.length === 0}
-            className="flex size-8 items-center justify-center rounded-lg border border-border text-muted transition-colors hover:bg-gray-50 hover:text-charcoal disabled:opacity-50"
+            className="flex size-8 items-center justify-center rounded-sm border border-border text-ink-soft transition-colors hover:bg-paper-dim hover:text-ink disabled:opacity-50"
             aria-label="Download payment history"
           >
             <Download className="size-4" aria-hidden />
@@ -90,12 +90,12 @@ export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="p-8 text-center text-sm text-muted">{copy.noPayments}</p>
+        <p className="p-8 text-center text-sm text-ink-soft">{copy.noPayments}</p>
       ) : (
         <>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[860px] text-left text-sm">
-              <thead className="border-b border-border bg-gray-50 text-[11px] font-semibold tracking-wider text-muted-light uppercase">
+              <thead className="border-b border-border bg-paper-dim text-[11px] font-medium text-ink-faint">
                 <tr>
                   <th className="px-5 py-3">{copy.columns.studio}</th>
                   <th className="px-5 py-3">{copy.columns.booking}</th>
@@ -112,27 +112,27 @@ export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
                       className="border-b border-border last:border-0"
                     >
                       <td className="px-5 py-4">
-                        <span className="font-medium text-charcoal">
+                        <span className="font-medium text-ink">
                           {payment.studioName}
                         </span>
                       </td>
-                      <td className="px-5 py-4 font-medium text-charcoal">
+                      <td className="px-5 py-4 font-medium text-ink">
                         {payment.bookingTitle}
                       </td>
-                      <td className="px-5 py-4 text-charcoal">
+                      <td className="px-5 py-4 text-ink">
                         {copy.amountDisplay(payment.amount)}
                       </td>
-                      <td className="px-5 py-4 text-muted">{payment.date}</td>
+                      <td className="px-5 py-4 text-ink-soft">{payment.date}</td>
                       <td className="px-5 py-4">
                         <span
                           className={cn(
-                            "inline-flex rounded px-2 py-0.5 text-[10px] font-bold uppercase",
+                            "inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium",
                             payment.status === "approved" &&
-                              "bg-green-50 text-green-700",
+                              "bg-ok-tint text-ok-fg",
                             payment.status === "pending" &&
-                              "bg-amber-50 text-amber-700",
+                              "bg-ok-tint text-ok-fg",
                             payment.status === "rejected" &&
-                              "bg-red-50 text-red-700",
+                              "bg-bad-tint text-bad-fg",
                           )}
                         >
                           {copy.status[payment.status]}
@@ -143,7 +143,7 @@ export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
                           href={payment.receiptImage}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-sm font-semibold text-gold transition-colors hover:text-gold-hover"
+                          className="text-sm font-semibold text-accent transition-colors hover:text-accent-hover"
                         >
                           {copy.viewReceipt}
                         </a>

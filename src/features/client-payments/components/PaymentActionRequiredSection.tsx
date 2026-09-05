@@ -14,8 +14,8 @@ export function PaymentActionRequiredSection({
 
   if (unpaid.length === 0) {
     return (
-      <section className="rounded-xl border border-border bg-white p-6 text-center shadow-card">
-        <p className="text-sm text-muted">{copy.noActionRequired}</p>
+      <section className="rounded-md border border-border bg-panel p-6 text-center">
+        <p className="text-sm text-ink-soft">{copy.noActionRequired}</p>
       </section>
     );
   }
@@ -23,8 +23,8 @@ export function PaymentActionRequiredSection({
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-base font-bold text-charcoal">{copy.actionRequired}</h2>
-        <p className="mt-1 text-sm text-muted">
+        <h2 className="text-base font-bold text-ink">{copy.actionRequired}</h2>
+        <p className="mt-1 text-sm text-ink-soft">
           {copy.actionRequiredSubtitle(unpaid.length)}
         </p>
       </div>

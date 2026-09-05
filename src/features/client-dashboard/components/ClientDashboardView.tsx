@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/app/AuthProvider";
 import { PortalPageHeader } from "@/components/common/PortalPageHeader";
+import { FrameGrid } from "@/components/ui/card";
 import { CLIENT_DASHBOARD_COPY } from "@/constants/client-dashboard";
 import { DashboardAside } from "@/features/client-dashboard/components/DashboardAside";
 import { DashboardStatCard } from "@/features/client-dashboard/components/DashboardStatCard";
@@ -38,7 +39,7 @@ export function ClientDashboardView() {
   if (error || !data) {
     return (
       <div className="min-w-0 max-w-full p-4 sm:p-6 lg:p-8">
-        <p className="text-sm text-red-700" role="alert">
+        <p className="text-sm text-bad-fg" role="alert">
           {getQueryErrorMessage(error, "Unable to load your dashboard.")}
         </p>
       </div>
@@ -56,7 +57,7 @@ export function ClientDashboardView() {
         actions={<LocalTimeBadge />}
       />
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <FrameGrid className="mt-6 sm:grid-cols-2 xl:grid-cols-4">
         <DashboardStatCard
           label={copy.stats.activeBookings}
           value={String(stats.activeBookings)}
@@ -79,7 +80,7 @@ export function ClientDashboardView() {
           icon={CreditCard}
           alert={stats.pendingPayments > 0}
         />
-      </div>
+      </FrameGrid>
 
       <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[7fr_3fr] lg:items-start">
         <div className="min-w-0 space-y-4">
@@ -91,11 +92,11 @@ export function ClientDashboardView() {
               bookingId={upcomingDetail.id}
             />
           ) : (
-            <section className="rounded-xl border border-dashed border-border bg-white p-6 text-center shadow-card">
-              <p className="text-sm font-semibold text-charcoal">
+            <section className="rounded-md border border-dashed border-border bg-panel p-6 text-center">
+              <p className="text-sm font-semibold text-ink">
                 {copy.noUpcomingSession}
               </p>
-              <p className="mt-1 text-xs text-muted">
+              <p className="mt-1 text-xs text-ink-soft">
                 Book a session to see your next shoot here.
               </p>
             </section>
@@ -108,11 +109,11 @@ export function ClientDashboardView() {
               galleryId={readyGallery.id}
             />
           ) : (
-            <section className="rounded-xl border border-dashed border-border bg-white p-6 text-center shadow-card">
-              <p className="text-sm font-semibold text-charcoal">
+            <section className="rounded-md border border-dashed border-border bg-panel p-6 text-center">
+              <p className="text-sm font-semibold text-ink">
                 {copy.galleryReady}
               </p>
-              <p className="mt-1 text-xs text-muted">
+              <p className="mt-1 text-xs text-ink-soft">
                 Your delivered galleries will appear here when ready.
               </p>
             </section>

@@ -108,9 +108,9 @@ export function ClientGalleryDetailView({
           ]}
           className="mb-4"
         />
-        <div className="rounded-xl border border-border bg-white p-8 text-center shadow-card">
-          <h1 className="text-xl font-bold text-charcoal">{copy.detail.expiredTitle}</h1>
-          <p className="mt-2 text-sm text-muted">{copy.detail.galleryExpired}</p>
+        <div className="rounded-md border border-border bg-panel p-8 text-center">
+          <h1 className="text-xl font-bold text-ink">{copy.detail.expiredTitle}</h1>
+          <p className="mt-2 text-sm text-ink-soft">{copy.detail.galleryExpired}</p>
         </div>
       </div>
     );
@@ -178,16 +178,16 @@ export function ClientGalleryDetailView({
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold tracking-tight text-charcoal sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             {gallery.title}
           </h1>
-          <p className="mt-2 text-sm text-muted">{subtitle}</p>
+          <p className="mt-2 text-sm text-ink-soft">{subtitle}</p>
         </div>
 
         {delivery.downloadEnabled ? (
           <Button
             variant="outline"
-            className="shrink-0 shadow-card"
+            className="shrink-0"
             size="sm"
             disabled={isDownloading || photos.length === 0}
             onClick={() => void handleDownloadGallery()}
@@ -200,7 +200,7 @@ export function ClientGalleryDetailView({
 
       {downloadError ? (
         <p
-          className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          className="mt-4 rounded-sm border border-bad/30 bg-bad-tint px-4 py-3 text-sm text-bad-fg"
           role="alert"
         >
           {downloadError}
