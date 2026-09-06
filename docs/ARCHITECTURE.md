@@ -112,11 +112,19 @@ server/
 │  ├─ app.ts              Middleware + mounts all 19 routers
 │  ├─ index.ts            Boot, listen, graceful shutdown
 │  ├─ config/env.ts       Zod-validated env (throws on bad config)
-│  ├─ middleware/         auth, cors, error-handler, rate-limit, request-logger
+│  ├─ middleware/         auth, cors, error-handler, rate-limit, request-logger,
+│  │                      validate (parseBody / parseQuery)
 │  ├─ modules/<domain>/   *.routes.ts (HTTP+validation) → *.service.ts (logic)
-│  │                      → *.mapper.ts (DB row → API shape)
-│  └─ lib/                Cross-module domain logic — the real brain (see §7)
-├─ prisma/                schema.prisma + 12 migrations + seeds
+│  │                      → *.mapper.ts (DB row → API shape). Where both
+│  │                      audiences exist the service is split the same way the
+│  │                      routes are: photographer-*.service.ts,
+│  │                      client-*.service.ts, and a *.shared.ts for the rest.
+│  ├─ domain/             Business rules — booking lifecycle, gallery release,
+│  │                      payment obligations, availability. The real brain (§7)
+│  ├─ format/             Presentation helpers — currency, dates, status labels
+│  └─ lib/                Infrastructure only — prisma, logger, jwt, password,
+│                         cloudinary, pagination, studio-context
+├─ prisma/                schema.prisma + 13 migrations + seeds
 └─ tests/                 Vitest + Supertest integration tests
 ```
 
@@ -214,8 +222,22 @@ helmet → cors → express.json (1mb) → requestLogger
 
 - **Every router is a factory:** `createXRouter(env)`. Env is injected, never read from
   `process.env` inside modules. Makes tests trivial.
-- **Response envelope:** success is `{ data: … }` (or `{ user, token }` for auth).
-  Errors are `{ message, statusCode, errors? }` from `AppError`.
+- **Handlers throw; they don't catch.** Express 5 forwards a rejected promise from an async
+  handler to `errorHandler`, so no route needs a `try/catch` that only calls `next(error)`.
+- **Read the principal with `authContext(req)`**, not by casting the request.
+- **Validate with `parseBody(req, schema)` / `parseQuery(req, schema)`**
+  ([middleware/validate.ts](../server/src/middleware/validate.ts)). They throw a 400 carrying
+  per-field errors. Deliberately helpers rather than middleware: a second handler on a route
+  moves Express onto a different overload that widens `req.params` values to
+  `string | string[]`. Schemas are `.strict()` so unknown keys are rejected, not dropped.
+- **Response envelope:** success is `{ data: … }`, plus `{ data, pagination }` when `?page`
+  was supplied. Errors are `{ message, statusCode, errors? }` from `AppError`.
+- **The auth module is the one exception**, returning `{ user, token }` and `{ user }` at the
+  top level. This is deliberate and should stay: the SPA and the API deploy independently
+  (Vercel and Render), so changing the login response shape means a window where the
+  deployed frontend cannot parse it and nobody can sign in. Migrating it needs three ordered
+  deploys — make the client accept both shapes, change the server, then drop the old path —
+  which is not worth it for consistency alone.
 - **Routes validate, services decide, mappers format.** Routes contain no business logic.
 - **Studio scoping is the security boundary.** `Studio.ownerUserId` is unique;
   [`getStudioForPhotographer(userId)`](../server/src/lib/studio-context.ts) resolves it,
@@ -375,39 +397,54 @@ deduplication, or refetch-on-focus despite the library being installed and confi
 Consolidating on Query hooks would delete a lot of code. Relatedly, `lib/query-keys.ts`
 only defines keys for 8 of the queries that exist.
 
-**2. `Json` columns doing schema's job.** ~15 untyped `Json` columns across `Booking`,
+**2. `Json` columns doing schema's job.** ~24 untyped `Json` columns across `Booking`,
 `Gallery`, `StudioClient`, and `Studio`. `StudioClient` alone carries `preferences`,
 `insights`, `timeline`, `projects`, `invoices`, and `galleries` as JSON — several of which
 duplicate data that already exists relationally in `Booking`/`Gallery`/`PaymentRecord`.
 Promoting the ones that are really relational into columns or tables would remove whole
 categories of sync bugs; the settings blobs on `Studio` are a more reasonable use.
+Gallery `settings` and `delivery` now parse through zod schemas rather than hand-written
+`typeof` ladders — see [domain/json-column.ts](../server/src/domain/json-column.ts) for the
+convention the remaining columns should follow.
 
 **3. Denormalized booking fields need manual syncing.** `Booking` stores `clientName`,
 `clientEmail`, `packageName`, `packagePrice`, `sessionDateLabel`, `sessionTime`,
-`clientAvatarAssetKey` inline. That's why `lib/` contains `client-profile-sync.ts`,
+`clientAvatarAssetKey` inline. That's why `domain/` contains `client-profile-sync.ts`,
 `photographer-identity-sync.ts`, and `sync-booking-gallery-progress.ts` — files that exist
 purely to keep copies consistent. Fewer copies means fewer sync files.
 
-**4. Very large service files.** `bookings.service.ts` (1186 lines) and
-`galleries.service.ts` (1049) hold ~16 exported functions each mixing photographer and
-client concerns in one file. Splitting along the photographer/client seam that already
-exists in the routes would match the rest of the codebase's structure.
+**4. ~~Very large service files.~~ Done.** `bookings.service.ts` and `galleries.service.ts`
+are split along the photographer/client seam the routes already used, with a `*.shared.ts`
+for what both need. Payment-obligation logic moved out of bookings into
+`booking-obligations.service.ts`.
 
 **5. Constants sprawl.** 34 files / 2,740 lines in `src/constants/`, mostly UI copy
 extracted into per-page objects (`PHOTOGRAPHER_DASHBOARD_COPY` etc.). It's consistent, but
 it means every text change is a two-file edit and the indirection is not buying i18n or
-reuse today. Worth deciding deliberately whether to keep.
+reuse today. Reviewed and deliberately kept — churning it buys nothing until there is i18n.
 
 **6. Small duplication to clean up.**
-- Two `SearchField` components — [`components/common/SearchField.tsx`](../src/components/common/SearchField.tsx) (38 lines, 3 importers) and [`components/photographer/SearchField.tsx`](../src/components/photographer/SearchField.tsx) (a 1-line re-export, 1 importer) — *plus* five per-feature `*Search.tsx` wrappers.
+- Two `SearchField` components — [`components/common/SearchField.tsx`](../src/components/common/SearchField.tsx) (38 lines, 3 importers) and [`components/photographer/SearchField.tsx`](../src/components/photographer/SearchField.tsx) (a 1-line re-export, 1 importer) — *plus* five per-feature `*Search.tsx` wrappers. All of `components/photographer/` is re-export shims.
 - `src/mocks/personas.ts` is production-imported by `constants/landing.ts` for testimonials; it reads as leftover scaffolding.
-- README links to `docs/PROJECT_STRUCTURE.md`, **which does not exist** (this file replaces it — update the link).
 
 **7. Per-request DB round trip for auth.** Every authenticated request loads the user to
 check `tokenVersion`. Correct, but on a remote database it adds a round trip to all 92
 endpoints — relevant given the latency notes in [PERFORMANCE.md](PERFORMANCE.md).
 
-**8. Two deprecations to clear while you're rebuilding.**
+**8. Fabricated metrics.** `galleries.mapper.ts` synthesises gallery analytics from
+formulas rather than measurement: `uniqueVisitors = views × 0.42`, a fixed-ratio weekly
+chart, hardcoded top-photo captions, and an `engagementRate` that is always exactly 24
+because `Gallery.likes` is never written anywhere. `storageUsedGb` is `photoCount × 0.025`.
+Slated for removal in favour of honest empty states.
+
+**9. Stored counters with two sources of truth.** `StudioClient.sessions/revenue/balance`
+and `ServicePackage.totalRevenue` are written once at create and never updated; reads
+recompute them, except on the create and update responses, which return the stale column.
+`Gallery.photoCount` is incremented on upload but recomputed on delete, and the two paths
+disagree about `coverAssetKey` — deleting a photo silently overwrites a chosen cover.
+`views`/`downloads` use non-atomic read-modify-write.
+
+**10. Two deprecations to clear while you're rebuilding.**
 - Prisma warns that `package.json#prisma` (the `seed` config) is **removed in Prisma 7** — migrate to a `prisma.config.ts`. You're on 6.19.
 - The main frontend chunk is **498 kB (150 kB gzipped)** despite every page being lazy-loaded, so the weight is in shared vendor code, not routes. Worth a look if bundle size matters.
 
