@@ -95,15 +95,19 @@ async function linkGalleryToBooking(galleryId: string, bookingId: string, studio
     throw new AppError("Booking not found", 404);
   }
 
-  await prisma.booking.updateMany({
-    where: { galleryId },
-    data: { galleryId: null },
-  });
-
-  await prisma.booking.update({
-    where: { id: bookingId },
-    data: { galleryId },
-  });
+  // Detaching every existing link and attaching the new one must be atomic: a
+  // failure between the two leaves the gallery attached to no booking at all,
+  // having just been detached from the one it had.
+  await prisma.$transaction([
+    prisma.booking.updateMany({
+      where: { galleryId },
+      data: { galleryId: null },
+    }),
+    prisma.booking.update({
+      where: { id: bookingId },
+      data: { galleryId },
+    }),
+  ]);
 
   await syncBookingProgressForGallery(galleryId);
 }
@@ -366,37 +370,42 @@ export async function uploadGalleryPhotos(
   }
 
   const startOrder = gallery.photos.length;
-
-  await prisma.galleryPhoto.createMany({
-    data: photos.map((photo, index) => {
-      const assetKey = normalizeAssetKey(photo.assetKey);
-      return {
-        galleryId: gallery.id,
-        assetKey,
-        thumbnailAssetKey: photo.thumbnailAssetKey
-          ? normalizeAssetKey(photo.thumbnailAssetKey)
-          : cloudinaryThumbnailUrl(assetKey),
-        alt: photo.alt?.trim() || `${gallery.title} photo ${startOrder + index + 1}`,
-        sortOrder: startOrder + index,
-      };
-    }),
-  });
-
   const photoCount = startOrder + photos.length;
   const coverAssetKey = gallery.coverAssetKey ?? normalizeAssetKey(photos[0]?.assetKey ?? "");
 
-  const updated = await prisma.gallery.update({
-    where: { id: gallery.id },
-    data: {
-      photoCount,
-      coverAssetKey: coverAssetKey || gallery.coverAssetKey,
-      storageUsedGb: Math.min(49.5, Number((photoCount * 0.025).toFixed(1))),
-      workflowStatus: gallery.workflowStatus === "delivered" ? "delivered" : "editing",
-    },
-    include: {
-      ...galleryBookingInclude,
-      photos: { orderBy: { sortOrder: "asc" } },
-    },
+  // Inserting the rows and updating the gallery's counters have to commit
+  // together. If the photos landed but photoCount did not, the gallery would
+  // hold photos while still reporting zero — and deliver() rejects a gallery
+  // with no photos, so it became undeliverable with no way to tell why.
+  const updated = await prisma.$transaction(async (tx) => {
+    await tx.galleryPhoto.createMany({
+      data: photos.map((photo, index) => {
+        const assetKey = normalizeAssetKey(photo.assetKey);
+        return {
+          galleryId: gallery.id,
+          assetKey,
+          thumbnailAssetKey: photo.thumbnailAssetKey
+            ? normalizeAssetKey(photo.thumbnailAssetKey)
+            : cloudinaryThumbnailUrl(assetKey),
+          alt: photo.alt?.trim() || `${gallery.title} photo ${startOrder + index + 1}`,
+          sortOrder: startOrder + index,
+        };
+      }),
+    });
+
+    return tx.gallery.update({
+      where: { id: gallery.id },
+      data: {
+        photoCount,
+        coverAssetKey: coverAssetKey || gallery.coverAssetKey,
+        storageUsedGb: Math.min(49.5, Number((photoCount * 0.025).toFixed(1))),
+        workflowStatus: gallery.workflowStatus === "delivered" ? "delivered" : "editing",
+      },
+      include: {
+        ...galleryBookingInclude,
+        photos: { orderBy: { sortOrder: "asc" } },
+      },
+    });
   });
 
   await syncBookingProgressForGallery(updated.id);
@@ -407,13 +416,18 @@ export async function uploadGalleryPhotos(
   };
 }
 
-async function syncGalleryPhotoStats(
+/**
+ * The counter update for a gallery whose photo set has changed, as a pending
+ * Prisma operation so callers can commit it alongside the change that caused
+ * it rather than as a separate write that can fail on its own.
+ */
+function galleryPhotoStatsUpdate(
   galleryId: string,
   photos: Array<{ assetKey: string }>,
 ) {
   const photoCount = photos.length;
 
-  await prisma.gallery.update({
+  return prisma.gallery.update({
     where: { id: galleryId },
     data: {
       photoCount,
@@ -421,6 +435,13 @@ async function syncGalleryPhotoStats(
       storageUsedGb: Math.min(49.5, Number((photoCount * 0.025).toFixed(1))),
     },
   });
+}
+
+async function syncGalleryPhotoStats(
+  galleryId: string,
+  photos: Array<{ assetKey: string }>,
+) {
+  await galleryPhotoStatsUpdate(galleryId, photos);
 }
 
 function buildGalleryDetailResponse(
@@ -493,10 +514,15 @@ export async function deleteGalleryPhoto(
     throw new AppError("Photo not found", 404);
   }
 
-  await prisma.galleryPhoto.delete({ where: { id: photoId } });
-
   const remainingPhotos = gallery.photos.filter((item) => item.id !== photoId);
-  await syncGalleryPhotoStats(gallery.id, remainingPhotos);
+
+  // Deleting the row and recomputing the gallery's counters commit together,
+  // otherwise photoCount, coverAssetKey and storageUsedGb keep describing a
+  // photo that no longer exists.
+  await prisma.$transaction([
+    prisma.galleryPhoto.delete({ where: { id: photoId } }),
+    galleryPhotoStatsUpdate(gallery.id, remainingPhotos),
+  ]);
 
   const refreshed = await getOwnedGalleryOrThrow(photographerUserId, galleryId);
   await syncBookingProgressForGallery(refreshed.id);

@@ -2,6 +2,7 @@ import type {
   BookingPaymentStatus,
   BookingStatus,
   PaymentRequestType,
+  Prisma,
 } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import {
@@ -170,7 +171,14 @@ async function listPaymentRequestsForBooking(bookingId: string) {
   });
 }
 
+/**
+ * Takes a client so it can run inside the same transaction as the booking
+ * insert. A booking created without its deposit request is unpayable —
+ * uploadClientReceipt has no obligation to attach the receipt to — so the two
+ * must never be able to come apart.
+ */
 async function createDepositRequest(
+  db: Prisma.TransactionClient,
   bookingId: string,
   studioId: string,
   reference: string,
@@ -178,7 +186,7 @@ async function createDepositRequest(
   amount: number,
   dueDate: Date,
 ) {
-  return prisma.paymentRequest.create({
+  return db.paymentRequest.create({
     data: {
       bookingId,
       studioId,
@@ -410,63 +418,68 @@ export async function createPhotographerBooking(
   const depositPercent = await resolveDepositPercentForStudioPackage(studio.id, input);
   const depositAmount = Math.round(packagePrice * (depositPercent / 100));
 
-  const booking = await prisma.booking.create({
-    data: {
-      studioId: studio.id,
-      clientId: crmClient?.id,
-      reference,
-      clientName: input.clientName.trim(),
-      clientEmail: email,
-      clientAvatarAssetKey: input.avatarAssetKey ?? crmClient?.avatarAssetKey,
-      packageName: input.packageName,
-      packageDetail: input.packageDetail,
-      packagePrice,
-      depositPercent,
-      packageIncludes: [
-        "Professional photographer",
-        input.packageDetail,
-        "Edited digital gallery",
-        "Online delivery",
-      ],
-      servicePackageId: input.servicePackageId,
-      sessionAt,
-      sessionEndAt,
-      durationMinutes,
-      sessionDateLabel: input.date,
-      sessionTime: input.time,
-      timeWindow: `${input.time} (Session)`,
-      venue: input.venue ?? input.locationNotes ?? "Studio Location TBD",
-      city: "Kigali, Rwanda",
-      locationNotes: input.locationNotes,
-      status: "pending",
-      paymentStatus: "unpaid",
-      detailStatus: "pending",
-      timeline: defaultTimeline(input.packageName, input.date, input.time),
-      progressStep: 0,
-      galleryStep: 0,
-      paymentMeta: {
-        statusLabel: "Deposit Required",
-        amountPaid: 0,
-        transactionRef: "—",
-        paymentDate: "—",
-        verificationStatus: "pending",
-        note: "Pay your deposit via MoMo to confirm your session slot.",
+  const booking = await prisma.$transaction(async (tx) => {
+    const created = await tx.booking.create({
+      data: {
+        studioId: studio.id,
+        clientId: crmClient?.id,
+        reference,
+        clientName: input.clientName.trim(),
+        clientEmail: email,
+        clientAvatarAssetKey: input.avatarAssetKey ?? crmClient?.avatarAssetKey,
+        packageName: input.packageName,
+        packageDetail: input.packageDetail,
+        packagePrice,
+        depositPercent,
+        packageIncludes: [
+          "Professional photographer",
+          input.packageDetail,
+          "Edited digital gallery",
+          "Online delivery",
+        ],
+        servicePackageId: input.servicePackageId,
+        sessionAt,
+        sessionEndAt,
+        durationMinutes,
+        sessionDateLabel: input.date,
+        sessionTime: input.time,
+        timeWindow: `${input.time} (Session)`,
+        venue: input.venue ?? input.locationNotes ?? "Studio Location TBD",
+        city: "Kigali, Rwanda",
+        locationNotes: input.locationNotes,
+        status: "pending",
+        paymentStatus: "unpaid",
+        detailStatus: "pending",
+        timeline: defaultTimeline(input.packageName, input.date, input.time),
+        progressStep: 0,
+        galleryStep: 0,
+        paymentMeta: {
+          statusLabel: "Deposit Required",
+          amountPaid: 0,
+          transactionRef: "—",
+          paymentDate: "—",
+          verificationStatus: "pending",
+          note: "Pay your deposit via MoMo to confirm your session slot.",
+        },
+        clientMeta: {
+          phone: crmClient?.phone,
+          preferredSince: crmClient?.memberSince.getFullYear() ?? 2024,
+        },
       },
-      clientMeta: {
-        phone: crmClient?.phone,
-        preferredSince: crmClient?.memberSince.getFullYear() ?? 2024,
-      },
-    },
-  });
+    });
 
-  await createDepositRequest(
-    booking.id,
-    studio.id,
-    reference,
-    input.packageName,
-    depositAmount,
-    sessionAt,
-  );
+    await createDepositRequest(
+      tx,
+      created.id,
+      studio.id,
+      reference,
+      input.packageName,
+      depositAmount,
+      sessionAt,
+    );
+
+    return created;
+  });
 
   const clientUser = await findClientUserForBooking({
     clientUserId: crmClient?.linkedUserId ?? null,
@@ -862,67 +875,72 @@ export async function createClientBooking(
         },
       });
 
-  const booking = await prisma.booking.create({
-    data: {
-      studioId: studio.id,
-      clientId: upsertedClient.id,
-      clientUserId: user.id,
-      reference,
-      clientName: user.fullName,
-      clientEmail: user.email.toLowerCase(),
-      clientAvatarAssetKey:
-        user.avatarUrl ??
-        upsertedClient.avatarAssetKey ??
-        null,
-      packageName: pkg.title,
-      packageDetail: pkg.description.slice(0, 60) || pkg.title,
-      packagePrice: pkg.price,
-      packageIncludes: [
-        "Professionally edited digital files",
-        pkg.description || pkg.title,
-        "Private online gallery",
-        "Studio coordination via Shutterdesk",
-      ],
-      servicePackageId: pkg.id,
-      sessionAt,
-      sessionEndAt,
-      durationMinutes,
-      sessionDateLabel: input.date,
-      sessionTime: input.time,
-      timeWindow: `${input.time} (Session)`,
-      venue,
-      city: "Kigali, Rwanda",
-      locationNotes: input.locationNotes,
-      status: "pending",
-      paymentStatus: "unpaid",
-      detailStatus: "pending",
-      depositPercent: pkg.depositPercent,
-      timeline: defaultTimeline(pkg.title, input.date, input.time),
-      progressStep: 0,
-      galleryStep: 0,
-      paymentMeta: {
-        statusLabel: `Deposit Required (${formatRwf(depositAmount)})`,
-        amountPaid: 0,
-        transactionRef: "—",
-        paymentDate: "—",
-        verificationStatus: "pending",
-        note: "Pay your deposit via MoMo to confirm your session slot.",
+  const booking = await prisma.$transaction(async (tx) => {
+    const created = await tx.booking.create({
+      data: {
+        studioId: studio.id,
+        clientId: upsertedClient.id,
+        clientUserId: user.id,
+        reference,
+        clientName: user.fullName,
+        clientEmail: user.email.toLowerCase(),
+        clientAvatarAssetKey:
+          user.avatarUrl ??
+          upsertedClient.avatarAssetKey ??
+          null,
+        packageName: pkg.title,
+        packageDetail: pkg.description.slice(0, 60) || pkg.title,
+        packagePrice: pkg.price,
+        packageIncludes: [
+          "Professionally edited digital files",
+          pkg.description || pkg.title,
+          "Private online gallery",
+          "Studio coordination via Shutterdesk",
+        ],
+        servicePackageId: pkg.id,
+        sessionAt,
+        sessionEndAt,
+        durationMinutes,
+        sessionDateLabel: input.date,
+        sessionTime: input.time,
+        timeWindow: `${input.time} (Session)`,
+        venue,
+        city: "Kigali, Rwanda",
+        locationNotes: input.locationNotes,
+        status: "pending",
+        paymentStatus: "unpaid",
+        detailStatus: "pending",
+        depositPercent: pkg.depositPercent,
+        timeline: defaultTimeline(pkg.title, input.date, input.time),
+        progressStep: 0,
+        galleryStep: 0,
+        paymentMeta: {
+          statusLabel: `Deposit Required (${formatRwf(depositAmount)})`,
+          amountPaid: 0,
+          transactionRef: "—",
+          paymentDate: "—",
+          verificationStatus: "pending",
+          note: "Pay your deposit via MoMo to confirm your session slot.",
+        },
+        clientMeta: {
+          phone: user.phone ?? upsertedClient.phone,
+          preferredSince: upsertedClient.memberSince.getFullYear(),
+        },
       },
-      clientMeta: {
-        phone: user.phone ?? upsertedClient.phone,
-        preferredSince: upsertedClient.memberSince.getFullYear(),
-      },
-    },
-  });
+    });
 
-  await createDepositRequest(
-    booking.id,
-    studio.id,
-    reference,
-    pkg.title,
-    depositAmount,
-    sessionAt,
-  );
+    await createDepositRequest(
+      tx,
+      created.id,
+      studio.id,
+      reference,
+      pkg.title,
+      depositAmount,
+      sessionAt,
+    );
+
+    return created;
+  });
 
   const ownerUserId = await findStudioOwnerUserId(studio.id);
   if (ownerUserId) {
