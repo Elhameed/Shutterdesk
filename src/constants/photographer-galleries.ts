@@ -74,7 +74,8 @@ export const GALLERIES_COPY = {
       updated: "Photo details saved",
       reordered: "Photo order updated",
     },
-    storageUsed: (used: number, total: number) => `${used} GB / ${total} GB used`,
+    photoCount: (count: number) =>
+      `${count} ${count === 1 ? "photo" : "photos"}`,
     tabs: {
       photos: "Photos",
       delivery: "Delivery",
@@ -112,24 +113,10 @@ export const GALLERIES_COPY = {
       analytics: {
         totalViews: "Total views",
         downloads: "Downloads",
-        favorites: "Favorites",
-        uniqueVisitors: "Unique visitors",
-        viewsTrend: "+12% this week",
-        downloadsTrend: "+8% this week",
-        favoritesTrend: "+5% this week",
-        visitorsTrend: "+9% this week",
-        weeklyViews: "Views this week",
-        topPhotos: "Top performing photos",
-        engagement: "Engagement rate",
-        engagementHint: "Based on views, favorites, and downloads",
-        avgSession: "Avg. Session",
         activityLog: "Activity log",
         noActivity: "No activity recorded for this gallery yet.",
-        columns: {
-          photo: "Photo",
-          views: "Views",
-          downloads: "Downloads",
-        },
+        limitedTrackingNote:
+          "Views and downloads are counted per gallery. Per-visitor and per-photo activity is not tracked yet.",
       },
       settings: {
         visibilityTitle: "Visibility & access",

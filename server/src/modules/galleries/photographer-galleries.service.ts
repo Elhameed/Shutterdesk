@@ -110,7 +110,7 @@ export async function getPhotographerGalleryDetail(
 
   return {
     gallery: toApiGallery(gallery),
-    meta: toApiGalleryDetailMeta(gallery, gallery.photos),
+    meta: toApiGalleryDetailMeta(gallery),
     photos: gallery.photos.map(toApiGalleryPhoto),
   };
 }
@@ -343,7 +343,6 @@ export async function uploadGalleryPhotos(
       data: {
         photoCount,
         coverAssetKey: coverAssetKey || gallery.coverAssetKey,
-        storageUsedGb: Math.min(49.5, Number((photoCount * 0.025).toFixed(1))),
         workflowStatus: gallery.workflowStatus === "delivered" ? "delivered" : "editing",
       },
       include: {
@@ -649,7 +648,7 @@ export async function notifyClientAboutGallery(
 
   return {
     gallery: toApiGallery(updated),
-    meta: toApiGalleryDetailMeta(updated, updated.photos),
+    meta: toApiGalleryDetailMeta(updated),
     photos: updated.photos.map(toApiGalleryPhoto),
   };
 }
@@ -688,7 +687,7 @@ export async function archivePhotographerGallery(
 
   return {
     gallery: toApiGallery(updated),
-    meta: toApiGalleryDetailMeta(updated, updated.photos),
+    meta: toApiGalleryDetailMeta(updated),
     photos: updated.photos.map(toApiGalleryPhoto),
   };
 }
@@ -698,7 +697,7 @@ export async function exportPhotographerGalleryReport(
   galleryId: string,
 ) {
   const gallery = await getOwnedGalleryOrThrow(photographerUserId, galleryId);
-  const meta = toApiGalleryDetailMeta(gallery, gallery.photos);
+  const meta = toApiGalleryDetailMeta(gallery);
 
   return {
     exportedAt: new Date().toISOString(),
@@ -711,7 +710,6 @@ export async function exportPhotographerGalleryReport(
       photoCount: gallery.photoCount,
       views: gallery.views,
       downloads: gallery.downloads,
-      likes: gallery.likes,
       storageUsedGb: gallery.storageUsedGb,
       storageTotalGb: gallery.storageTotalGb,
     },

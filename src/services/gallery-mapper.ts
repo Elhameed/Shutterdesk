@@ -32,7 +32,6 @@ export function mapApiGallery(api: ApiGallery): PhotographerGallery {
     uploadedAt: api.uploadedAt,
     views: api.views,
     downloads: api.downloads,
-    likes: api.likes,
     description: api.description ?? undefined,
     clientId: api.clientId,
     relatedBookingId: api.relatedBookingId ?? undefined,

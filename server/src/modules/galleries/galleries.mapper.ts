@@ -28,7 +28,6 @@ export type ApiGallery = {
   uploadedAt: string;
   views: number;
   downloads: number;
-  likes: number;
   description: string | null;
   clientId: string;
   relatedBookingId: string | null;
@@ -48,8 +47,6 @@ export type ApiGalleryDetailMeta = {
   clientInitials: string;
   shootDate: string;
   location: string;
-  storageUsedGb: number;
-  storageTotalGb: number;
   activities: unknown[];
   delivery: Record<string, unknown>;
   analytics: Record<string, unknown>;
@@ -161,62 +158,25 @@ function buildDeliveryData(
   };
 }
 
-function buildAnalyticsData(gallery: Gallery, photos: GalleryPhoto[] = []) {
-  const stored = (gallery.analytics ?? {}) as Record<string, unknown>;
-  const topPhotosFromDb =
-    photos.length > 0
-      ? photos.slice(0, 3).map((photo, index) => ({
-          rank: index + 1,
-          label: photo.alt || `${gallery.title} photo ${index + 1}`,
-          views: Math.max(1, Math.round(gallery.views / Math.max(photos.length, 1))),
-          downloads: Math.max(0, Math.round(gallery.downloads / Math.max(photos.length, 1))),
-        }))
-      : [];
-
-  const fallbackTopPhotos = [
-    {
-      rank: 1,
-      label: "Ceremony — First kiss",
-      views: Math.round(gallery.views * 0.18),
-      downloads: Math.round(gallery.downloads * 0.22),
-    },
-    {
-      rank: 2,
-      label: "Couple portrait — Golden hour",
-      views: Math.round(gallery.views * 0.14),
-      downloads: Math.round(gallery.downloads * 0.19),
-    },
-  ];
-
-  if (stored.uniqueVisitors) {
-    return {
-      ...stored,
-      topPhotos:
-        Array.isArray(stored.topPhotos) && stored.topPhotos.length > 0
-          ? stored.topPhotos
-          : topPhotosFromDb.length > 0
-            ? topPhotosFromDb
-            : fallbackTopPhotos,
-    };
-  }
-
+/**
+ * Gallery analytics, limited to what is actually measured.
+ *
+ * This used to synthesise a full dashboard from formulas: unique visitors as
+ * 42% of views, a weekly chart built from fixed daily ratios, an average
+ * session duration picked from the gallery's category, hardcoded top-photo
+ * captions ("Ceremony — First kiss"), and an engagement rate that always
+ * evaluated to exactly 24 because `likes` is never written anywhere. None of it
+ * was derived from anything a visitor did.
+ *
+ * Only two things are genuinely tracked today — gallery-level view and download
+ * counts. Per-photo activity is not recorded at all, so there is no basis for
+ * ranking photos. The client renders an explicit "not tracked yet" state for
+ * everything absent here rather than being handed a plausible-looking number.
+ */
+function buildAnalyticsData(gallery: Gallery) {
   return {
-    uniqueVisitors: Math.max(1, Math.round(gallery.views * 0.42)),
-    avgSessionDuration: gallery.category === "wedding" ? "4m 32s" : "2m 18s",
-    engagementRate: Math.min(
-      92,
-      Math.round((gallery.likes / Math.max(gallery.views, 1)) * 100) + 24,
-    ),
-    weeklyViews: [
-      { day: "Mon", value: Math.round(gallery.views * 0.12) },
-      { day: "Tue", value: Math.round(gallery.views * 0.09) },
-      { day: "Wed", value: Math.round(gallery.views * 0.14) },
-      { day: "Thu", value: Math.round(gallery.views * 0.11) },
-      { day: "Fri", value: Math.round(gallery.views * 0.16) },
-      { day: "Sat", value: Math.round(gallery.views * 0.22) },
-      { day: "Sun", value: Math.round(gallery.views * 0.16) },
-    ],
-    topPhotos: topPhotosFromDb.length > 0 ? topPhotosFromDb : fallbackTopPhotos,
+    totalViews: gallery.views,
+    totalDownloads: gallery.downloads,
   };
 }
 
@@ -250,7 +210,6 @@ export function toApiGallery(gallery: GalleryWithBooking): ApiGallery {
     uploadedAt: gallery.uploadedAt.toISOString().slice(0, 10),
     views: gallery.views,
     downloads: gallery.downloads,
-    likes: gallery.likes,
     description: gallery.description,
     clientId: gallery.clientId,
     relatedBookingId: gallery.booking?.id ?? null,
@@ -269,7 +228,6 @@ export function toApiGalleryPhoto(photo: GalleryPhoto): ApiGalleryPhoto {
 
 export function toApiGalleryDetailMeta(
   gallery: Gallery,
-  photos: GalleryPhoto[] = [],
   audience: "photographer" | "client" = "photographer",
   access?: { pinRequired?: boolean; pinVerified?: boolean; expired?: boolean },
 ): ApiGalleryDetailMeta {
@@ -281,11 +239,9 @@ export function toApiGalleryDetailMeta(
     clientInitials: getInitials(gallery.clientName),
     shootDate: gallery.shootDate ?? formatDisplayDate(gallery.uploadedAt),
     location: gallery.location ?? "Kigali, Rwanda",
-    storageUsedGb: gallery.storageUsedGb,
-    storageTotalGb: gallery.storageTotalGb,
     activities,
     delivery: buildDeliveryData(gallery, audience, access),
-    analytics: buildAnalyticsData(gallery, photos),
+    analytics: buildAnalyticsData(gallery),
     settings: buildSettingsData(gallery),
   };
 }

@@ -56,7 +56,7 @@ export async function getClientGalleryDetail(
   if (access.expired) {
     return {
       gallery: toApiGallery(gallery),
-      meta: toApiGalleryDetailMeta(gallery, gallery.photos, "client", access),
+      meta: toApiGalleryDetailMeta(gallery, "client", access),
       photos: [],
     };
   }
@@ -85,7 +85,7 @@ export async function getClientGalleryDetail(
 
   return {
     gallery: toApiGallery({ ...updated, isNew: canViewPhotos ? false : updated.isNew }),
-    meta: toApiGalleryDetailMeta(updated, gallery.photos, "client", access),
+    meta: toApiGalleryDetailMeta(updated, "client", access),
     photos: canViewPhotos ? gallery.photos.map(toApiGalleryPhoto) : [],
   };
 }

@@ -382,7 +382,6 @@ model Gallery {
   photoCount      Int                   @default(0) @map("photo_count")
   views           Int                   @default(0)
   downloads       Int                   @default(0)
-  likes           Int                   @default(0)
   clientName      String                @map("client_name")
   clientEmail     String                @map("client_email")
   storageUsedGb   Float                 @default(0) @map("storage_used_gb")

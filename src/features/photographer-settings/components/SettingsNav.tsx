@@ -18,7 +18,6 @@ import {
   PANEL_NAV_ITEM,
   panelNavItemState,
 } from "@/components/layout/rail-nav";
-import { DEFAULT_STORAGE_SETTINGS } from "@/constants/storage";
 import { cn } from "@/lib/utils";
 
 const tabIcons: Record<SettingsTab, LucideIcon> = {
@@ -73,26 +72,6 @@ export function SettingsNav({ activeTab, onTabChange }: SettingsNavProps) {
         </div>
       </nav>
 
-      <div className="border-border mt-auto border-t p-4">
-        <div className="text-ink-soft flex items-center justify-between text-xs">
-          <span>{copy.storage.label}</span>
-          <span className="font-display text-ink">
-            {DEFAULT_STORAGE_SETTINGS.percent}%
-          </span>
-        </div>
-        <div className="bg-paper-dim mt-2 h-1.5 overflow-hidden rounded-full">
-          <div
-            className="bg-accent h-full rounded-full transition-all"
-            style={{ width: `${DEFAULT_STORAGE_SETTINGS.percent}%` }}
-          />
-        </div>
-        <p className="text-ink-faint mt-2 text-xs">
-          {copy.storage.used(
-            DEFAULT_STORAGE_SETTINGS.usedGb,
-            DEFAULT_STORAGE_SETTINGS.totalGb,
-          )}
-        </p>
-      </div>
     </aside>
   );
 }

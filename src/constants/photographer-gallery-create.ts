@@ -38,8 +38,8 @@ export const GALLERY_CREATE_COPY = {
   uploadPhotos: "Upload photos",
   photoDropTitle: "Drag & drop photos here or browse files",
   photoDropHint: "JPG, PNG, or WebP up to 15MB each.",
-  uploadProgress: (count: number, used: number, total: number) =>
-    `${count.toLocaleString()} Photos • ${used} GB / ${total} GB Used`,
+  uploadProgress: (count: number) =>
+    `${count.toLocaleString()} ${count === 1 ? "photo" : "photos"} ready to upload`,
   deliverySettings: "Delivery settings",
   visibility: "Visibility",
   visibilityOptions: {
@@ -81,18 +81,10 @@ export const GALLERY_CREATE_COPY = {
     client: "Client",
     category: "Category",
     photoCount: "Photo count",
-    storage: "Storage",
     status: "Status",
     footerNote:
       "Complete all required fields to enable delivery options for your client.",
     photos: (count: number) => `${count.toLocaleString()} Photos`,
-    storageDisplay: (gb: number) => `${gb} GB`,
-  },
-  planUsage: {
-    title: "Plan usage",
-    storageUsed: "Storage used",
-    remaining: (gb: number) => `You have ${gb} GB remaining on your Pro Plan.`,
-    upgradeStorage: "Upgrade storage",
   },
   quickLinks: {
     title: "Quick links",

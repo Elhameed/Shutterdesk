@@ -88,7 +88,6 @@ export function galleryPhotoStatsUpdate(
     data: {
       photoCount,
       coverAssetKey: photos[0]?.assetKey ?? null,
-      storageUsedGb: Math.min(49.5, Number((photoCount * 0.025).toFixed(1))),
     },
   });
 }
@@ -105,7 +104,7 @@ export function buildGalleryDetailResponse(
 ) {
   return {
     gallery: toApiGallery(gallery),
-    meta: toApiGalleryDetailMeta(gallery, gallery.photos, "photographer"),
+    meta: toApiGalleryDetailMeta(gallery, "photographer"),
     photos: gallery.photos.map(toApiGalleryPhoto),
   };
 }

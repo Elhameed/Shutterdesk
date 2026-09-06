@@ -307,8 +307,7 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
           onLoadMore={() =>
             setVisibleCount((count) => count + GALLERY_PHOTOS_PAGE_SIZE)
           }
-          storageUsedGb={meta.storageUsedGb}
-          storageTotalGb={meta.storageTotalGb}
+          photoCount={gallery.photoCount}
           uploadPanelRef={uploadPanelRef}
           onPhotosUploaded={handlePhotosUploaded}
           isUploadingPhotos={isUploadingPhotos}
