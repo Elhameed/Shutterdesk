@@ -257,16 +257,39 @@ export async function ensureBalancePaymentRequest(bookingId: string) {
   });
 }
 
-export async function syncClientPaymentObligations(clientUserId: string) {
+/**
+ * A client's identity plus the predicate that finds their bookings.
+ *
+ * Bookings are matched by linked user id *or* email, because a booking can
+ * predate the client having an account. Resolving that once per request and
+ * passing it down avoids re-fetching the same user and the same booking set
+ * several times over — reading the outstanding summary used to load the user
+ * three times and the bookings three times.
+ */
+type ClientBookingScope = {
+  user: Awaited<ReturnType<typeof getClientUser>>;
+  where: { OR: Array<{ clientUserId: string } | { clientEmail: string }> };
+};
+
+async function resolveClientBookingScope(
+  clientUserId: string,
+): Promise<ClientBookingScope> {
   const user = await getClientUser(clientUserId);
-  const bookings = await prisma.booking.findMany({
+  return {
+    user,
     where: {
-      OR: [
-        { clientUserId: user.id },
-        { clientEmail: user.email.toLowerCase() },
-      ],
-      status: "completed",
+      OR: [{ clientUserId: user.id }, { clientEmail: user.email.toLowerCase() }],
     },
+  };
+}
+
+export async function syncClientPaymentObligations(clientUserId: string) {
+  await syncPaymentObligationsForScope(await resolveClientBookingScope(clientUserId));
+}
+
+async function syncPaymentObligationsForScope(scope: ClientBookingScope) {
+  const bookings = await prisma.booking.findMany({
+    where: { ...scope.where, status: "completed" },
     select: { id: true },
   });
 
@@ -999,21 +1022,17 @@ export async function getClientGalleryIdForBooking(
 }
 
 export async function getClientOutstandingSummary(clientUserId: string) {
-  await syncClientPaymentObligations(clientUserId);
+  const scope = await resolveClientBookingScope(clientUserId);
+  await syncPaymentObligationsForScope(scope);
 
-  const user = await getClientUser(clientUserId);
-  const bookings = await prisma.booking.findMany({
-    where: {
-      OR: [
-        { clientUserId: user.id },
-        { clientEmail: user.email.toLowerCase() },
-      ],
-      status: { notIn: ["cancelled"] },
-    },
-    include: { studio: true },
-  });
+  const [bookings, obligations] = await Promise.all([
+    prisma.booking.findMany({
+      where: { ...scope.where, status: { notIn: ["cancelled"] } },
+      include: { studio: true },
+    }),
+    listPaymentRequestsForScope(scope),
+  ]);
 
-  const obligations = await listClientPaymentRequests(clientUserId);
   const totalBalance = bookings.reduce(
     (sum, booking) => sum + Math.max(0, booking.packagePrice - booking.amountPaid),
     0,
@@ -1029,15 +1048,13 @@ export async function getClientOutstandingSummary(clientUserId: string) {
 }
 
 export async function listClientPaymentRequests(clientUserId: string) {
-  const user = await getClientUser(clientUserId);
+  return listPaymentRequestsForScope(await resolveClientBookingScope(clientUserId));
+}
+
+async function listPaymentRequestsForScope(scope: ClientBookingScope) {
   const bookingIds = (
     await prisma.booking.findMany({
-      where: {
-        OR: [
-          { clientUserId: user.id },
-          { clientEmail: user.email.toLowerCase() },
-        ],
-      },
+      where: scope.where,
       select: { id: true },
     })
   ).map((item) => item.id);

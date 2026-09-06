@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import type { StudioSchedule } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import {
+  assertSlotAvailable,
   getAvailableDatesInMonth,
   getBlockedDaysInMonth,
   getManualBlockedDaysInMonth,
@@ -397,8 +398,6 @@ export async function assertBookingSlotAvailable(
     loadStudioBookings(studioId, bookingRangeForDateKey(dateKey)),
     loadStudioBlocks(studioId),
   ]);
-
-  const { assertSlotAvailable } = await import("../../domain/availability-slots.js");
 
   try {
     assertSlotAvailable(
