@@ -19,8 +19,9 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@contracts/*": ["./server/src/contracts/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "server/src/contracts"]
 }

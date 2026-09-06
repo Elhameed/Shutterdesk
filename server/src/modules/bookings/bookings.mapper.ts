@@ -1,4 +1,34 @@
-import type { Booking, BookingPaymentStatus, BookingStatus } from "@prisma/client";
+import type { Booking } from "@prisma/client";
+import type {
+  ApiBooking,
+  ApiBookingDetail,
+  ApiPaymentRequest,
+  BookingDetailStatus,
+} from "../../contracts/booking.js";
+
+export type { ApiBooking, ApiBookingDetail, ApiPaymentRequest };
+
+/**
+ * `Booking.detailStatus` is a plain String column, but only five values are
+ * ever written to it. Narrowing here keeps the wire contract honest instead of
+ * widening the client's type to `string`; an unrecognised value falls back to
+ * "pending" rather than being passed through as something the client cannot
+ * render.
+ */
+const BOOKING_DETAIL_STATUSES: readonly BookingDetailStatus[] = [
+  "pending",
+  "pendingVerification",
+  "confirmed",
+  "completed",
+  "cancelled",
+];
+
+function toBookingDetailStatus(value: string): BookingDetailStatus {
+  return BOOKING_DETAIL_STATUSES.includes(value as BookingDetailStatus)
+    ? (value as BookingDetailStatus)
+    : "pending";
+}
+
 import {
   buildLifecycleContext,
   canPhotographerCancelBooking,
@@ -7,8 +37,6 @@ import {
   resolveLifecycleStage,
   resolveLifecycleStatusMessage,
   resolvePhotographerPrimaryAction,
-  type LifecyclePrimaryAction,
-  type BookingLifecycleStage,
 } from "../../domain/booking-lifecycle.js";
 import {
   canReleaseGallery,
@@ -28,99 +56,6 @@ import {
   resolveOutstandingDue,
   type UnpaidPaymentRequest,
 } from "../../domain/payment-obligations.js";
-
-export type ApiBooking = {
-  id: string;
-  studioId: string;
-  clientName: string;
-  email: string;
-  avatarAssetKey: string | null;
-  packageName: string;
-  packageDetail: string;
-  date: string;
-  time: string;
-  payment: BookingPaymentStatus;
-  status: BookingStatus;
-  actions: {
-    canView: boolean;
-    canConfirm: boolean;
-    canCancel: boolean;
-    confirmDisabled?: boolean;
-  };
-};
-
-export type ApiBookingDetail = {
-  id: string;
-  reference: string;
-  detailStatus: string;
-  requestedDate: string;
-  sessionLabel: string;
-  client: {
-    name: string;
-    initials: string;
-    avatarAssetKey: string | null;
-    preferredSince: number | null;
-    email: string;
-    phone: string;
-    instagram: string;
-  };
-  event: {
-    date: string;
-    timeWindow: string;
-    venue: string;
-    city: string;
-  };
-  package: {
-    title: string;
-    subtitle: string;
-    price: number;
-    includes: string[];
-    coverAssetKey: string;
-  };
-  payment: {
-    statusLabel: string;
-    receiptAssetKey: string | null;
-    amountPaid: number;
-    transactionRef: string;
-    paymentDate: string;
-    verificationStatus: "verified" | "pending";
-    note?: string;
-    outstandingDue: number;
-  };
-  timeline: unknown[];
-  showVerifyPayment: boolean;
-  pendingVerificationId: string | null;
-  progressStep: number;
-  galleryStep: number;
-  galleryId: string | null;
-  clientId: string | null;
-  lifecycleStage: BookingLifecycleStage;
-  primaryAction: LifecyclePrimaryAction | null;
-  statusMessage: string | null;
-  galleryReleaseBlocked: boolean;
-  galleryReleaseOverride: boolean;
-};
-
-export type ApiPaymentRequest = {
-  id: string;
-  bookingId: string;
-  studioId: string;
-  studioSlug: string;
-  studioName: string;
-  bookingTitle: string;
-  type: string;
-  amount: number;
-  dueDate: string;
-  invoiceRef: string;
-  bookingReference: string;
-  status: string;
-  /** Package total for the parent booking — lets clients opt to pay in full. */
-  packagePrice: number;
-  /** Amount already settled on the parent booking. */
-  amountPaid: number;
-  /** Remaining amount to settle the booking in full (packagePrice - amountPaid). */
-  fullAmount: number;
-};
 
 function getInitials(name: string) {
   return name
@@ -254,7 +189,7 @@ export function toApiBookingDetail(
   return {
     id: booking.id,
     reference: booking.reference,
-    detailStatus: booking.detailStatus,
+    detailStatus: toBookingDetailStatus(booking.detailStatus),
     requestedDate: formatDisplayDate(booking.requestedAt),
     sessionLabel: booking.packageName,
     client: {
@@ -298,7 +233,7 @@ export function toApiBookingDetail(
     timeline: buildBookingActivityTimeline(
       {
         status: booking.status,
-        detailStatus: booking.detailStatus,
+        detailStatus: toBookingDetailStatus(booking.detailStatus),
         showVerifyPayment: booking.showVerifyPayment,
         amountPaid: booking.amountPaid,
         packagePrice: booking.packagePrice,
