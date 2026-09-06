@@ -20,7 +20,7 @@ import {
 import {
   getClientOutstandingSummary,
   listClientPaymentRequests,
-} from "../bookings/bookings.service.js";
+} from "../bookings/booking-obligations.service.js";
 import { formatRwf } from "../../format/currency-format.js";
 import {
   parseStudioPaymentProfile,

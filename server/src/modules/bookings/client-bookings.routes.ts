@@ -11,7 +11,7 @@ import {
   getClientGalleryIdForBooking,
   getUpcomingClientBooking,
   listClientBookings,
-} from "./bookings.service.js";
+} from "./client-bookings.service.js";
 
 const createClientBookingSchema = z
   .object({

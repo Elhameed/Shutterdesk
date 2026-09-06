@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { formatRwf } from "../../format/currency-format.js";
-import { getClientOutstandingSummary } from "../bookings/bookings.service.js";
+import { getClientOutstandingSummary } from "../bookings/booking-obligations.service.js";
 
 async function getClientUser(clientUserId: string) {
   const user = await prisma.user.findUnique({ where: { id: clientUserId } });

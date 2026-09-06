@@ -14,7 +14,7 @@ import {
   reschedulePhotographerBooking,
   setGalleryReleaseOverride,
   updatePhotographerBookingStatus,
-} from "./bookings.service.js";
+} from "./photographer-bookings.service.js";
 
 const createBookingSchema = z
   .object({
