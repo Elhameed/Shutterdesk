@@ -1,5 +1,4 @@
 import { ChevronRight, Eye, Share2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { GALLERY_CREATE_COPY } from "@/constants/photographer-gallery-create";
 import {
   type GalleryFormValues,
@@ -14,8 +13,6 @@ type GalleryFormSidebarProps = {
     | "category"
     | "clientId"
     | "photoCount"
-    | "storageUsedGb"
-    | "storageTotalGb"
     | "statusSegment"
   >;
   clientName?: string;
@@ -41,20 +38,10 @@ export function GalleryFormSidebar({
 }: GalleryFormSidebarProps) {
   const copy = GALLERY_CREATE_COPY;
   const summary = copy.summary;
-  const plan = copy.planUsage;
   const links = copy.quickLinks;
   const quickLinksEnabled = Boolean(galleryId);
 
   const client = clientName;
-  const storagePercent = Math.min(
-    100,
-    Math.round((values.storageUsedGb / values.storageTotalGb) * 100),
-  );
-  const remaining = Math.max(
-    0,
-    Number((values.storageTotalGb - values.storageUsedGb).toFixed(1)),
-  );
-
   const summaryRows = [
     {
       label: summary.galleryName,
@@ -71,10 +58,6 @@ export function GalleryFormSidebar({
     {
       label: summary.photoCount,
       value: summary.photos(values.photoCount),
-    },
-    {
-      label: summary.storage,
-      value: summary.storageDisplay(values.storageUsedGb),
     },
   ];
 
@@ -119,29 +102,6 @@ export function GalleryFormSidebar({
         </p>
       </section>
 
-      <section className="rounded-md border border-border bg-panel p-5">
-        <p className="text-[10px] font-medium text-ink-faint">
-          {plan.title}
-        </p>
-
-        <div className="mt-4">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-ink">{plan.storageUsed}</span>
-            <span className="font-bold text-ink">{storagePercent}%</span>
-          </div>
-          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-dim">
-            <div
-              className="h-full rounded-full bg-accent transition-all"
-              style={{ width: `${storagePercent}%` }}
-            />
-          </div>
-          <p className="mt-3 text-xs text-ink-soft">{plan.remaining(remaining)}</p>
-        </div>
-
-        <Button variant="outline" size="sm" className="mt-4 w-full">
-          {plan.upgradeStorage}
-        </Button>
-      </section>
 
       <section className="rounded-md border border-border bg-panel p-5">
         <p className="text-[10px] font-medium text-ink-faint">

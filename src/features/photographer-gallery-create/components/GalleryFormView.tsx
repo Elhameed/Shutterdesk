@@ -91,7 +91,6 @@ export function GalleryFormView({
   const totalPhotoCount = isEdit
     ? initialValues.photoCount + pendingPhotos.length
     : pendingPhotos.length;
-  const storageUsedGb = Number((totalPhotoCount * 0.025).toFixed(1));
 
   useEffect(() => {
     void Promise.all([
@@ -133,7 +132,6 @@ export function GalleryFormView({
     };
   }, [relatedBookingId]);
 
-  const storageTotalGb = initialValues.storageTotalGb;
 
   const selectedClient = clients.find((client) => client.id === clientId);
 
@@ -153,18 +151,12 @@ export function GalleryFormView({
 
   const previewCoverImage = coverUrl ?? coverImage ?? landingAssets.hero.studioMockup;
 
-  const storagePercent = Math.min(
-    100,
-    Math.round((storageUsedGb / storageTotalGb) * 100),
-  );
 
   const sidebarValues = {
     galleryName,
     category,
     clientId,
     photoCount: totalPhotoCount,
-    storageUsedGb,
-    storageTotalGb,
     statusSegment,
   };
 
@@ -496,24 +488,9 @@ export function GalleryFormView({
             />
 
             {totalPhotoCount > 0 && (
-              <div className="mt-4">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-ink">
-                    {copy.uploadProgress(
-                      totalPhotoCount,
-                      storageUsedGb,
-                      storageTotalGb,
-                    )}
-                  </span>
-                  <span className="font-bold text-ink">{storagePercent}%</span>
-                </div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-dim">
-                  <div
-                    className="h-full rounded-full bg-accent transition-all"
-                    style={{ width: `${storagePercent}%` }}
-                  />
-                </div>
-              </div>
+              <p className="mt-4 text-xs font-semibold text-ink">
+                {copy.uploadProgress(totalPhotoCount)}
+              </p>
             )}
           </FormSection>
 

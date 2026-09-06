@@ -26,7 +26,6 @@ export type PhotographerGallery = {
   uploadedAt: string;
   views: number;
   downloads: number;
-  likes: number;
   description?: string;
   clientId?: string;
   relatedBookingId?: string;
@@ -73,24 +72,15 @@ export type GalleryDeliveryData = {
   steps: GalleryDeliveryStep[];
 };
 
-export type GalleryWeeklyView = {
-  day: string;
-  value: number;
-};
-
-export type GalleryTopPhoto = {
-  rank: number;
-  label: string;
-  views: number;
-  downloads: number;
-};
-
+/**
+ * Only what the API actually measures. Unique visitors, session duration,
+ * engagement rate, the weekly chart and per-photo rankings were all synthesised
+ * from formulas rather than tracked, and have been removed rather than shown as
+ * if they were real.
+ */
 export type GalleryAnalyticsData = {
-  uniqueVisitors: number;
-  avgSessionDuration: string;
-  engagementRate: number;
-  weeklyViews: GalleryWeeklyView[];
-  topPhotos: GalleryTopPhoto[];
+  totalViews: number;
+  totalDownloads: number;
 };
 
 export type GalleryVisibility = "public" | "private" | "password";
@@ -114,8 +104,6 @@ export type GalleryDetailMeta = {
   clientInitials: string;
   shootDate: string;
   location: string;
-  storageUsedGb: number;
-  storageTotalGb: number;
   activities: GalleryActivity[];
   delivery: GalleryDeliveryData;
   analytics: GalleryAnalyticsData;
@@ -141,7 +129,6 @@ export type ApiGallery = {
   uploadedAt: string;
   views: number;
   downloads: number;
-  likes: number;
   description: string | null;
   clientId: string;
   relatedBookingId: string | null;
@@ -192,8 +179,6 @@ export type GalleryFormValues = {
   socialSharing: boolean;
   statusSegment: GalleryStatusSegment;
   photoCount: number;
-  storageUsedGb: number;
-  storageTotalGb: number;
   workflowStatus?: GalleryWorkflowStatus;
   galleryStatus?: GalleryStatus;
   accessPin?: string;
@@ -214,8 +199,6 @@ export function getDefaultGalleryFormValues(
     socialSharing: false,
     statusSegment: "draft",
     photoCount: 0,
-    storageUsedGb: 0,
-    storageTotalGb: GALLERY_PLAN_STORAGE_GB,
   };
 }
 
@@ -247,8 +230,6 @@ export function galleryDetailToFormValues(detail: GalleryDetail): GalleryFormVal
     socialSharing: meta.settings.allowSharing,
     statusSegment: mapGalleryToStatusSegment(gallery),
     photoCount: gallery.photoCount,
-    storageUsedGb: meta.storageUsedGb,
-    storageTotalGb: meta.storageTotalGb,
     workflowStatus: gallery.workflowStatus,
     galleryStatus: gallery.status,
     accessPin: meta.settings.accessPin ?? meta.delivery.accessPin,

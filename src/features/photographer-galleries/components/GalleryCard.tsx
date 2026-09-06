@@ -1,7 +1,6 @@
 import {
   Download,
   Eye,
-  Heart,
   ImageIcon,
   MoreVertical,
   Pencil,
@@ -104,7 +103,6 @@ export function GalleryCard({ gallery }: GalleryCardProps) {
           <div className="flex items-center gap-3 text-xs text-ink-soft">
             <Stat icon={Eye} value={gallery.views} />
             <Stat icon={Download} value={gallery.downloads} />
-            <Stat icon={Heart} value={gallery.likes} />
           </div>
           <span
             className={cn(

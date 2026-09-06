@@ -31,8 +31,7 @@ type GalleryContentPanelProps = {
   totalPhotos: number;
   hasMore: boolean;
   onLoadMore: () => void;
-  storageUsedGb: number;
-  storageTotalGb: number;
+  photoCount: number;
   uploadPanelRef?: RefObject<HTMLDivElement | null>;
   onPhotosUploaded: (secureUrls: string[]) => Promise<void>;
   isUploadingPhotos?: boolean;
@@ -56,8 +55,7 @@ export function GalleryContentPanel({
   totalPhotos,
   hasMore,
   onLoadMore,
-  storageUsedGb,
-  storageTotalGb,
+  photoCount,
   uploadPanelRef,
   onPhotosUploaded,
   isUploadingPhotos = false,
@@ -71,11 +69,6 @@ export function GalleryContentPanel({
   onDetailUpdated,
 }: GalleryContentPanelProps) {
   const copy = GALLERIES_COPY.detail;
-  const storagePercent = Math.min(
-    100,
-    Math.round((storageUsedGb / storageTotalGb) * 100),
-  );
-
   return (
     <section className="min-w-0">
       <div className="flex flex-col gap-4 border-b border-border sm:flex-row sm:items-end sm:justify-between">
@@ -97,16 +90,10 @@ export function GalleryContentPanel({
           ))}
         </div>
 
+        {/* Was a storage bar reading "X GB / 50 GB used", where X was
+            photoCount x 0.025 rather than any measured size. */}
         <div className="shrink-0 pb-3 sm:min-w-[160px] sm:text-right">
-          <p className="text-xs font-bold text-ink">
-            {copy.storageUsed(storageUsedGb, storageTotalGb)}
-          </p>
-          <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-border">
-            <div
-              className="h-full rounded-full bg-ink transition-all"
-              style={{ width: `${storagePercent}%` }}
-            />
-          </div>
+          <p className="text-xs font-bold text-ink">{copy.photoCount(photoCount)}</p>
         </div>
       </div>
 
@@ -162,7 +149,6 @@ export function GalleryContentPanel({
 
         {activeTab === "analytics" && (
           <GalleryAnalyticsTab
-            gallery={gallery}
             analytics={meta.analytics}
             activities={meta.activities}
           />
