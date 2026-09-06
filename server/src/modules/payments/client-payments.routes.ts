@@ -2,12 +2,8 @@ import { Router } from "express";
 import { z } from "zod";
 import type { Env } from "../../config/env.js";
 import { AppError } from "../../middleware/error-handler.js";
-import { formatZodErrors } from "../../lib/format-zod-errors.js";
-import {
-  createAuthMiddleware,
-  requireRole,
-  type AuthenticatedRequest,
-} from "../../middleware/auth.js";
+import { authContext, createAuthMiddleware, requireRole } from "../../middleware/auth.js";
+import { parseBody } from "../../middleware/validate.js";
 import { writeRateLimiter } from "../../middleware/rate-limit.js";
 import {
   getClientOutstandingSummary,
@@ -33,80 +29,45 @@ export function createClientPaymentsRouter(env: Env) {
 
   router.use(requireAuth, requireRole("client"));
 
-  router.get("/", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const payments = await listClientPaymentHistory(userId);
-      res.json({ data: payments });
-    } catch (error) {
-      next(error);
-    }
+  router.get("/", async (req, res) => {
+    const { userId } = authContext(req);
+    const payments = await listClientPaymentHistory(userId);
+    res.json({ data: payments });
   });
 
-  router.get("/requests", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const requests = await listClientPaymentRequests(userId);
-      res.json({ data: requests });
-    } catch (error) {
-      next(error);
-    }
+  router.get("/requests", async (req, res) => {
+    const { userId } = authContext(req);
+    const requests = await listClientPaymentRequests(userId);
+    res.json({ data: requests });
   });
 
-  router.get("/requests/:id", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const request = await getClientPaymentRequest(userId, req.params.id);
-      if (!request) {
-        throw new AppError("Payment request not found", 404);
-      }
-      res.json({ data: request });
-    } catch (error) {
-      next(error);
+  router.get("/requests/:id", async (req, res) => {
+    const { userId } = authContext(req);
+    const request = await getClientPaymentRequest(userId, req.params.id);
+    if (!request) {
+      throw new AppError("Payment request not found", 404);
     }
+    res.json({ data: request });
   });
 
-  router.get("/summary", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const summary = await getClientOutstandingSummary(userId);
-      res.json({ data: summary });
-    } catch (error) {
-      next(error);
-    }
+  // `/summary` and `/outstanding` are the same payload under two names; the
+  // frontend uses both.
+  router.get(["/summary", "/outstanding"], async (req, res) => {
+    const { userId } = authContext(req);
+    const summary = await getClientOutstandingSummary(userId);
+    res.json({ data: summary });
   });
 
-  router.get("/outstanding", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const summary = await getClientOutstandingSummary(userId);
-      res.json({ data: summary });
-    } catch (error) {
-      next(error);
-    }
+  router.post("/receipts", writeRateLimiter, async (req, res) => {
+    const input = parseBody(req, uploadReceiptSchema);
+    const { userId } = authContext(req);
+    const verification = await uploadClientReceipt(userId, input);
+    res.status(201).json({ data: verification });
   });
 
-  router.post("/receipts", writeRateLimiter, async (req, res, next) => {
-    try {
-      const parsed = uploadReceiptSchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw new AppError("Validation failed", 400, formatZodErrors(parsed.error));
-      }
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const verification = await uploadClientReceipt(userId, parsed.data);
-      res.status(201).json({ data: verification });
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  router.get("/studios/:slug/profile", async (req, res, next) => {
-    try {
-      const profile = await getStudioPaymentProfileBySlug(req.params.slug);
-      res.json({ data: profile });
-    } catch (error) {
-      next(error);
-    }
+  router.get("/studios/:slug/profile", async (req, res) => {
+    const profile = await getStudioPaymentProfileBySlug(req.params.slug);
+    res.json({ data: profile });
   });
 
   return router;

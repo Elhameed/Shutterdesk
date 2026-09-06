@@ -2,18 +2,16 @@ import { Router } from "express";
 import { z } from "zod";
 import type { Env } from "../../config/env.js";
 import { AppError } from "../../middleware/error-handler.js";
-import { formatZodErrors } from "../../lib/format-zod-errors.js";
-import {
-  createAuthMiddleware,
-  requireRole,
-  type AuthenticatedRequest,
-} from "../../middleware/auth.js";
+import { authContext, createAuthMiddleware, requireRole } from "../../middleware/auth.js";
+import { parseBody } from "../../middleware/validate.js";
 import {
   createPhotographerService,
   deletePhotographerService,
   duplicatePhotographerService,
   getPhotographerService,
   listPhotographerServices,
+  listPublicClientServices,
+  listPublicClientServicesByStudioSlug,
   updatePhotographerService,
 } from "./services.service.js";
 
@@ -72,87 +70,49 @@ export function createPhotographerServicesRouter(env: Env) {
 
   router.use(requireAuth, requireRole("photographer"));
 
-  router.get("/", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const services = await listPhotographerServices(userId);
-      res.json({ data: services });
-    } catch (error) {
-      next(error);
-    }
+  router.get("/", async (req, res) => {
+    const { userId } = authContext(req);
+    const services = await listPhotographerServices(userId);
+    res.json({ data: services });
   });
 
-  router.get("/:id", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const service = await getPhotographerService(userId, req.params.id);
-      if (!service) {
-        throw new AppError("Service package not found", 404);
-      }
-      res.json({ data: service });
-    } catch (error) {
-      next(error);
+  router.get("/:id", async (req, res) => {
+    const { userId } = authContext(req);
+    const service = await getPhotographerService(userId, req.params.id);
+    if (!service) {
+      throw new AppError("Service package not found", 404);
     }
+    res.json({ data: service });
   });
 
-  router.post("/", async (req, res, next) => {
-    try {
-      const isDraft = req.body?.isDraft === true;
-      const parsed = (isDraft ? draftServiceSchema : createServiceSchema).safeParse(
-        req.body,
-      );
-      if (!parsed.success) {
-        throw new AppError("Validation failed", 400, formatZodErrors(parsed.error));
-      }
-
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const service = await createPhotographerService(userId, parsed.data);
-      res.status(201).json({ data: service });
-    } catch (error) {
-      next(error);
-    }
+  router.post("/", async (req, res) => {
+    // Drafts are allowed to be incomplete, so they validate against a laxer
+    // schema than a package being published.
+    const isDraft = req.body?.isDraft === true;
+    const input = parseBody(req, isDraft ? draftServiceSchema : createServiceSchema);
+    const { userId } = authContext(req);
+    const service = await createPhotographerService(userId, input);
+    res.status(201).json({ data: service });
   });
 
-  router.patch("/:id", async (req, res, next) => {
-    try {
-      const isDraft = req.body?.isDraft === true;
-      const parsed = (isDraft ? draftServiceSchema : patchServiceSchema).safeParse(
-        req.body,
-      );
-      if (!parsed.success) {
-        throw new AppError("Validation failed", 400, formatZodErrors(parsed.error));
-      }
-
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const service = await updatePhotographerService(
-        userId,
-        req.params.id,
-        parsed.data,
-      );
-      res.json({ data: service });
-    } catch (error) {
-      next(error);
-    }
+  router.patch("/:id", async (req, res) => {
+    const isDraft = req.body?.isDraft === true;
+    const input = parseBody(req, isDraft ? draftServiceSchema : patchServiceSchema);
+    const { userId } = authContext(req);
+    const service = await updatePhotographerService(userId, req.params.id, input);
+    res.json({ data: service });
   });
 
-  router.post("/:id/duplicate", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const service = await duplicatePhotographerService(userId, req.params.id);
-      res.status(201).json({ data: service });
-    } catch (error) {
-      next(error);
-    }
+  router.post("/:id/duplicate", async (req, res) => {
+    const { userId } = authContext(req);
+    const service = await duplicatePhotographerService(userId, req.params.id);
+    res.status(201).json({ data: service });
   });
 
-  router.delete("/:id", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const result = await deletePhotographerService(userId, req.params.id);
-      res.json({ data: result });
-    } catch (error) {
-      next(error);
-    }
+  router.delete("/:id", async (req, res) => {
+    const { userId } = authContext(req);
+    const result = await deletePhotographerService(userId, req.params.id);
+    res.json({ data: result });
   });
 
   return router;
@@ -164,21 +124,15 @@ export function createClientServicesRouter(env: Env) {
 
   router.use(requireAuth, requireRole("client"));
 
-  router.get("/", async (req, res, next) => {
-    try {
-      const { listPublicClientServices, listPublicClientServicesByStudioSlug } =
-        await import("./services.service.js");
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const studioSlug =
-        typeof req.query.studioSlug === "string" ? req.query.studioSlug : null;
+  router.get("/", async (req, res) => {
+    const { userId } = authContext(req);
+    const studioSlug =
+      typeof req.query.studioSlug === "string" ? req.query.studioSlug : null;
 
-      const services = studioSlug
-        ? await listPublicClientServicesByStudioSlug(userId, studioSlug)
-        : await listPublicClientServices(userId);
-      res.json({ data: services });
-    } catch (error) {
-      next(error);
-    }
+    const services = studioSlug
+      ? await listPublicClientServicesByStudioSlug(userId, studioSlug)
+      : await listPublicClientServices(userId);
+    res.json({ data: services });
   });
 
   return router;
