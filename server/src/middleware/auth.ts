@@ -1,17 +1,32 @@
 import type { NextFunction, Request, Response } from "express";
 import type { UserRole } from "@prisma/client";
 import type { Env } from "../config/env.js";
-import { loadAuthUser } from "../lib/auth-session.js";
+import { loadAuthUser } from "../domain/auth-session.js";
 import { verifyAccessToken } from "../lib/jwt.js";
 import { AppError } from "./error-handler.js";
 
-export type AuthenticatedRequest = Request & {
-  auth: {
-    userId: string;
-    email: string;
-    role: UserRole;
-  };
+export type AuthContext = {
+  userId: string;
+  email: string;
+  role: UserRole;
 };
+
+export type AuthenticatedRequest = Request & { auth: AuthContext };
+
+/**
+ * Read the authenticated principal off a request.
+ *
+ * `req.auth` is declared optional (see src/types/express.d.ts) because it only
+ * exists once the auth middleware has run, which the type system cannot prove.
+ * Every router that reads it mounts `requireAuth` first, so the throw is a
+ * guard against a future router forgetting to — not an expected path.
+ */
+export function authContext(req: Request): AuthContext {
+  if (!req.auth) {
+    throw new AppError("Authentication required", 401);
+  }
+  return req.auth;
+}
 
 export function createAuthMiddleware(env: Env) {
   return (req: Request, _res: Response, next: NextFunction) => {
@@ -40,7 +55,7 @@ export function createAuthMiddleware(env: Env) {
           return;
         }
 
-        (req as AuthenticatedRequest).auth = {
+        req.auth = {
           userId: user.id,
           email: user.email,
           role: user.role,
@@ -55,7 +70,7 @@ export function createAuthMiddleware(env: Env) {
 
 export function requireRole(...roles: UserRole[]) {
   return (req: Request, _res: Response, next: NextFunction) => {
-    const auth = (req as AuthenticatedRequest).auth;
+    const auth = req.auth;
 
     if (!auth) {
       next(new AppError("Authentication required", 401));

@@ -14,24 +14,20 @@ const COMMIT = process.env.RENDER_GIT_COMMIT ?? "local";
 export function createHealthRouter(env: Env) {
   const router = Router();
 
-  router.get("/", async (_req, res, next) => {
-    try {
-      await prisma.$queryRaw`SELECT 1`;
+  router.get("/", async (_req, res) => {
+    await prisma.$queryRaw`SELECT 1`;
 
-      res.json({
-        status: "ok",
-        database: "connected",
-        // Whether the CLOUDINARY_* variables are present — never their values.
-        // Uploads are the one feature that fails independently of everything
-        // else, and its endpoints are authenticated, so without this there is
-        // no way to confirm the credentials landed short of driving the UI.
-        uploads: isCloudinaryConfigured(env) ? "configured" : "unconfigured",
-        commit: COMMIT.slice(0, 7),
-        timestamp: new Date().toISOString(),
-      });
-    } catch (error) {
-      next(error);
-    }
+    res.json({
+      status: "ok",
+      database: "connected",
+      // Whether the CLOUDINARY_* variables are present — never their values.
+      // Uploads are the one feature that fails independently of everything
+      // else, and its endpoints are authenticated, so without this there is
+      // no way to confirm the credentials landed short of driving the UI.
+      uploads: isCloudinaryConfigured(env) ? "configured" : "unconfigured",
+      commit: COMMIT.slice(0, 7),
+      timestamp: new Date().toISOString(),
+    });
   });
 
   return router;

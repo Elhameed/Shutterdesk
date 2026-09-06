@@ -2,12 +2,8 @@ import { Router } from "express";
 import { z } from "zod";
 import type { Env } from "../../config/env.js";
 import { AppError } from "../../middleware/error-handler.js";
-import { formatZodErrors } from "../../lib/format-zod-errors.js";
-import {
-  createAuthMiddleware,
-  requireRole,
-  type AuthenticatedRequest,
-} from "../../middleware/auth.js";
+import { authContext, createAuthMiddleware, requireRole } from "../../middleware/auth.js";
+import { parseBody } from "../../middleware/validate.js";
 import {
   createClientBooking,
   getClientBooking,
@@ -15,15 +11,16 @@ import {
   getClientGalleryIdForBooking,
   getUpcomingClientBooking,
   listClientBookings,
-} from "./bookings.service.js";
+} from "./client-bookings.service.js";
 
-const createClientBookingSchema = z.object({
-  servicePackageId: z.string().trim().min(1),
-  date: z.string().trim().min(1),
-  time: z.string().trim().min(1),
-  locationNotes: z.string().trim().default(""),
-});
-
+const createClientBookingSchema = z
+  .object({
+    servicePackageId: z.string().trim().min(1),
+    date: z.string().trim().min(1),
+    time: z.string().trim().min(1),
+    locationNotes: z.string().trim().default(""),
+  })
+  .strict();
 
 export function createClientBookingsRouter(env: Env) {
   const router = Router();
@@ -31,74 +28,47 @@ export function createClientBookingsRouter(env: Env) {
 
   router.use(requireAuth, requireRole("client"));
 
-  router.get("/", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const bookings = await listClientBookings(userId);
-      res.json({ data: bookings });
-    } catch (error) {
-      next(error);
-    }
+  router.get("/", async (req, res) => {
+    const { userId } = authContext(req);
+    const bookings = await listClientBookings(userId);
+    res.json({ data: bookings });
   });
 
-  router.get("/upcoming", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const booking = await getUpcomingClientBooking(userId);
-      res.json({ data: booking });
-    } catch (error) {
-      next(error);
-    }
+  router.get("/upcoming", async (req, res) => {
+    const { userId } = authContext(req);
+    const booking = await getUpcomingClientBooking(userId);
+    res.json({ data: booking });
   });
 
-  router.post("/", async (req, res, next) => {
-    try {
-      const parsed = createClientBookingSchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw new AppError("Validation failed", 400, formatZodErrors(parsed.error));
-      }
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const booking = await createClientBooking(userId, parsed.data);
-      res.status(201).json({ data: booking });
-    } catch (error) {
-      next(error);
-    }
+  router.post("/", async (req, res) => {
+    const input = parseBody(req, createClientBookingSchema);
+    const { userId } = authContext(req);
+    const booking = await createClientBooking(userId, input);
+    res.status(201).json({ data: booking });
   });
 
-  router.get("/:id/detail", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const detail = await getClientBookingDetail(userId, req.params.id);
-      if (!detail) {
-        throw new AppError("Booking not found", 404);
-      }
-      res.json({ data: detail });
-    } catch (error) {
-      next(error);
+  router.get("/:id/detail", async (req, res) => {
+    const { userId } = authContext(req);
+    const detail = await getClientBookingDetail(userId, req.params.id);
+    if (!detail) {
+      throw new AppError("Booking not found", 404);
     }
+    res.json({ data: detail });
   });
 
-  router.get("/:id/gallery", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const galleryId = await getClientGalleryIdForBooking(userId, req.params.id);
-      res.json({ data: { galleryId: galleryId ?? null } });
-    } catch (error) {
-      next(error);
-    }
+  router.get("/:id/gallery", async (req, res) => {
+    const { userId } = authContext(req);
+    const galleryId = await getClientGalleryIdForBooking(userId, req.params.id);
+    res.json({ data: { galleryId: galleryId ?? null } });
   });
 
-  router.get("/:id", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const booking = await getClientBooking(userId, req.params.id);
-      if (!booking) {
-        throw new AppError("Booking not found", 404);
-      }
-      res.json({ data: booking });
-    } catch (error) {
-      next(error);
+  router.get("/:id", async (req, res) => {
+    const { userId } = authContext(req);
+    const booking = await getClientBooking(userId, req.params.id);
+    if (!booking) {
+      throw new AppError("Booking not found", 404);
     }
+    res.json({ data: booking });
   });
 
   return router;

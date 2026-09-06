@@ -1,5 +1,6 @@
 import type { Gallery, GalleryPhoto, GalleryWorkflowStatus } from "@prisma/client";
-import { formatDisplayDate } from "../../lib/date-format.js";
+import { z } from "zod";
+import { formatDisplayDate } from "../../format/date-format.js";
 import {
   buildPrivateGalleryLink,
   formatExpirationLabel,
@@ -8,7 +9,7 @@ import {
   resolveDownloadEnabled,
   resolveGalleryAccessPin,
   resolveHighResDownloads,
-} from "../../lib/gallery-settings.js";
+} from "../../domain/gallery-settings.js";
 
 export type GalleryWithBooking = Gallery & {
   booking?: { id: string } | null;
@@ -98,47 +99,49 @@ function buildDeliverySteps(gallery: Gallery) {
   ];
 }
 
+/** The shape as stored on `Gallery.delivery`; see domain/json-column.ts. */
+const storedDeliverySchema = z
+  .object({
+    expiresAt: z.string().optional().catch(undefined),
+    highResDownloads: z.boolean().optional().catch(undefined),
+    watermarkEnabled: z.boolean().optional().catch(undefined),
+    clientNotified: z.boolean().optional().catch(undefined),
+    deliveryNotes: z.string().optional().catch(undefined),
+  })
+  .catch({});
+
+function defaultDeliveryNotes(gallery: Gallery, downloadEnabled: boolean) {
+  if (gallery.workflowStatus === "editing") {
+    return "Gallery is still in post-production. Client will be notified once proofs are ready for review.";
+  }
+  if (gallery.workflowStatus === "ready") {
+    return "Awaiting client photo selections before unlocking full-resolution downloads.";
+  }
+  return downloadEnabled
+    ? "Full gallery delivered. Client has download access until the expiration date."
+    : "Full gallery delivered. Downloads remain disabled in delivery settings.";
+}
+
 function buildDeliveryData(
   gallery: Gallery,
   audience: "photographer" | "client" = "photographer",
   access?: { pinRequired?: boolean; pinVerified?: boolean; expired?: boolean },
 ) {
-  const stored = (gallery.delivery ?? {}) as Record<string, unknown>;
+  const stored = storedDeliverySchema.parse(gallery.delivery ?? {});
   const settings = readStoredGallerySettings(gallery);
   const downloadEnabled = resolveDownloadEnabled(gallery, settings);
-  const defaultHighRes = resolveHighResDownloads(gallery, settings);
   const resolvedPin = resolveGalleryAccessPin(gallery, settings);
   const pinRequired = isGalleryPinProtected(settings);
 
   const base = {
     privateLink: buildPrivateGalleryLink(gallery, settings.slug),
-    expiresAt:
-      typeof stored.expiresAt === "string"
-        ? stored.expiresAt
-        : formatExpirationLabel(settings.expirationDate),
+    expiresAt: stored.expiresAt ?? formatExpirationLabel(settings.expirationDate),
     downloadEnabled,
     highResDownloads:
-      typeof stored.highResDownloads === "boolean"
-        ? stored.highResDownloads
-        : defaultHighRes,
-    watermarkEnabled:
-      typeof stored.watermarkEnabled === "boolean"
-        ? stored.watermarkEnabled
-        : !downloadEnabled,
-    clientNotified:
-      typeof stored.clientNotified === "boolean"
-        ? stored.clientNotified
-        : gallery.workflowStatus !== "editing",
-    deliveryNotes:
-      typeof stored.deliveryNotes === "string"
-        ? stored.deliveryNotes
-        : gallery.workflowStatus === "editing"
-          ? "Gallery is still in post-production. Client will be notified once proofs are ready for review."
-          : gallery.workflowStatus === "ready"
-            ? "Awaiting client photo selections before unlocking full-resolution downloads."
-            : downloadEnabled
-              ? "Full gallery delivered. Client has download access until the expiration date."
-              : "Full gallery delivered. Downloads remain disabled in delivery settings.",
+      stored.highResDownloads ?? resolveHighResDownloads(gallery, settings),
+    watermarkEnabled: stored.watermarkEnabled ?? !downloadEnabled,
+    clientNotified: stored.clientNotified ?? gallery.workflowStatus !== "editing",
+    deliveryNotes: stored.deliveryNotes ?? defaultDeliveryNotes(gallery, downloadEnabled),
     steps: buildDeliverySteps(gallery),
   };
 

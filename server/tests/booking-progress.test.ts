@@ -4,7 +4,7 @@ import {
   GALLERY_PROGRESS_STEP,
   mergeBookingProgress,
   resolveProgressFromGallery,
-} from "../src/lib/booking-progress.js";
+} from "../src/domain/booking-progress.js";
 
 describe("booking progress sync", () => {
   it("advances to gallery delivered when linked gallery is delivered", () => {

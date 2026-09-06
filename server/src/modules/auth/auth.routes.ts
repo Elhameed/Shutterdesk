@@ -1,13 +1,9 @@
 import { Router } from "express";
 import { z } from "zod";
 import type { Env } from "../../config/env.js";
-import { AppError } from "../../middleware/error-handler.js";
-import { formatZodErrors } from "../../lib/format-zod-errors.js";
 import { authRateLimiter } from "../../middleware/rate-limit.js";
-import {
-  createAuthMiddleware,
-  type AuthenticatedRequest,
-} from "../../middleware/auth.js";
+import { authContext, createAuthMiddleware } from "../../middleware/auth.js";
+import { parseBody } from "../../middleware/validate.js";
 import { updateUserRole } from "../onboarding/onboarding.service.js";
 import { getUserById, loginUser, logoutUser, registerUser } from "./auth.service.js";
 
@@ -34,67 +30,34 @@ export function createAuthRouter(env: Env) {
 
   router.use(authRateLimiter);
 
-  router.post("/register", async (req, res, next) => {
-    try {
-      const parsed = registerSchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw new AppError("Validation failed", 400, formatZodErrors(parsed.error));
-      }
-
-      const result = await registerUser(parsed.data, env);
-      res.status(201).json(result);
-    } catch (error) {
-      next(error);
-    }
+  router.post("/register", async (req, res) => {
+    const result = await registerUser(parseBody(req, registerSchema), env);
+    res.status(201).json(result);
   });
 
-  router.post("/login", async (req, res, next) => {
-    try {
-      const parsed = loginSchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw new AppError("Validation failed", 400, formatZodErrors(parsed.error));
-      }
-
-      const result = await loginUser(parsed.data.email, parsed.data.password, env);
-      res.json(result);
-    } catch (error) {
-      next(error);
-    }
+  router.post("/login", async (req, res) => {
+    const { email, password } = parseBody(req, loginSchema);
+    const result = await loginUser(email, password, env);
+    res.json(result);
   });
 
-  router.post("/logout", requireAuth, async (req, res, next) => {
-    try {
-      const { userId } = (req as AuthenticatedRequest).auth;
-      const result = await logoutUser(userId);
-      res.json(result);
-    } catch (error) {
-      next(error);
-    }
+  router.post("/logout", requireAuth, async (req, res) => {
+    const { userId } = authContext(req);
+    const result = await logoutUser(userId);
+    res.json(result);
   });
 
-  router.get("/me", requireAuth, async (req, res, next) => {
-    try {
-      const { userId } = (req as AuthenticatedRequest).auth;
-      const user = await getUserById(userId);
-      res.json({ user });
-    } catch (error) {
-      next(error);
-    }
+  router.get("/me", requireAuth, async (req, res) => {
+    const { userId } = authContext(req);
+    const user = await getUserById(userId);
+    res.json({ user });
   });
 
-  router.patch("/me/role", requireAuth, async (req, res, next) => {
-    try {
-      const parsed = updateRoleSchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw new AppError("Validation failed", 400, formatZodErrors(parsed.error));
-      }
-
-      const { userId } = (req as AuthenticatedRequest).auth;
-      const result = await updateUserRole(userId, parsed.data.role, env);
-      res.json(result);
-    } catch (error) {
-      next(error);
-    }
+  router.patch("/me/role", requireAuth, async (req, res) => {
+    const { role } = parseBody(req, updateRoleSchema);
+    const { userId } = authContext(req);
+    const result = await updateUserRole(userId, role, env);
+    res.json(result);
   });
 
   return router;

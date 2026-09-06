@@ -1,4 +1,4 @@
-import { prisma } from "./prisma.js";
+import { prisma } from "../lib/prisma.js";
 import { isUserDeactivated } from "./account-deactivation.js";
 
 export async function invalidateUserTokens(userId: string) {

@@ -5,11 +5,11 @@ import {
   formatTrendPercent,
   getBookingsActiveInPeriod,
   sumPaymentsInRange,
-} from "../src/lib/analytics-aggregates.js";
+} from "../src/domain/analytics-aggregates.js";
 import {
   getAnalyticsPeriod,
   parseAnalyticsDateRange,
-} from "../src/lib/analytics-period.js";
+} from "../src/domain/analytics-period.js";
 
 describe("parseAnalyticsDateRange", () => {
   it("defaults to 30 days for unknown values", () => {

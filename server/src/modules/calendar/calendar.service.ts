@@ -4,7 +4,7 @@ import {
   bookingPackageInclude,
   resolvePackageCoverImage,
   type BookingWithPackageCover,
-} from "../../lib/package-cover.js";
+} from "../../format/package-cover.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import { getCalendarAvailabilitySummary } from "../availability/availability.service.js";
 

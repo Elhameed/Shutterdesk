@@ -1,5 +1,5 @@
 import type { Booking } from "@prisma/client";
-import { formatDisplayDate } from "./date-format.js";
+import { formatDisplayDate } from "../format/date-format.js";
 import {
   buildLifecycleContext,
   resolveLifecycleStage,

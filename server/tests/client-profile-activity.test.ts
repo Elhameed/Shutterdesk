@@ -6,7 +6,7 @@ import {
   buildInvoices,
   buildProjects,
   buildTimeline,
-} from "../src/lib/client-profile-activity.js";
+} from "../src/domain/client-profile-activity.js";
 
 const baseClient = {
   id: "client-1",

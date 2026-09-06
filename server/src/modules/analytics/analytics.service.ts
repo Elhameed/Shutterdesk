@@ -10,19 +10,19 @@ import {
   formatTrendPercent,
   getBookingsActiveInPeriod,
   sumPaymentsInRange,
-} from "../../lib/analytics-aggregates.js";
+} from "../../domain/analytics-aggregates.js";
 import {
   buildDayBuckets,
   buildMonthBuckets,
   buildWeekBuckets,
   getAnalyticsPeriod,
   parseAnalyticsDateRange,
-} from "../../lib/analytics-period.js";
+} from "../../domain/analytics-period.js";
 import {
   aggregateClientMetrics,
   type ClientMetricsMap,
-} from "../../lib/client-metrics.js";
-import { formatRwf } from "../../lib/currency-format.js";
+} from "../../domain/client-metrics.js";
+import { formatRwf } from "../../format/currency-format.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 
 function countRepeatClients(

@@ -1,5 +1,5 @@
 import type { Booking } from "@prisma/client";
-import { prisma } from "./prisma.js";
+import { prisma } from "../lib/prisma.js";
 
 export type ClientMetrics = {
   sessions: number;

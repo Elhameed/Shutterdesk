@@ -4,8 +4,8 @@ import { AppError } from "../../middleware/error-handler.js";
 import { signAccessToken } from "../../lib/jwt.js";
 import { hashPassword, verifyPassword } from "../../lib/password.js";
 import { prisma } from "../../lib/prisma.js";
-import { toPublicUserWithOnboarding } from "../../lib/user-mapper.js";
-import { invalidateUserTokens } from "../../lib/auth-session.js";
+import { toPublicUserWithOnboarding } from "../../domain/user-mapper.js";
+import { invalidateUserTokens } from "../../domain/auth-session.js";
 
 type RegisterInput = {
   fullName: string;

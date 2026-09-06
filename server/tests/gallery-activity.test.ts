@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { appendGalleryActivity, readGalleryActivities } from "../src/lib/gallery-activity.js";
+import { appendGalleryActivity, readGalleryActivities } from "../src/domain/gallery-activity.js";
 
 describe("gallery activity", () => {
   it("appends studio activity entries with timestamps", () => {

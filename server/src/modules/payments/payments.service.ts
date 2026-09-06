@@ -4,23 +4,24 @@ import {
   createNotification,
   findClientUserForBooking,
   findStudioOwnerUserId,
-} from "../../lib/notification-dispatch.js";
+} from "../../domain/notification-dispatch.js";
 import { loadEnv } from "../../config/env.js";
 import {
   isAllowedCloudinaryUrl,
   isCloudinaryConfigured,
 } from "../../lib/cloudinary.js";
-import { formatDisplayDate } from "../../lib/date-format.js";
+import { formatDisplayDate } from "../../format/date-format.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import { AppError } from "../../middleware/error-handler.js";
 import {
   bookingAvatarInclude,
   resolveClientAvatarKey,
-} from "../../lib/client-avatar.js";
+} from "../../format/client-avatar.js";
 import {
   getClientOutstandingSummary,
   listClientPaymentRequests,
-} from "../bookings/bookings.service.js";
+} from "../bookings/booking-obligations.service.js";
+import { formatRwf } from "../../format/currency-format.js";
 import {
   parseStudioPaymentProfile,
   toApiClientPaymentRecord,
@@ -263,7 +264,7 @@ export async function uploadClientReceipt(
         paymentMeta: {
           ...existingMeta,
           paymentOption: payFull ? "full" : "deposit",
-          statusLabel: `Receipt submitted (RWF ${amount.toLocaleString("en-US")})`,
+          statusLabel: `Receipt submitted (${formatRwf(amount)})`,
           receiptAssetKey,
           transactionRef: created.transactionId,
           paymentDate: formatDisplayDate(new Date()),
@@ -285,7 +286,7 @@ export async function uploadClientReceipt(
       userId: ownerUserId,
       category: "payment",
       title: "Payment receipt submitted",
-      description: `${user.fullName} submitted a receipt of RWF ${amount.toLocaleString("en-US")} for ${paymentRequest.bookingTitle ?? booking.packageName}.`,
+      description: `${user.fullName} submitted a receipt of ${formatRwf(amount)} for ${paymentRequest.bookingTitle ?? booking.packageName}.`,
       actionHref: "/photographer/payments",
       metadata: {
         icon: "payment",
@@ -299,7 +300,7 @@ export async function uploadClientReceipt(
     userId: user.id,
     category: "payment",
     title: "Payment verification in progress",
-    description: `RWF ${amount.toLocaleString("en-US")} for ${paymentRequest.bookingTitle ?? booking.packageName} — awaiting studio verification.`,
+    description: `${formatRwf(amount)} for ${paymentRequest.bookingTitle ?? booking.packageName} — awaiting studio verification.`,
     actionHref: `/client/bookings/${booking.id}`,
     metadata: { actionLabel: "viewDetails" },
   });
@@ -397,7 +398,7 @@ export async function updateVerificationStatus(
             statusLabel:
               paymentStatus === "paid"
                 ? "Full Payment Received"
-                : `Partial Payment Received (RWF ${newAmountPaid.toLocaleString("en-US")})`,
+                : `Partial Payment Received (${formatRwf(newAmountPaid)})`,
             receiptAssetKey: verification.receiptAssetKey,
             amountPaid: newAmountPaid,
             transactionRef: verification.transactionId,
@@ -438,7 +439,7 @@ export async function updateVerificationStatus(
         userId: clientUser.id,
         category: "payment",
         title: "Payment approved",
-        description: `Your payment of RWF ${verification.amount.toLocaleString("en-US")} for ${verification.bookingTitle ?? booking.packageName} has been verified.`,
+        description: `Your payment of ${formatRwf(verification.amount)} for ${verification.bookingTitle ?? booking.packageName} has been verified.`,
         actionHref: `/client/bookings/${booking.id}`,
         metadata: { actionLabel: "viewDetails" },
       });
@@ -514,7 +515,7 @@ export async function updateVerificationStatus(
         userId: clientUser.id,
         category: "payment",
         title: "Payment rejected",
-        description: `Your payment of RWF ${verification.amount.toLocaleString("en-US")} for ${verification.bookingTitle ?? booking.packageName} could not be verified. Upload a clearer receipt to try again.`,
+        description: `Your payment of ${formatRwf(verification.amount)} for ${verification.bookingTitle ?? booking.packageName} could not be verified. Upload a clearer receipt to try again.`,
         actionHref: `/client/bookings/${booking.id}`,
         metadata: {
           icon: "payment",

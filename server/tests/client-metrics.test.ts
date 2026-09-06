@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { aggregateClientMetrics } from "../src/lib/client-metrics.js";
+import { aggregateClientMetrics } from "../src/domain/client-metrics.js";
 
 describe("aggregateClientMetrics", () => {
   const clients = [

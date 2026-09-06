@@ -10,7 +10,7 @@ import {
   startOfDay,
   toDateKey,
   type WeeklyRule,
-} from "./session-datetime.js";
+} from "../format/session-datetime.js";
 
 export type AvailabilitySlot = {
   startsAt: string;

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildPhotographerActivityRecords,
   filterPhotographerActivities,
-} from "../src/lib/photographer-activity.js";
+} from "../src/domain/photographer-activity.js";
 
 describe("photographer activity", () => {
   it("builds chronological activity records across studio events", () => {

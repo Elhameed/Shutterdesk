@@ -8,7 +8,7 @@ import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import {
   loadStudioServicePackageRevenue,
   resolveServicePackageRevenue,
-} from "../../lib/service-package-revenue.js";
+} from "../../domain/service-package-revenue.js";
 import { AppError } from "../../middleware/error-handler.js";
 import {
   buildServiceMetadata,

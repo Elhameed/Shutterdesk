@@ -2,15 +2,16 @@ import { Prisma } from "@prisma/client";
 import type { StudioSchedule } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import {
+  assertSlotAvailable,
   getAvailableDatesInMonth,
   getBlockedDaysInMonth,
   getManualBlockedDaysInMonth,
   isDayFullyBlocked,
   slotsForDateKey,
   summarizeMonthAvailability,
-} from "../../lib/availability-slots.js";
-import { DEFAULT_WEEKLY_RULES } from "../../lib/session-datetime.js";
-import { parseDurationMinutes } from "../../lib/session-datetime.js";
+} from "../../domain/availability-slots.js";
+import { DEFAULT_WEEKLY_RULES } from "../../format/session-datetime.js";
+import { parseDurationMinutes } from "../../format/session-datetime.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import { AppError } from "../../middleware/error-handler.js";
 
@@ -397,8 +398,6 @@ export async function assertBookingSlotAvailable(
     loadStudioBookings(studioId, bookingRangeForDateKey(dateKey)),
     loadStudioBlocks(studioId),
   ]);
-
-  const { assertSlotAvailable } = await import("../../lib/availability-slots.js");
 
   try {
     assertSlotAvailable(

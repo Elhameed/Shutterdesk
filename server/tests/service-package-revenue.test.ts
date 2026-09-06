@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { aggregateServicePackageRevenue } from "../src/lib/service-package-revenue.js";
+import { aggregateServicePackageRevenue } from "../src/domain/service-package-revenue.js";
 
 describe("aggregateServicePackageRevenue", () => {
   it("sums amountPaid per service package for non-cancelled bookings", () => {

@@ -4,7 +4,7 @@ import {
   resolveAgreedDepositAmount,
   resolveDepositDueAmount,
   type UnpaidPaymentRequest,
-} from "./payment-obligations.js";
+} from "../domain/payment-obligations.js";
 
 type BookingPaymentSnapshot = Pick<
   Booking,

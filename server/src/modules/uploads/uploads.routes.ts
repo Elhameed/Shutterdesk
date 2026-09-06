@@ -1,82 +1,61 @@
 import { Router } from "express";
 import { z } from "zod";
+import type { UserRole } from "@prisma/client";
 import type { Env } from "../../config/env.js";
 import { AppError } from "../../middleware/error-handler.js";
-import { formatZodErrors } from "../../lib/format-zod-errors.js";
-import {
-  createAuthMiddleware,
-  requireRole,
-} from "../../middleware/auth.js";
+import { createAuthMiddleware, requireRole } from "../../middleware/auth.js";
+import { parseBody } from "../../middleware/validate.js";
 import { uploadRateLimiter } from "../../middleware/rate-limit.js";
 import { createCloudinaryUploadSignature } from "../../lib/cloudinary.js";
 
-const signSchema = z.object({
-  context: z.enum(["receipts", "galleries", "avatars", "services"]),
-  resourceType: z.enum(["image", "raw"]).optional(),
-});
+const UPLOAD_CONTEXTS = ["receipts", "galleries", "avatars", "services"] as const;
+type UploadContext = (typeof UPLOAD_CONTEXTS)[number];
 
-const PHOTOGRAPHER_UPLOAD_CONTEXTS = new Set(["galleries", "avatars", "services"]);
-const CLIENT_UPLOAD_CONTEXTS = new Set(["receipts", "avatars"]);
+const signSchema = z
+  .object({
+    context: z.enum(UPLOAD_CONTEXTS),
+    resourceType: z.enum(["image", "raw"]).optional(),
+  })
+  .strict();
 
+/** What each role is allowed to upload. Clients never touch gallery assets. */
+const ALLOWED_CONTEXTS: Record<UserRole, ReadonlySet<UploadContext>> = {
+  photographer: new Set<UploadContext>(["galleries", "avatars", "services"]),
+  client: new Set<UploadContext>(["receipts", "avatars"]),
+};
 
-export function createPhotographerUploadsRouter(env: Env) {
+function createUploadsRouter(env: Env, role: UserRole) {
   const router = Router();
   const requireAuth = createAuthMiddleware(env);
 
-  router.post("/sign", requireAuth, requireRole("photographer"), uploadRateLimiter, (req, res, next) => {
-    try {
-      const parsed = signSchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw new AppError("Validation failed", 400, formatZodErrors(parsed.error));
-      }
+  router.post(
+    "/sign",
+    requireAuth,
+    requireRole(role),
+    uploadRateLimiter,
+    async (req, res) => {
+      const { context, resourceType } = parseBody(req, signSchema);
 
-      if (!PHOTOGRAPHER_UPLOAD_CONTEXTS.has(parsed.data.context)) {
-        throw new AppError("Invalid upload context for photographer", 403);
+      if (!ALLOWED_CONTEXTS[role].has(context)) {
+        throw new AppError(`Invalid upload context for ${role}`, 403);
       }
 
       const signature = createCloudinaryUploadSignature(
         env,
-        parsed.data.context,
-        parsed.data.resourceType ?? "image",
+        context,
+        resourceType ?? "image",
       );
       res.json({ data: signature });
-    } catch (error) {
-      next(error);
-    }
-  });
+    },
+  );
 
   return router;
 }
 
+export function createPhotographerUploadsRouter(env: Env) {
+  return createUploadsRouter(env, "photographer");
+}
+
 export function createClientUploadsRouter(env: Env) {
-  const router = Router();
-  const requireAuth = createAuthMiddleware(env);
-
-  router.post("/sign", requireAuth, requireRole("client"), uploadRateLimiter, (req, res, next) => {
-    try {
-      const parsed = signSchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw new AppError("Validation failed", 400, formatZodErrors(parsed.error));
-      }
-
-      if (!CLIENT_UPLOAD_CONTEXTS.has(parsed.data.context)) {
-        throw new AppError("Invalid upload context for client", 403);
-      }
-
-      const resourceType =
-        parsed.data.resourceType ??
-        (parsed.data.context === "receipts" ? "image" : "image");
-
-      const signature = createCloudinaryUploadSignature(
-        env,
-        parsed.data.context,
-        resourceType,
-      );
-      res.json({ data: signature });
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  return router;
+  return createUploadsRouter(env, "client");
 }

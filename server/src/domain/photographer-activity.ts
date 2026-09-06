@@ -1,4 +1,4 @@
-import { formatRelativeTime } from "./date-format.js";
+import { formatRelativeTime } from "../format/date-format.js";
 
 export const PHOTOGRAPHER_ACTIVITY_TYPES = [
   "booking",

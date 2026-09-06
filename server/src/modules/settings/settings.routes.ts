@@ -2,15 +2,12 @@ import { Router } from "express";
 import { z } from "zod";
 import type { Env } from "../../config/env.js";
 import { AppError } from "../../middleware/error-handler.js";
-import {
-  createAuthMiddleware,
-  requireRole,
-  type AuthenticatedRequest,
-} from "../../middleware/auth.js";
+import { authContext, createAuthMiddleware, requireRole } from "../../middleware/auth.js";
+import { parseBody } from "../../middleware/validate.js";
 import {
   deactivateClientAccount,
   deactivatePhotographerAccount,
-} from "../../lib/account-deactivation.js";
+} from "../../domain/account-deactivation.js";
 import {
   SETTINGS_PANELS,
   getClientSettings,
@@ -173,58 +170,46 @@ export function createPhotographerSettingsRouter(env: Env) {
 
   router.use(requireAuth, requireRole("photographer"));
 
-  router.post("/deactivate", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      await deactivatePhotographerAccount(userId);
-      res.json({ data: { deactivated: true } });
-    } catch (error) {
-      next(error);
-    }
+  router.post("/deactivate", async (req, res) => {
+    const { userId } = authContext(req);
+    await deactivatePhotographerAccount(userId);
+    res.json({ data: { deactivated: true } });
   });
 
-  router.get("/:panel", async (req, res, next) => {
-    try {
-      if (!isSettingsPanel(req.params.panel)) {
-        throw new AppError("Unknown settings panel", 400);
-      }
-
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const data = await getPhotographerSettingsPanel(userId, req.params.panel);
-      res.json({ data });
-    } catch (error) {
-      next(error);
+  router.get("/:panel", async (req, res) => {
+    if (!isSettingsPanel(req.params.panel)) {
+      throw new AppError("Unknown settings panel", 400);
     }
+
+    const { userId } = authContext(req);
+    const data = await getPhotographerSettingsPanel(userId, req.params.panel);
+    res.json({ data });
   });
 
-  router.patch("/:panel", async (req, res, next) => {
-    try {
-      if (!isSettingsPanel(req.params.panel)) {
-        throw new AppError("Unknown settings panel", 400);
-      }
-
-      const payload = parsePhotographerPanelPayload(req.params.panel, req.body);
-
-      if (req.params.panel === "security") {
-        const securityPayload = payload as z.infer<typeof photographerSecuritySchema>;
-        if (
-          securityPayload.newPassword &&
-          securityPayload.newPassword !== securityPayload.confirmPassword
-        ) {
-          throw new AppError("New passwords do not match", 400);
-        }
-      }
-
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const data = await updatePhotographerSettingsPanel(
-        userId,
-        req.params.panel,
-        payload,
-      );
-      res.json({ data });
-    } catch (error) {
-      next(error);
+  router.patch("/:panel", async (req, res) => {
+    if (!isSettingsPanel(req.params.panel)) {
+      throw new AppError("Unknown settings panel", 400);
     }
+
+    const payload = parsePhotographerPanelPayload(req.params.panel, req.body);
+
+    if (req.params.panel === "security") {
+      const securityPayload = payload as z.infer<typeof photographerSecuritySchema>;
+      if (
+        securityPayload.newPassword &&
+        securityPayload.newPassword !== securityPayload.confirmPassword
+      ) {
+        throw new AppError("New passwords do not match", 400);
+      }
+    }
+
+    const { userId } = authContext(req);
+    const data = await updatePhotographerSettingsPanel(
+      userId,
+      req.params.panel,
+      payload,
+    );
+    res.json({ data });
   });
 
   return router;
@@ -236,73 +221,42 @@ export function createClientSettingsRouter(env: Env) {
 
   router.use(requireAuth, requireRole("client"));
 
-  router.post("/deactivate", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      await deactivateClientAccount(userId);
-      res.json({ data: { deactivated: true } });
-    } catch (error) {
-      next(error);
-    }
+  router.post("/deactivate", async (req, res) => {
+    const { userId } = authContext(req);
+    await deactivateClientAccount(userId);
+    res.json({ data: { deactivated: true } });
   });
 
-  router.get("/", async (req, res, next) => {
-    try {
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const data = await getClientSettings(userId);
-      res.json({ data });
-    } catch (error) {
-      next(error);
-    }
+  router.get("/", async (req, res) => {
+    const { userId } = authContext(req);
+    const data = await getClientSettings(userId);
+    res.json({ data });
   });
 
-  router.patch("/", async (req, res, next) => {
-    try {
-      const parsed = clientProfileSchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw new AppError(parsed.error.issues[0]?.message ?? "Invalid payload", 400);
-      }
-
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const data = await updateClientSettings(userId, parsed.data);
-      res.json({ data });
-    } catch (error) {
-      next(error);
-    }
+  router.patch("/", async (req, res) => {
+    const input = parseBody(req, clientProfileSchema);
+    const { userId } = authContext(req);
+    const data = await updateClientSettings(userId, input);
+    res.json({ data });
   });
 
-  router.patch("/notifications", async (req, res, next) => {
-    try {
-      const parsed = clientNotificationsSchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw new AppError(parsed.error.issues[0]?.message ?? "Invalid payload", 400);
-      }
-
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const data = await updateClientNotificationSettings(userId, parsed.data);
-      res.json({ data });
-    } catch (error) {
-      next(error);
-    }
+  router.patch("/notifications", async (req, res) => {
+    const input = parseBody(req, clientNotificationsSchema);
+    const { userId } = authContext(req);
+    const data = await updateClientNotificationSettings(userId, input);
+    res.json({ data });
   });
 
-  router.patch("/security", async (req, res, next) => {
-    try {
-      const parsed = clientSecuritySchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw new AppError(parsed.error.issues[0]?.message ?? "Invalid payload", 400);
-      }
+  router.patch("/security", async (req, res) => {
+    const input = parseBody(req, clientSecuritySchema);
 
-      if (parsed.data.newPassword !== parsed.data.confirmPassword) {
-        throw new AppError("New passwords do not match", 400);
-      }
-
-      const { userId } = (req as unknown as AuthenticatedRequest).auth;
-      const data = await updateClientSecuritySettings(userId, parsed.data);
-      res.json({ data });
-    } catch (error) {
-      next(error);
+    if (input.newPassword !== input.confirmPassword) {
+      throw new AppError("New passwords do not match", 400);
     }
+
+    const { userId } = authContext(req);
+    const data = await updateClientSecuritySettings(userId, input);
+    res.json({ data });
   });
 
   return router;

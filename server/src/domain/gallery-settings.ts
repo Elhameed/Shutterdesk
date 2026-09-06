@@ -1,4 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
+import { z } from "zod";
 import type { Gallery } from "@prisma/client";
 
 /** Constant-time compare so a wrong PIN leaks nothing through response timing. */
@@ -66,53 +67,57 @@ function resolveGallerySlug(
   return `${slugify(title)}-${gallery.id.slice(0, 8)}`;
 }
 
+/**
+ * The shape as stored on `Gallery.settings`.
+ *
+ * Every field is optional and individually `.catch(undefined)`: this column
+ * holds whatever an older version of the app wrote, so one field going bad
+ * must degrade that field to its default rather than discard the whole blob,
+ * and reading must never throw.
+ */
+const storedGallerySettingsSchema = z
+  .object({
+    visibility: z.enum(["public", "private", "password"]).optional().catch(undefined),
+    allowSharing: z.boolean().optional().catch(undefined),
+    allowFavorites: z.boolean().optional().catch(undefined),
+    allowDownloads: z.boolean().optional().catch(undefined),
+    showPhotographerCredit: z.boolean().optional().catch(undefined),
+    emailNotifications: z.boolean().optional().catch(undefined),
+    expirationDate: z.string().trim().min(1).optional().catch(undefined),
+    slug: z.string().optional().catch(undefined),
+    accessPin: z.string().optional().catch(undefined),
+  })
+  .catch({});
+
+/**
+ * Some defaults are derived from the gallery rather than fixed — a published
+ * gallery is shareable and, once delivered, public — so they are applied here
+ * rather than baked into the schema.
+ */
 export function readStoredGallerySettings(
   gallery: Pick<Gallery, "settings" | "status" | "workflowStatus" | "title" | "id">,
 ): GalleryStoredSettings {
-  const stored =
-    gallery.settings && typeof gallery.settings === "object"
-      ? (gallery.settings as Record<string, unknown>)
-      : {};
+  const stored = storedGallerySettingsSchema.parse(gallery.settings ?? {});
 
-  const defaultSlug = resolveGallerySlug(gallery);
+  const defaultVisibility: GalleryVisibility =
+    gallery.status === "published"
+      ? gallery.workflowStatus === "delivered"
+        ? "public"
+        : "private"
+      : DEFAULT_SETTINGS.visibility;
 
   return {
-    visibility:
-      stored.visibility === "public" ||
-      stored.visibility === "private" ||
-      stored.visibility === "password"
-        ? stored.visibility
-        : gallery.status === "published"
-          ? gallery.workflowStatus === "delivered"
-            ? "public"
-            : "private"
-          : DEFAULT_SETTINGS.visibility,
-    allowSharing:
-      typeof stored.allowSharing === "boolean"
-        ? stored.allowSharing
-        : gallery.status === "published",
-    allowFavorites:
-      typeof stored.allowFavorites === "boolean"
-        ? stored.allowFavorites
-        : DEFAULT_SETTINGS.allowFavorites,
-    allowDownloads:
-      typeof stored.allowDownloads === "boolean"
-        ? stored.allowDownloads
-        : DEFAULT_SETTINGS.allowDownloads,
+    visibility: stored.visibility ?? defaultVisibility,
+    allowSharing: stored.allowSharing ?? gallery.status === "published",
+    allowFavorites: stored.allowFavorites ?? DEFAULT_SETTINGS.allowFavorites,
+    allowDownloads: stored.allowDownloads ?? DEFAULT_SETTINGS.allowDownloads,
     showPhotographerCredit:
-      typeof stored.showPhotographerCredit === "boolean"
-        ? stored.showPhotographerCredit
-        : DEFAULT_SETTINGS.showPhotographerCredit,
+      stored.showPhotographerCredit ?? DEFAULT_SETTINGS.showPhotographerCredit,
     emailNotifications:
-      typeof stored.emailNotifications === "boolean"
-        ? stored.emailNotifications
-        : DEFAULT_SETTINGS.emailNotifications,
-    expirationDate:
-      typeof stored.expirationDate === "string" && stored.expirationDate.trim()
-        ? stored.expirationDate
-        : DEFAULT_SETTINGS.expirationDate,
-    slug: typeof stored.slug === "string" ? stored.slug : defaultSlug,
-    accessPin: typeof stored.accessPin === "string" ? stored.accessPin : undefined,
+      stored.emailNotifications ?? DEFAULT_SETTINGS.emailNotifications,
+    expirationDate: stored.expirationDate ?? DEFAULT_SETTINGS.expirationDate,
+    slug: stored.slug ?? resolveGallerySlug(gallery),
+    accessPin: stored.accessPin,
   };
 }
 

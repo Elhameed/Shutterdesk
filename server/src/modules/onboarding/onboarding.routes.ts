@@ -1,13 +1,8 @@
 import { Router } from "express";
 import { z } from "zod";
 import type { Env } from "../../config/env.js";
-import { AppError } from "../../middleware/error-handler.js";
-import { formatZodErrors } from "../../lib/format-zod-errors.js";
-import {
-  createAuthMiddleware,
-  requireRole,
-  type AuthenticatedRequest,
-} from "../../middleware/auth.js";
+import { authContext, createAuthMiddleware, requireRole } from "../../middleware/auth.js";
+import { parseBody } from "../../middleware/validate.js";
 import {
   completePhotographerOnboarding,
   skipClientOnboarding,
@@ -45,34 +40,18 @@ export function createPhotographerOnboardingRouter(env: Env) {
 
   router.use(requireAuth, requireRole("photographer"));
 
-  router.post("/complete", async (req, res, next) => {
-    try {
-      const parsed = completeSchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw new AppError("Validation failed", 400, formatZodErrors(parsed.error));
-      }
-
-      const { userId } = (req as AuthenticatedRequest).auth;
-      const result = await completePhotographerOnboarding(userId, parsed.data);
-      res.status(201).json({ data: result });
-    } catch (error) {
-      next(error);
-    }
+  router.post("/complete", async (req, res) => {
+    const input = parseBody(req, completeSchema);
+    const { userId } = authContext(req);
+    const result = await completePhotographerOnboarding(userId, input);
+    res.status(201).json({ data: result });
   });
 
-  router.post("/skip", async (req, res, next) => {
-    try {
-      const parsed = skipSchema.safeParse(req.body ?? {});
-      if (!parsed.success) {
-        throw new AppError("Validation failed", 400, formatZodErrors(parsed.error));
-      }
-
-      const { userId } = (req as AuthenticatedRequest).auth;
-      const result = await skipPhotographerOnboarding(userId, parsed.data);
-      res.json({ data: result });
-    } catch (error) {
-      next(error);
-    }
+  router.post("/skip", async (req, res) => {
+    const input = parseBody(req, skipSchema);
+    const { userId } = authContext(req);
+    const result = await skipPhotographerOnboarding(userId, input);
+    res.json({ data: result });
   });
 
   return router;
@@ -84,14 +63,10 @@ export function createClientOnboardingRouter(env: Env) {
 
   router.use(requireAuth, requireRole("client"));
 
-  router.post("/skip", async (req, res, next) => {
-    try {
-      const { userId } = (req as AuthenticatedRequest).auth;
-      const result = await skipClientOnboarding(userId);
-      res.json({ data: result });
-    } catch (error) {
-      next(error);
-    }
+  router.post("/skip", async (req, res) => {
+    const { userId } = authContext(req);
+    const result = await skipClientOnboarding(userId);
+    res.json({ data: result });
   });
 
   return router;

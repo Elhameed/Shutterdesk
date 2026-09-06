@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   normalizeBookingInstagram,
   resolveBookingClientProfile,
-} from "../src/lib/booking-client-profile.js";
+} from "../src/domain/booking-client-profile.js";
 
 describe("booking client profile resolution", () => {
   it("strips known placeholder Instagram handles", () => {
