@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import type { StudioSchedule } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import {
@@ -89,12 +89,27 @@ export async function getOrCreateStudioSchedule(studioId: string) {
     return existing;
   }
 
-  return prisma.studioSchedule.create({
-    data: {
-      studioId,
-      weeklyRules: DEFAULT_WEEKLY_RULES,
-    },
-  });
+  try {
+    return await prisma.studioSchedule.create({
+      data: {
+        studioId,
+        weeklyRules: DEFAULT_WEEKLY_RULES,
+      },
+    });
+  } catch (error) {
+    // `studioId` is unique, so two concurrent requests for a studio with no
+    // schedule yet both pass the check above and one loses the insert. That
+    // surfaced to the user as a bare 409 "A record with this value already
+    // exists" on whichever booking lost — losing the race is not an error, the
+    // other request created exactly the row we wanted.
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return prisma.studioSchedule.findUniqueOrThrow({ where: { studioId } });
+    }
+    throw error;
+  }
 }
 
 function toApiSchedule(schedule: StudioSchedule) {

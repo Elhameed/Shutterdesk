@@ -213,60 +213,70 @@ export async function uploadClientReceipt(
     throw new AppError("Receipt amount must match the payment obligation", 400);
   }
 
-  // When the client opts to settle the whole booking, upgrade the obligation so
-  // downstream records, labels and revenue reflect a full payment (no balance left).
-  if (payFull && (paymentRequest.type !== "full" || paymentRequest.amount !== amount)) {
-    await prisma.paymentRequest.update({
-      where: { id: paymentRequest.id },
-      data: { type: "full", amount },
-    });
-  }
-
-  const verification = await prisma.paymentVerification.create({
-    data: {
-      paymentRequestId: paymentRequest.id,
-      bookingId: booking.id,
-      studioId: booking.studioId,
-      clientName: user.fullName,
-      clientEmail: user.email.toLowerCase(),
-      clientAvatarAssetKey: user.avatarUrl ?? booking.clientAvatarAssetKey,
-      transactionId: nextTransactionId(),
-      bookingTitle: paymentRequest.bookingTitle ?? booking.packageName,
-      packageName: booking.packageName,
-      bookingDate: booking.sessionDateLabel,
-      amount,
-      receiptAssetKey,
-      status: "pending",
-      highPriority: amount >= 300_000,
-    },
-    include: { studio: true },
-  });
-
-  await prisma.paymentRequest.update({
-    where: { id: paymentRequest.id },
-    data: { status: "pending" },
-  });
-
   const existingMeta = (booking.paymentMeta ?? {}) as Record<string, unknown>;
-  await prisma.booking.update({
-    where: { id: booking.id },
-    data: {
-      showVerifyPayment: true,
-      detailStatus: "pendingVerification",
-      paymentMeta: {
-        ...existingMeta,
-        paymentOption: payFull ? "full" : "deposit",
-        statusLabel: `Receipt submitted (RWF ${amount.toLocaleString("en-US")})`,
+
+  // These four writes have to land together. Submitting a receipt was the only
+  // step of the verification flow left un-transacted — approve, reject and
+  // resubmission all use one — and a failure part-way left a pending
+  // verification attached to a request still marked unpaid, which let the
+  // client submit a second receipt for the same obligation.
+  const verification = await prisma.$transaction(async (tx) => {
+    // When the client opts to settle the whole booking, upgrade the obligation so
+    // downstream records, labels and revenue reflect a full payment (no balance left).
+    if (payFull && (paymentRequest.type !== "full" || paymentRequest.amount !== amount)) {
+      await tx.paymentRequest.update({
+        where: { id: paymentRequest.id },
+        data: { type: "full", amount },
+      });
+    }
+
+    const created = await tx.paymentVerification.create({
+      data: {
+        paymentRequestId: paymentRequest.id,
+        bookingId: booking.id,
+        studioId: booking.studioId,
+        clientName: user.fullName,
+        clientEmail: user.email.toLowerCase(),
+        clientAvatarAssetKey: user.avatarUrl ?? booking.clientAvatarAssetKey,
+        transactionId: nextTransactionId(),
+        bookingTitle: paymentRequest.bookingTitle ?? booking.packageName,
+        packageName: booking.packageName,
+        bookingDate: booking.sessionDateLabel,
+        amount,
         receiptAssetKey,
-        transactionRef: verification.transactionId,
-        paymentDate: formatDisplayDate(new Date()),
-        verificationStatus: "pending",
-        note: payFull
-          ? "Full payment receipt uploaded — awaiting studio verification."
-          : "MoMo receipt uploaded — awaiting studio verification.",
+        status: "pending",
+        highPriority: amount >= 300_000,
       },
-      progressStep: Math.max(booking.progressStep, 1),
-    },
+      include: { studio: true },
+    });
+
+    await tx.paymentRequest.update({
+      where: { id: paymentRequest.id },
+      data: { status: "pending" },
+    });
+
+    await tx.booking.update({
+      where: { id: booking.id },
+      data: {
+        showVerifyPayment: true,
+        detailStatus: "pendingVerification",
+        paymentMeta: {
+          ...existingMeta,
+          paymentOption: payFull ? "full" : "deposit",
+          statusLabel: `Receipt submitted (RWF ${amount.toLocaleString("en-US")})`,
+          receiptAssetKey,
+          transactionRef: created.transactionId,
+          paymentDate: formatDisplayDate(new Date()),
+          verificationStatus: "pending",
+          note: payFull
+            ? "Full payment receipt uploaded — awaiting studio verification."
+            : "MoMo receipt uploaded — awaiting studio verification.",
+        },
+        progressStep: Math.max(booking.progressStep, 1),
+      },
+    });
+
+    return created;
   });
 
   const ownerUserId = await findStudioOwnerUserId(booking.studioId);

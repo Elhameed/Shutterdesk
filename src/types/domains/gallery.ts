@@ -102,7 +102,8 @@ export type GallerySettingsData = {
   allowDownloads: boolean;
   showPhotographerCredit: boolean;
   emailNotifications: boolean;
-  expirationDate: string;
+  /** `null` means the gallery never expires. */
+  expirationDate: string | null;
   slug: string;
   accessPin?: string;
 };

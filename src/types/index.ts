@@ -10,7 +10,18 @@ export type User = {
   needsOnboarding?: boolean;
 };
 
+export type ApiFieldError = {
+  field: string;
+  message: string;
+};
+
 export type ApiError = {
   message: string;
   statusCode?: number;
+  /**
+   * Per-field validation failures. The API returns these from every zod-guarded
+   * route; they were previously absent from this type and read nowhere, so
+   * every validation failure collapsed into one generic banner message.
+   */
+  errors?: ApiFieldError[];
 };

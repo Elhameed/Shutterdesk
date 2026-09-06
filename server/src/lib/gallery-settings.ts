@@ -1,4 +1,14 @@
+import { timingSafeEqual } from "node:crypto";
 import type { Gallery } from "@prisma/client";
+
+/** Constant-time compare so a wrong PIN leaks nothing through response timing. */
+function pinsMatch(submitted: string, expected: string) {
+  const a = Buffer.from(submitted);
+  const b = Buffer.from(expected);
+  // `timingSafeEqual` throws on length mismatch, which would itself be a leak,
+  // so compare lengths separately and still run the constant-time check.
+  return a.length === b.length && timingSafeEqual(a, b);
+}
 
 export type GalleryVisibility = "public" | "private" | "password";
 
@@ -9,7 +19,12 @@ export type GalleryStoredSettings = {
   allowDownloads: boolean;
   showPhotographerCredit: boolean;
   emailNotifications: boolean;
-  expirationDate: string;
+  /**
+   * `null` means the gallery never expires. Expiry is opt-in: a fixed default
+   * date here once silently locked every client out of every gallery the day it
+   * passed, so an unset value must always read as "no expiry".
+   */
+  expirationDate: string | null;
   slug: string;
   accessPin?: string;
 };
@@ -33,7 +48,7 @@ const DEFAULT_SETTINGS: GalleryStoredSettings = {
   allowDownloads: false,
   showPhotographerCredit: true,
   emailNotifications: true,
-  expirationDate: "2026-08-30",
+  expirationDate: null,
   slug: "",
 };
 
@@ -93,7 +108,7 @@ export function readStoredGallerySettings(
         ? stored.emailNotifications
         : DEFAULT_SETTINGS.emailNotifications,
     expirationDate:
-      typeof stored.expirationDate === "string"
+      typeof stored.expirationDate === "string" && stored.expirationDate.trim()
         ? stored.expirationDate
         : DEFAULT_SETTINGS.expirationDate,
     slug: typeof stored.slug === "string" ? stored.slug : defaultSlug,
@@ -125,7 +140,11 @@ export function mergeGallerySettings(
     ...(input.emailNotifications !== undefined
       ? { emailNotifications: input.emailNotifications }
       : {}),
-    ...(input.expirationDate ? { expirationDate: input.expirationDate } : {}),
+    // An empty string clears the date back to "never expires"; `undefined`
+    // leaves whatever is already stored alone.
+    ...(input.expirationDate !== undefined
+      ? { expirationDate: input.expirationDate.trim() || null }
+      : {}),
     ...(input.slug ? { slug: input.slug } : {}),
     ...(input.accessPin !== undefined
       ? { accessPin: input.accessPin.trim() || undefined }
@@ -165,6 +184,10 @@ export function isGalleryPinProtected(settings: GalleryStoredSettings): boolean 
 }
 
 export function isGalleryExpired(settings: Pick<GalleryStoredSettings, "expirationDate">): boolean {
+  if (!settings.expirationDate) {
+    return false;
+  }
+
   const parsed = new Date(settings.expirationDate);
   if (Number.isNaN(parsed.getTime())) {
     return false;
@@ -189,7 +212,7 @@ export function verifyGalleryAccessPin(
     return false;
   }
 
-  return submittedPin.trim() === resolvedPin;
+  return pinsMatch(submittedPin.trim(), resolvedPin);
 }
 
 export type GalleryClientAccessOptions = {
@@ -220,7 +243,7 @@ export function resolveGalleryClientAccess(
 
   const resolvedPin = resolveGalleryAccessPin(gallery, settings);
   const submittedPin = options.accessPin?.trim() ?? "";
-  const pinVerified = Boolean(resolvedPin && submittedPin === resolvedPin);
+  const pinVerified = Boolean(resolvedPin && pinsMatch(submittedPin, resolvedPin));
 
   return {
     pinRequired: true,
@@ -229,7 +252,13 @@ export function resolveGalleryClientAccess(
   };
 }
 
-export function formatExpirationLabel(expirationDate: string) {
+export const NO_EXPIRY_LABEL = "No expiry";
+
+export function formatExpirationLabel(expirationDate: string | null) {
+  if (!expirationDate) {
+    return NO_EXPIRY_LABEL;
+  }
+
   const parsed = new Date(expirationDate);
   if (Number.isNaN(parsed.getTime())) {
     return expirationDate;
