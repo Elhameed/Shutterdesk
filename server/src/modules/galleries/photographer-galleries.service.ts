@@ -1,20 +1,13 @@
-import { randomInt } from "node:crypto";
-import type { GalleryCategory, Prisma } from "@prisma/client";
+import type { GalleryCategory } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import { createNotification, findClientUserIdByEmail } from "../../domain/notification-dispatch.js";
 import { appendGalleryActivity } from "../../domain/gallery-activity.js";
 import { assertGalleryReleaseAllowed } from "../../domain/gallery-release.js";
 import {
-  isGalleryExpired,
-  isGalleryPinProtected,
   isGalleryStatusLocked,
   mergeGallerySettings,
   readStoredGallerySettings,
   resolveDownloadEnabled,
-  resolveGalleryAccessPin,
-  resolveGalleryClientAccess,
-  verifyGalleryAccessPin,
-  type GalleryClientAccessOptions,
 } from "../../domain/gallery-settings.js";
 import { cloudinaryThumbnailUrl } from "../../lib/cloudinary.js";
 import { syncBookingProgressForGallery } from "../../domain/sync-booking-gallery-progress.js";
@@ -31,10 +24,18 @@ import {
   toApiGalleryDetailMeta,
   toApiGalleryPhoto,
 } from "./galleries.mapper.js";
-
-const galleryBookingInclude = {
-  booking: { select: { id: true } },
-} as const;
+import {
+  buildGalleryDetailResponse,
+  galleryBookingInclude,
+  galleryPhotoStatsUpdate,
+  generateGalleryAccessPin,
+  getOwnedGalleryOrThrow,
+  linkGalleryToBooking,
+  normalizeAssetKey,
+  resolveGalleryNotificationCopy,
+  syncGalleryPhotoStats,
+  unlinkGalleryFromBookings,
+} from "./galleries.shared.js";
 
 type CreateGalleryInput = {
   title: string;
@@ -62,62 +63,6 @@ type UploadPhotoInput = {
   thumbnailAssetKey?: string;
   alt?: string;
 };
-
-async function getClientUser(clientUserId: string) {
-  const user = await prisma.user.findUnique({ where: { id: clientUserId } });
-  if (!user || user.role !== "client") {
-    throw new AppError("Client account required", 403);
-  }
-  return user;
-}
-
-/**
- * `Math.random` is not a CSPRNG — an access PIN generated from it is
- * predictable given enough samples, which defeats the point of the PIN.
- */
-function generateGalleryAccessPin() {
-  return String(randomInt(1000, 10_000));
-}
-
-function normalizeAssetKey(value: string) {
-  const trimmed = value.trim();
-  if (!trimmed || trimmed.startsWith("http") || trimmed.startsWith("data:")) {
-    return trimmed;
-  }
-  return trimmed.replace(/^\//, "");
-}
-
-async function linkGalleryToBooking(galleryId: string, bookingId: string, studioId: string) {
-  const booking = await prisma.booking.findFirst({
-    where: { id: bookingId, studioId },
-  });
-  if (!booking) {
-    throw new AppError("Booking not found", 404);
-  }
-
-  // Detaching every existing link and attaching the new one must be atomic: a
-  // failure between the two leaves the gallery attached to no booking at all,
-  // having just been detached from the one it had.
-  await prisma.$transaction([
-    prisma.booking.updateMany({
-      where: { galleryId },
-      data: { galleryId: null },
-    }),
-    prisma.booking.update({
-      where: { id: bookingId },
-      data: { galleryId },
-    }),
-  ]);
-
-  await syncBookingProgressForGallery(galleryId);
-}
-
-async function unlinkGalleryFromBookings(galleryId: string) {
-  await prisma.booking.updateMany({
-    where: { galleryId },
-    data: { galleryId: null },
-  });
-}
 
 export async function listPhotographerGalleries(
   photographerUserId: string,
@@ -421,86 +366,6 @@ export async function uploadGalleryPhotos(
  * Prisma operation so callers can commit it alongside the change that caused
  * it rather than as a separate write that can fail on its own.
  */
-function galleryPhotoStatsUpdate(
-  galleryId: string,
-  photos: Array<{ assetKey: string }>,
-) {
-  const photoCount = photos.length;
-
-  return prisma.gallery.update({
-    where: { id: galleryId },
-    data: {
-      photoCount,
-      coverAssetKey: photos[0]?.assetKey ?? null,
-      storageUsedGb: Math.min(49.5, Number((photoCount * 0.025).toFixed(1))),
-    },
-  });
-}
-
-async function syncGalleryPhotoStats(
-  galleryId: string,
-  photos: Array<{ assetKey: string }>,
-) {
-  await galleryPhotoStatsUpdate(galleryId, photos);
-}
-
-function buildGalleryDetailResponse(
-  gallery: Awaited<ReturnType<typeof getOwnedGalleryOrThrow>>,
-) {
-  return {
-    gallery: toApiGallery(gallery),
-    meta: toApiGalleryDetailMeta(gallery, gallery.photos, "photographer"),
-    photos: gallery.photos.map(toApiGalleryPhoto),
-  };
-}
-
-async function findAuthorizedClientGallery(
-  clientUserId: string,
-  galleryId: string,
-) {
-  const user = await getClientUser(clientUserId);
-  const gallery = await prisma.gallery.findFirst({
-    where: {
-      id: galleryId,
-      OR: [
-        { clientUserId: user.id },
-        { clientEmail: user.email.toLowerCase() },
-      ],
-      status: "published",
-      workflowStatus: { in: ["ready", "delivered"] },
-    },
-    include: {
-      ...galleryBookingInclude,
-      photos: { orderBy: { sortOrder: "asc" } },
-    },
-  });
-
-  return gallery ? { user, gallery } : null;
-}
-
-function assertClientGalleryAccess(
-  gallery: NonNullable<Awaited<ReturnType<typeof findAuthorizedClientGallery>>>["gallery"],
-  options: GalleryClientAccessOptions = {},
-) {
-  const settings = readStoredGallerySettings(gallery);
-
-  if (isGalleryExpired(settings)) {
-    throw new AppError("This gallery link has expired.", 403);
-  }
-
-  const access = resolveGalleryClientAccess(gallery, options);
-
-  if (access.pinRequired && !access.pinVerified) {
-    if (!resolveGalleryAccessPin(gallery, settings)) {
-      throw new AppError(
-        "This gallery requires a PIN, but your photographer has not configured one yet.",
-        403,
-      );
-    }
-
-    throw new AppError("Enter the correct gallery access PIN to continue.", 403);
-  }
-}
 
 export async function deleteGalleryPhoto(
   photographerUserId: string,
@@ -726,236 +591,6 @@ export async function deliverPhotographerGallery(
   }
 
   return toApiGallery(updated);
-}
-
-export async function listClientGalleries(clientUserId: string) {
-  const user = await getClientUser(clientUserId);
-  const galleries = await prisma.gallery.findMany({
-    where: {
-      OR: [
-        { clientUserId: user.id },
-        { clientEmail: user.email.toLowerCase() },
-      ],
-      status: "published",
-      workflowStatus: { in: ["ready", "delivered"] },
-    },
-    include: galleryBookingInclude,
-    orderBy: { uploadedAt: "desc" },
-  });
-
-  return galleries.map(toApiGallery);
-}
-
-export async function getClientGalleryDetail(
-  clientUserId: string,
-  galleryId: string,
-  options: GalleryClientAccessOptions = {},
-) {
-  const authorized = await findAuthorizedClientGallery(clientUserId, galleryId);
-  if (!authorized) return null;
-
-  const { user, gallery } = authorized;
-  const access = resolveGalleryClientAccess(gallery, options);
-  const canViewPhotos = !access.expired && (!access.pinRequired || access.pinVerified);
-
-  if (access.expired) {
-    return {
-      gallery: toApiGallery(gallery),
-      meta: toApiGalleryDetailMeta(gallery, gallery.photos, "client", access),
-      photos: [],
-    };
-  }
-
-  const activities = canViewPhotos
-    ? appendGalleryActivity(gallery.activities, {
-        type: "view",
-        description: `${user.fullName} viewed the gallery.`,
-      })
-    : gallery.activities;
-
-  const updated = await prisma.gallery.update({
-    where: { id: gallery.id },
-    data: canViewPhotos
-      ? {
-          isNew: false,
-          views: gallery.views + 1,
-          activities: activities as Prisma.InputJsonValue,
-        }
-      : { activities: activities as Prisma.InputJsonValue },
-    include: {
-      ...galleryBookingInclude,
-      photos: { orderBy: { sortOrder: "asc" } },
-    },
-  });
-
-  return {
-    gallery: toApiGallery({ ...updated, isNew: canViewPhotos ? false : updated.isNew }),
-    meta: toApiGalleryDetailMeta(updated, gallery.photos, "client", access),
-    photos: canViewPhotos ? gallery.photos.map(toApiGalleryPhoto) : [],
-  };
-}
-
-export async function verifyClientGalleryPin(
-  clientUserId: string,
-  galleryId: string,
-  pin: string,
-) {
-  const authorized = await findAuthorizedClientGallery(clientUserId, galleryId);
-  if (!authorized) {
-    throw new AppError("Gallery not found", 404);
-  }
-
-  const { gallery } = authorized;
-  const settings = readStoredGallerySettings(gallery);
-
-  if (isGalleryExpired(settings)) {
-    throw new AppError("This gallery link has expired.", 403);
-  }
-
-  if (!isGalleryPinProtected(settings)) {
-    return { verified: true };
-  }
-
-  if (!verifyGalleryAccessPin(gallery, pin)) {
-    throw new AppError("Incorrect gallery PIN. Please try again.", 400);
-  }
-
-  return { verified: true };
-}
-
-export async function recordClientGalleryDownload(
-  clientUserId: string,
-  galleryId: string,
-  options: GalleryClientAccessOptions = {},
-) {
-  const authorized = await findAuthorizedClientGallery(clientUserId, galleryId);
-  if (!authorized) {
-    throw new AppError("Gallery not found or not delivered", 404);
-  }
-
-  const { gallery } = authorized;
-  if (gallery.workflowStatus !== "delivered") {
-    throw new AppError("Gallery not found or not delivered", 404);
-  }
-
-  assertClientGalleryAccess(gallery, options);
-
-  const settings = readStoredGallerySettings(gallery);
-  if (!resolveDownloadEnabled(gallery, settings)) {
-    throw new AppError("Downloads are not enabled for this gallery", 403);
-  }
-
-  await prisma.gallery.update({
-    where: { id: gallery.id },
-    data: { downloads: gallery.downloads + 1 },
-  });
-
-  return {
-    photos: gallery.photos.map((photo) => ({
-      id: photo.id,
-      assetKey: photo.assetKey,
-      alt: photo.alt,
-    })),
-  };
-}
-
-export async function getClientPhotoDownloadUrl(
-  clientUserId: string,
-  galleryId: string,
-  photoId: string,
-  options: GalleryClientAccessOptions = {},
-) {
-  const authorized = await findAuthorizedClientGallery(clientUserId, galleryId);
-  if (!authorized) {
-    throw new AppError("Gallery not found or not delivered", 404);
-  }
-
-  const { gallery } = authorized;
-  if (gallery.workflowStatus !== "delivered") {
-    throw new AppError("Gallery not found or not delivered", 404);
-  }
-
-  assertClientGalleryAccess(gallery, options);
-
-  const photo = gallery.photos.find((item) => item.id === photoId);
-  if (!photo) {
-    throw new AppError("Photo not found", 404);
-  }
-
-  const settings = readStoredGallerySettings(gallery);
-  if (!resolveDownloadEnabled(gallery, settings)) {
-    throw new AppError("Downloads are not enabled for this gallery", 403);
-  }
-
-  await prisma.gallery.update({
-    where: { id: gallery.id },
-    data: { downloads: gallery.downloads + 1 },
-  });
-
-  return {
-    assetKey: photo.assetKey,
-    alt: photo.alt,
-  };
-}
-
-export async function getGalleryIdForBooking(
-  clientUserId: string,
-  bookingId: string,
-) {
-  const user = await getClientUser(clientUserId);
-  const booking = await prisma.booking.findFirst({
-    where: {
-      id: bookingId,
-      OR: [
-        { clientUserId: user.id },
-        { clientEmail: user.email.toLowerCase() },
-      ],
-    },
-  });
-
-  return booking?.galleryId ?? undefined;
-}
-
-async function getOwnedGalleryOrThrow(photographerUserId: string, galleryId: string) {
-  const studio = await getStudioForPhotographer(photographerUserId);
-  const gallery = await prisma.gallery.findFirst({
-    where: { id: galleryId, studioId: studio.id },
-    include: {
-      ...galleryBookingInclude,
-      photos: { orderBy: { sortOrder: "asc" } },
-    },
-  });
-
-  if (!gallery) {
-    throw new AppError("Gallery not found", 404);
-  }
-
-  return gallery;
-}
-
-function resolveGalleryNotificationCopy(gallery: {
-  title: string;
-  photoCount: number;
-  workflowStatus: string;
-}) {
-  if (gallery.workflowStatus === "delivered") {
-    return {
-      title: "Gallery delivered",
-      description: `${gallery.title} · ${gallery.photoCount} photos ready to view.`,
-    };
-  }
-
-  if (gallery.workflowStatus === "ready") {
-    return {
-      title: "Gallery ready for review",
-      description: `${gallery.title} proofs are ready for your review.`,
-    };
-  }
-
-  return {
-    title: "Gallery update",
-    description: `Your photographer shared an update for ${gallery.title}.`,
-  };
 }
 
 export async function notifyClientAboutGallery(

@@ -20,7 +20,7 @@ import {
   updateGalleryPhoto,
   updatePhotographerGallery,
   uploadGalleryPhotos,
-} from "./galleries.service.js";
+} from "./photographer-galleries.service.js";
 
 const createGallerySchema = z.object({
   title: z.string().trim().min(1),

@@ -11,7 +11,7 @@ import {
   listClientGalleries,
   recordClientGalleryDownload,
   verifyClientGalleryPin,
-} from "./galleries.service.js";
+} from "./client-galleries.service.js";
 
 const verifyPinSchema = z.object({
   pin: z.string().trim().min(1, "Enter the gallery access PIN."),
