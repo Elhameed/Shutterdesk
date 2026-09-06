@@ -1,13 +1,13 @@
 import { hashPassword, verifyPassword } from "../../lib/password.js";
-import { invalidateUserTokens } from "../../lib/auth-session.js";
+import { invalidateUserTokens } from "../../domain/auth-session.js";
 import { prisma } from "../../lib/prisma.js";
 import { loadEnv } from "../../config/env.js";
 import {
   isCloudinaryConfigured,
   normalizeStoredMediaUrl,
 } from "../../lib/cloudinary.js";
-import { syncClientProfileAcrossRecords } from "../../lib/client-profile-sync.js";
-import { syncPhotographerIdentityAcrossRecords } from "../../lib/photographer-identity-sync.js";
+import { syncClientProfileAcrossRecords } from "../../domain/client-profile-sync.js";
+import { syncPhotographerIdentityAcrossRecords } from "../../domain/photographer-identity-sync.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import { getOrCreateStudioSchedule } from "../availability/availability.service.js";
 import { AppError } from "../../middleware/error-handler.js";

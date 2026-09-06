@@ -8,7 +8,7 @@ import { parsePaginationParams } from "../../lib/pagination.js";
 import {
   PHOTOGRAPHER_ACTIVITY_TYPES,
   type PhotographerActivityType,
-} from "../../lib/photographer-activity.js";
+} from "../../domain/photographer-activity.js";
 
 export function createPhotographerDashboardRouter(env: Env) {
   const router = Router();

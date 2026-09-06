@@ -1,6 +1,6 @@
 import type { Booking, Gallery, PaymentRequest, StudioClient } from "@prisma/client";
-import { prisma } from "./prisma.js";
-import { formatDisplayDate } from "./date-format.js";
+import { prisma } from "../lib/prisma.js";
+import { formatDisplayDate } from "../format/date-format.js";
 import { readStoredGallerySettings } from "./gallery-settings.js";
 import type { ClientMetrics } from "./client-metrics.js";
 

@@ -4,19 +4,19 @@ import {
   createNotification,
   findClientUserForBooking,
   findStudioOwnerUserId,
-} from "../../lib/notification-dispatch.js";
+} from "../../domain/notification-dispatch.js";
 import { loadEnv } from "../../config/env.js";
 import {
   isAllowedCloudinaryUrl,
   isCloudinaryConfigured,
 } from "../../lib/cloudinary.js";
-import { formatDisplayDate } from "../../lib/date-format.js";
+import { formatDisplayDate } from "../../format/date-format.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import { AppError } from "../../middleware/error-handler.js";
 import {
   bookingAvatarInclude,
   resolveClientAvatarKey,
-} from "../../lib/client-avatar.js";
+} from "../../format/client-avatar.js";
 import {
   getClientOutstandingSummary,
   listClientPaymentRequests,

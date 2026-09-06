@@ -1,6 +1,6 @@
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
-import { formatRwf } from "../../lib/currency-format.js";
+import { formatRwf } from "../../format/currency-format.js";
 import { getClientOutstandingSummary } from "../bookings/bookings.service.js";
 
 async function getClientUser(clientUserId: string) {

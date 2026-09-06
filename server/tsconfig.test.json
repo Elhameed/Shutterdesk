@@ -1,0 +1,12 @@
+{
+  // The build config excludes tests/ because rootDir is src/, which means test
+  // files were never type-checked at all — a moved module left broken imports
+  // in fifteen test files that tsc could not see and only a full test run
+  // surfaced. This config checks them without emitting.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "."
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts", "prisma/**/*.ts"]
+}

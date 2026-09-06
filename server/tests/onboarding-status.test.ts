@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveNeedsOnboarding } from "../src/lib/onboarding-status.js";
+import { resolveNeedsOnboarding } from "../src/domain/onboarding-status.js";
 import type { User } from "@prisma/client";
 
 function buildClientUser(

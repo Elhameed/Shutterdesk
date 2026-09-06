@@ -1,5 +1,5 @@
 import type { Gallery, GalleryPhoto, GalleryWorkflowStatus } from "@prisma/client";
-import { formatDisplayDate } from "../../lib/date-format.js";
+import { formatDisplayDate } from "../../format/date-format.js";
 import {
   buildPrivateGalleryLink,
   formatExpirationLabel,
@@ -8,7 +8,7 @@ import {
   resolveDownloadEnabled,
   resolveGalleryAccessPin,
   resolveHighResDownloads,
-} from "../../lib/gallery-settings.js";
+} from "../../domain/gallery-settings.js";
 
 export type GalleryWithBooking = Gallery & {
   booking?: { id: string } | null;

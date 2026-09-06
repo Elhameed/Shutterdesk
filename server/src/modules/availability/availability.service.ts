@@ -8,9 +8,9 @@ import {
   isDayFullyBlocked,
   slotsForDateKey,
   summarizeMonthAvailability,
-} from "../../lib/availability-slots.js";
-import { DEFAULT_WEEKLY_RULES } from "../../lib/session-datetime.js";
-import { parseDurationMinutes } from "../../lib/session-datetime.js";
+} from "../../domain/availability-slots.js";
+import { DEFAULT_WEEKLY_RULES } from "../../format/session-datetime.js";
+import { parseDurationMinutes } from "../../format/session-datetime.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import { AppError } from "../../middleware/error-handler.js";
 
@@ -398,7 +398,7 @@ export async function assertBookingSlotAvailable(
     loadStudioBlocks(studioId),
   ]);
 
-  const { assertSlotAvailable } = await import("../../lib/availability-slots.js");
+  const { assertSlotAvailable } = await import("../../domain/availability-slots.js");
 
   try {
     assertSlotAvailable(

@@ -1,5 +1,5 @@
 import type { PaymentRecord, PaymentVerification, Studio } from "@prisma/client";
-import { formatDisplayDate } from "../../lib/date-format.js";
+import { formatDisplayDate } from "../../format/date-format.js";
 
 export type ApiPaymentVerification = {
   id: string;

@@ -7,7 +7,7 @@ import { parseBody } from "../../middleware/validate.js";
 import {
   deactivateClientAccount,
   deactivatePhotographerAccount,
-} from "../../lib/account-deactivation.js";
+} from "../../domain/account-deactivation.js";
 import {
   SETTINGS_PANELS,
   getClientSettings,

@@ -1,9 +1,9 @@
 import { randomInt } from "node:crypto";
 import type { GalleryCategory, Prisma } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
-import { createNotification, findClientUserIdByEmail } from "../../lib/notification-dispatch.js";
-import { appendGalleryActivity } from "../../lib/gallery-activity.js";
-import { assertGalleryReleaseAllowed } from "../../lib/gallery-release.js";
+import { createNotification, findClientUserIdByEmail } from "../../domain/notification-dispatch.js";
+import { appendGalleryActivity } from "../../domain/gallery-activity.js";
+import { assertGalleryReleaseAllowed } from "../../domain/gallery-release.js";
 import {
   isGalleryExpired,
   isGalleryPinProtected,
@@ -15,9 +15,9 @@ import {
   resolveGalleryClientAccess,
   verifyGalleryAccessPin,
   type GalleryClientAccessOptions,
-} from "../../lib/gallery-settings.js";
+} from "../../domain/gallery-settings.js";
 import { cloudinaryThumbnailUrl } from "../../lib/cloudinary.js";
-import { syncBookingProgressForGallery } from "../../lib/sync-booking-gallery-progress.js";
+import { syncBookingProgressForGallery } from "../../domain/sync-booking-gallery-progress.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import { readStudioGalleryDefaults } from "../settings/settings.service.js";
 import {

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   assertGalleryReleaseAllowed,
   canReleaseGallery,
-} from "../src/lib/gallery-release.js";
+} from "../src/domain/gallery-release.js";
 
 describe("gallery release", () => {
   it("blocks release while a package balance remains", () => {

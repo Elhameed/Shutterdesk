@@ -9,25 +9,25 @@ import {
   resolvePhotographerPrimaryAction,
   type LifecyclePrimaryAction,
   type BookingLifecycleStage,
-} from "../../lib/booking-lifecycle.js";
+} from "../../domain/booking-lifecycle.js";
 import {
   canReleaseGallery,
   hasOutstandingPackageBalance,
   readGalleryReleaseOverride,
-} from "../../lib/gallery-release.js";
-import { formatDisplayDate } from "../../lib/date-format.js";
+} from "../../domain/gallery-release.js";
+import { formatDisplayDate } from "../../format/date-format.js";
 import {
   resolvePackageCoverImage,
   type BookingWithPackageCover,
-} from "../../lib/package-cover.js";
-import { resolveBookingClientProfile } from "../../lib/booking-client-profile.js";
-import { buildBookingActivityTimeline } from "../../lib/booking-timeline.js";
-import { mergeBookingProgress } from "../../lib/booking-progress.js";
-import { resolveClientPaymentStatusLabel } from "../../lib/payment-status-label.js";
+} from "../../format/package-cover.js";
+import { resolveBookingClientProfile } from "../../domain/booking-client-profile.js";
+import { buildBookingActivityTimeline } from "../../domain/booking-timeline.js";
+import { mergeBookingProgress } from "../../domain/booking-progress.js";
+import { resolveClientPaymentStatusLabel } from "../../format/payment-status-label.js";
 import {
   resolveOutstandingDue,
   type UnpaidPaymentRequest,
-} from "../../lib/payment-obligations.js";
+} from "../../domain/payment-obligations.js";
 
 export type ApiBooking = {
   id: string;

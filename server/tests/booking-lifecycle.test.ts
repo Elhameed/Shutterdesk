@@ -5,7 +5,7 @@ import {
   resolveClientPrimaryAction,
   resolveLifecycleStage,
   resolvePhotographerPrimaryAction,
-} from "../src/lib/booking-lifecycle.js";
+} from "../src/domain/booking-lifecycle.js";
 
 const baseBooking = {
   status: "pending" as const,

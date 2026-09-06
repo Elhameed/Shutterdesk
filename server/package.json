@@ -20,6 +20,7 @@
     "db:seed:empty": "tsx prisma/seed-empty.ts",
     "db:reset:clean": "prisma migrate reset --force --skip-seed",
     "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.test.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },

@@ -3,8 +3,8 @@ import {
   generateDaySlots,
   getAvailableDatesInMonth,
   getManualBlockedDaysInMonth,
-} from "../src/lib/availability-slots.js";
-import { DEFAULT_WEEKLY_RULES } from "../src/lib/session-datetime.js";
+} from "../src/domain/availability-slots.js";
+import { DEFAULT_WEEKLY_RULES } from "../src/format/session-datetime.js";
 
 const schedule = {
   weeklyRules: DEFAULT_WEEKLY_RULES,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolvePhotographerProfileCompletion } from "../src/lib/photographer-profile-completion.js";
+import { resolvePhotographerProfileCompletion } from "../src/domain/photographer-profile-completion.js";
 
 const owner = {
   fullName: "Amara Mukamana",

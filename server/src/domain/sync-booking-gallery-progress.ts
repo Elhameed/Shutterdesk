@@ -1,4 +1,4 @@
-import { prisma } from "./prisma.js";
+import { prisma } from "../lib/prisma.js";
 import { buildBookingProgressUpdate } from "./booking-progress.js";
 
 export async function syncBookingProgressForGallery(galleryId: string) {

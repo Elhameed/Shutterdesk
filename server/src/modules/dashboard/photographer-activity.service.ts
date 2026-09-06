@@ -5,7 +5,7 @@ import {
   paginatePhotographerActivities,
   toPhotographerActivityItem,
   type PhotographerActivityType,
-} from "../../lib/photographer-activity.js";
+} from "../../domain/photographer-activity.js";
 import {
   buildPaginatedResult,
   type PaginationParams,

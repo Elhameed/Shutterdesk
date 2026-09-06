@@ -1,5 +1,5 @@
 import type { Booking, StudioClient, User } from "@prisma/client";
-import { prisma } from "./prisma.js";
+import { prisma } from "../lib/prisma.js";
 
 type AvatarSources = {
   userAvatarUrl?: string | null;

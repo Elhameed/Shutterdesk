@@ -1,11 +1,11 @@
 import { prisma } from "../../lib/prisma.js";
-import { formatRwf } from "../../lib/currency-format.js";
+import { formatRwf } from "../../format/currency-format.js";
 import {
   bookingAvatarInclude,
   resolveBookingClientAvatar,
   type BookingWithClientAvatars,
-} from "../../lib/client-avatar.js";
-import { resolvePhotographerProfileCompletion } from "../../lib/photographer-profile-completion.js";
+} from "../../format/client-avatar.js";
+import { resolvePhotographerProfileCompletion } from "../../domain/photographer-profile-completion.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import { getRecentPhotographerActivities } from "./photographer-activity.service.js";
 

@@ -1,11 +1,11 @@
 import type { ClientCategory, ClientTier } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
-import { resolveStudioClientAvatar } from "../../lib/client-avatar.js";
+import { resolveStudioClientAvatar } from "../../format/client-avatar.js";
 import {
   loadStudioClientMetrics,
   resolveClientMetrics,
-} from "../../lib/client-metrics.js";
-import { loadClientProfileActivity } from "../../lib/client-profile-activity.js";
+} from "../../domain/client-metrics.js";
+import { loadClientProfileActivity } from "../../domain/client-profile-activity.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import {
   buildPaginatedResult,

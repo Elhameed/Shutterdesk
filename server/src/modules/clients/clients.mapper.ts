@@ -1,11 +1,11 @@
 import type { StudioClient } from "@prisma/client";
-import type { ClientMetrics } from "../../lib/client-metrics.js";
-import type { ClientProfileActivity } from "../../lib/client-profile-activity.js";
+import type { ClientMetrics } from "../../domain/client-metrics.js";
+import type { ClientProfileActivity } from "../../domain/client-profile-activity.js";
 import {
   formatDisplayDate,
   formatIsoDate,
   formatMemberSince,
-} from "../../lib/date-format.js";
+} from "../../format/date-format.js";
 
 export type ApiClient = {
   id: string;

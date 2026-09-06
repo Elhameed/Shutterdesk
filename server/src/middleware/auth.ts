@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import type { UserRole } from "@prisma/client";
 import type { Env } from "../config/env.js";
-import { loadAuthUser } from "../lib/auth-session.js";
+import { loadAuthUser } from "../domain/auth-session.js";
 import { verifyAccessToken } from "../lib/jwt.js";
 import { AppError } from "./error-handler.js";
 

@@ -1,4 +1,4 @@
-import { prisma } from "./prisma.js";
+import { prisma } from "../lib/prisma.js";
 import { createNotification } from "./notification-dispatch.js";
 import { invalidateUserTokens } from "./auth-session.js";
 import { AppError } from "../middleware/error-handler.js";

@@ -6,7 +6,7 @@ import {
   isGalleryExpired,
   isGalleryPinProtected,
   verifyGalleryAccessPin,
-} from "../src/lib/gallery-settings.js";
+} from "../src/domain/gallery-settings.js";
 
 describe("gallery settings", () => {
   const baseGallery = {

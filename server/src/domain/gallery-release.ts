@@ -1,6 +1,6 @@
 import type { Booking } from "@prisma/client";
 import { AppError } from "../middleware/error-handler.js";
-import { formatRwf } from "./currency-format.js";
+import { formatRwf } from "../format/currency-format.js";
 
 type BookingPaymentSnapshot = Pick<
   Booking,

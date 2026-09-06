@@ -6,7 +6,7 @@ import { normalizeStoredMediaUrl } from "../../lib/cloudinary.js";
 import { signAccessToken } from "../../lib/jwt.js";
 import { prisma } from "../../lib/prisma.js";
 import { slugify } from "../../lib/slug.js";
-import { toPublicUserWithOnboarding } from "../../lib/user-mapper.js";
+import { toPublicUserWithOnboarding } from "../../domain/user-mapper.js";
 
 type PhotographerOnboardingInput = {
   businessName: string;

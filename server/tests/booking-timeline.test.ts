@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildBookingActivityTimelineFromBooking } from "../src/lib/booking-timeline.js";
+import { buildBookingActivityTimelineFromBooking } from "../src/domain/booking-timeline.js";
 
 const baseBooking = {
   status: "pending" as const,

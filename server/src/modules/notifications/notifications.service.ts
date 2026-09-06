@@ -6,7 +6,7 @@ import {
 import {
   formatRelativeTimestamp,
   resolveNotificationGroup,
-} from "../../lib/notification-dispatch.js";
+} from "../../domain/notification-dispatch.js";
 import { AppError } from "../../middleware/error-handler.js";
 
 type NotificationMetadata = {

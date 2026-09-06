@@ -8,17 +8,17 @@ import {
   bookingAvatarInclude,
   resolveBookingClientAvatar,
   type BookingWithClientAvatars,
-} from "../../lib/client-avatar.js";
-import { bookingPackageInclude } from "../../lib/package-cover.js";
+} from "../../format/client-avatar.js";
+import { bookingPackageInclude } from "../../format/package-cover.js";
 import {
   buildLifecycleContext,
   canPhotographerCancelBooking,
-} from "../../lib/booking-lifecycle.js";
+} from "../../domain/booking-lifecycle.js";
 import {
   createNotification,
   findClientUserForBooking,
   findStudioOwnerUserId,
-} from "../../lib/notification-dispatch.js";
+} from "../../domain/notification-dispatch.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import {
   buildPaginatedResult,
@@ -28,7 +28,7 @@ import {
   addMinutes,
   buildSessionDateTime,
   parseDurationMinutes,
-} from "../../lib/session-datetime.js";
+} from "../../format/session-datetime.js";
 import { assertBookingSlotAvailable } from "../availability/availability.service.js";
 import { AppError } from "../../middleware/error-handler.js";
 import {
