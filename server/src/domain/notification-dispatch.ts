@@ -1,5 +1,9 @@
 import { prisma } from "../lib/prisma.js";
 
+// Re-exported so notification call sites keep one import; the implementation
+// now lives with the other date formatters.
+export { formatRelativeTimestamp } from "../format/date-format.js";
+
 type NotificationMetadata = {
   icon?: string;
   priority?: string;
@@ -65,22 +69,6 @@ export async function findStudioOwnerUserId(studioId: string) {
     select: { ownerUserId: true },
   });
   return studio?.ownerUserId ?? null;
-}
-
-export function formatRelativeTimestamp(date: Date) {
-  const diffMs = Date.now() - date.getTime();
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-
-  if (diffHours < 1) return "Just now";
-  if (diffHours < 24) return `${diffHours}h ago`;
-
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays === 1) return "Yesterday";
-
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
 }
 
 export function resolveNotificationGroup(date: Date): "today" | "yesterday" | "earlier" {

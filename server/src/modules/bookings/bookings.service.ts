@@ -19,6 +19,10 @@ import {
   findClientUserForBooking,
   findStudioOwnerUserId,
 } from "../../domain/notification-dispatch.js";
+import {
+  notifyClientFinalBalanceDue,
+  notifyClientOfBookingEvent,
+} from "../../domain/booking-notifications.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import {
   buildPaginatedResult,
@@ -31,6 +35,7 @@ import {
 } from "../../format/session-datetime.js";
 import { assertBookingSlotAvailable } from "../availability/availability.service.js";
 import { AppError } from "../../middleware/error-handler.js";
+import { formatRwf } from "../../format/currency-format.js";
 import {
   toApiBooking,
   toApiBookingDetail,
@@ -552,11 +557,11 @@ export async function updatePhotographerBookingStatus(
   });
 
   if (status === "cancelled") {
-    await notifyClientBookingCancelled(booking, studio.name);
+    await notifyClientOfBookingEvent("cancelled", booking, studio.name);
   }
 
   if (status === "confirmed" && booking.status !== "confirmed") {
-    await notifyClientBookingConfirmed(updated, studio.name);
+    await notifyClientOfBookingEvent("confirmed", updated, studio.name);
   }
 
   if (status === "completed") {
@@ -594,142 +599,6 @@ export async function setGalleryReleaseOverride(
   });
 
   return getPhotographerBookingDetail(photographerUserId, bookingId);
-}
-
-async function notifyClientFinalBalanceDue(
-  booking: {
-    id: string;
-    clientUserId: string | null;
-    clientEmail: string;
-    packageName: string;
-    packagePrice: number;
-    amountPaid: number;
-  },
-  studioName: string,
-) {
-  const remaining = booking.packagePrice - booking.amountPaid;
-  if (remaining <= 0) {
-    return;
-  }
-
-  const clientUser = await findClientUserForBooking(booking);
-  if (!clientUser) {
-    return;
-  }
-
-  await createNotification({
-    userId: clientUser.id,
-    category: "payment",
-    title: "Final balance due",
-    description: `${studioName} marked your ${booking.packageName} session complete. Pay the remaining RWF ${remaining.toLocaleString("en-US")} to unlock your gallery.`,
-    actionHref: `/client/bookings/${booking.id}`,
-    metadata: {
-      icon: "payment",
-      priority: "high",
-      actionLabel: "viewDetails",
-    },
-  });
-}
-
-async function notifyClientBookingCancelled(
-  booking: {
-    id: string;
-    clientUserId: string | null;
-    clientEmail: string;
-    packageName: string;
-    sessionDateLabel: string;
-    sessionTime: string;
-    venue: string | null;
-  },
-  studioName: string,
-) {
-  const clientUser = await findClientUserForBooking(booking);
-
-  if (!clientUser) {
-    return;
-  }
-
-  await createNotification({
-    userId: clientUser.id,
-    category: "booking",
-    title: "Booking cancelled",
-    description: `${studioName} cancelled your ${booking.packageName} session scheduled for ${booking.sessionDateLabel} at ${booking.sessionTime}.`,
-    actionHref: `/client/bookings/${booking.id}`,
-    metadata: {
-      icon: "calendar",
-      priority: "high",
-      primaryAction: {
-        label: "View booking",
-        href: `/client/bookings/${booking.id}`,
-      },
-    },
-  });
-}
-
-async function notifyClientBookingConfirmed(
-  booking: {
-    id: string;
-    clientUserId: string | null;
-    clientEmail: string;
-    packageName: string;
-    sessionDateLabel: string;
-    sessionTime: string;
-  },
-  studioName: string,
-) {
-  const clientUser = await findClientUserForBooking(booking);
-  if (!clientUser) {
-    return;
-  }
-
-  await createNotification({
-    userId: clientUser.id,
-    category: "booking",
-    title: "Booking confirmed",
-    description: `${studioName} confirmed your ${booking.packageName} session on ${booking.sessionDateLabel} at ${booking.sessionTime}.`,
-    actionHref: `/client/bookings/${booking.id}`,
-    metadata: {
-      icon: "calendar",
-      priority: "high",
-      primaryAction: {
-        label: "View booking",
-        href: `/client/bookings/${booking.id}`,
-      },
-    },
-  });
-}
-
-async function notifyClientBookingRescheduled(
-  booking: {
-    id: string;
-    clientUserId: string | null;
-    clientEmail: string;
-    packageName: string;
-    sessionDateLabel: string;
-    sessionTime: string;
-  },
-  studioName: string,
-) {
-  const clientUser = await findClientUserForBooking(booking);
-  if (!clientUser) {
-    return;
-  }
-
-  await createNotification({
-    userId: clientUser.id,
-    category: "booking",
-    title: "Session rescheduled",
-    description: `${studioName} moved your ${booking.packageName} session to ${booking.sessionDateLabel} at ${booking.sessionTime}.`,
-    actionHref: `/client/bookings/${booking.id}`,
-    metadata: {
-      icon: "calendar",
-      priority: "high",
-      primaryAction: {
-        label: "View booking",
-        href: `/client/bookings/${booking.id}`,
-      },
-    },
-  });
 }
 
 export async function reschedulePhotographerBooking(
@@ -776,7 +645,7 @@ export async function reschedulePhotographerBooking(
     },
   });
 
-  await notifyClientBookingRescheduled(updated, studio.name);
+  await notifyClientOfBookingEvent("rescheduled", updated, studio.name);
 
   return toApiBooking(updated, studio.slug);
 }
@@ -1032,7 +901,7 @@ export async function createClientBooking(
       progressStep: 0,
       galleryStep: 0,
       paymentMeta: {
-        statusLabel: `Deposit Required (RWF ${depositAmount.toLocaleString("en-US")})`,
+        statusLabel: `Deposit Required (${formatRwf(depositAmount)})`,
         amountPaid: 0,
         transactionRef: "—",
         paymentDate: "—",

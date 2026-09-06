@@ -3,6 +3,7 @@ import { prisma } from "../lib/prisma.js";
 import { formatDisplayDate } from "../format/date-format.js";
 import { readStoredGallerySettings } from "./gallery-settings.js";
 import type { ClientMetrics } from "./client-metrics.js";
+import { formatRwf } from "../format/currency-format.js";
 
 export type ClientTimelineType =
   | "upcoming"
@@ -204,7 +205,7 @@ export function buildTimeline(
     entries.push({
       id: `payment-${record.id}`,
       type: "payment",
-      title: `Payment received — RWF ${record.amount.toLocaleString("en-US")}`,
+      title: `Payment received — ${formatRwf(record.amount)}`,
       subtitle: record.bookingTitle,
       date: formatDisplayDate(record.paidAt),
       at: record.paidAt,

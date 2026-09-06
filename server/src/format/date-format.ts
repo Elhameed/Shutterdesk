@@ -17,9 +17,43 @@ export function formatIsoDate(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
-export function formatRelativeTime(date: Date, now = new Date()): string {
+/**
+ * How much room the caller has.
+ *
+ * `long` spells the unit out and resolves to the minute — used in activity
+ * feeds. `compact` abbreviates hours and treats anything under an hour as
+ * "Just now" — used in the notification list and gallery activity, where the
+ * timestamp sits in a tight column.
+ *
+ * These were two separate implementations that had drifted apart; the
+ * difference is real, so it is a parameter rather than something to flatten.
+ */
+export type RelativeTimeStyle = "long" | "compact";
+
+export function formatRelativeTime(
+  date: Date,
+  now: Date = new Date(),
+  style: RelativeTimeStyle = "long",
+): string {
   const diffMs = Math.max(0, now.getTime() - date.getTime());
   const diffMinutes = Math.floor(diffMs / 60_000);
+  const diffHours = Math.floor(diffMinutes / 60);
+
+  if (style === "compact") {
+    if (diffHours < 1) {
+      return "Just now";
+    }
+    if (diffHours < 24) {
+      return `${diffHours}h ago`;
+    }
+
+    const compactDays = Math.floor(diffHours / 24);
+    if (compactDays === 1) {
+      return "Yesterday";
+    }
+
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  }
 
   if (diffMinutes < 1) {
     return "Just now";
@@ -27,8 +61,6 @@ export function formatRelativeTime(date: Date, now = new Date()): string {
   if (diffMinutes < 60) {
     return `${diffMinutes} min ago`;
   }
-
-  const diffHours = Math.floor(diffMinutes / 60);
   if (diffHours < 24) {
     return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
   }
@@ -42,4 +74,9 @@ export function formatRelativeTime(date: Date, now = new Date()): string {
   }
 
   return formatDisplayDate(date);
+}
+
+/** Shorthand for the compact style. */
+export function formatRelativeTimestamp(date: Date, now: Date = new Date()): string {
+  return formatRelativeTime(date, now, "compact");
 }
