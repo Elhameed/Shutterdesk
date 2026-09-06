@@ -143,4 +143,55 @@ export async function addCrmClient(
   return response.body.data as { id: string; email: string };
 }
 
+/**
+ * A photographer with a studio, ready to act on. Most integration tests need
+ * exactly this and nothing more, and repeating the four calls per test made
+ * them hard to read.
+ */
+export async function setUpStudio(label: string) {
+  const email = uniqueEmail(`photographer.${label}`);
+  const { token } = await registerUser({
+    fullName: `Photographer ${label}`,
+    email,
+    phone: "+250 788 000 100",
+  });
+
+  const session = await setRole(token, "photographer");
+  const { studio } = await onboardPhotographer(session.token, `Studio ${label}`);
+
+  return { token: session.token, email, studio };
+}
+
+/**
+ * A client user whose email matches a CRM client on the given studio, so the
+ * two are linked by the email match the app relies on.
+ */
+export async function setUpLinkedClient(photographerToken: string, label: string) {
+  const email = uniqueEmail(`client.${label}`);
+
+  const crmClient = await addCrmClient(photographerToken, {
+    name: `Client ${label}`,
+    email,
+  });
+
+  const { token } = await registerUser({
+    fullName: `Client ${label}`,
+    email,
+    phone: "+250 788 000 200",
+  });
+  const session = await setRole(token, "client");
+
+  return { token: session.token, email, crmClientId: crmClient.id };
+}
+
+export function authed(token: string) {
+  return {
+    get: (path: string) => api().get(path).set("Authorization", `Bearer ${token}`),
+    post: (path: string) => api().post(path).set("Authorization", `Bearer ${token}`),
+    patch: (path: string) => api().patch(path).set("Authorization", `Bearer ${token}`),
+    delete: (path: string) =>
+      api().delete(path).set("Authorization", `Bearer ${token}`),
+  };
+}
+
 export { prisma };

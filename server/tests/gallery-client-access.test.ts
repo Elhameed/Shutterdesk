@@ -239,6 +239,63 @@ describe("client gallery access", () => {
       .expect(400);
   });
 
+  it("lists the client's delivered galleries", async () => {
+    const { photographerToken } = await setUpPhotographer("list");
+    const { clientToken, crmClientId } = await setUpLinkedClient(
+      photographerToken,
+      "list",
+    );
+
+    const gallery = await createReadyGallery(photographerToken, crmClientId);
+
+    const response = await api()
+      .get("/api/client/galleries")
+      .set("Authorization", `Bearer ${clientToken}`)
+      .expect(200);
+
+    const ids = (response.body.data as Array<{ id: string }>).map((item) => item.id);
+    expect(ids).toContain(gallery.id);
+  });
+
+  it("returns a download url for a single photo", async () => {
+    const { photographerToken } = await setUpPhotographer("photo");
+    const { clientToken, crmClientId } = await setUpLinkedClient(
+      photographerToken,
+      "photo",
+    );
+
+    const gallery = await createReadyGallery(photographerToken, crmClientId, {
+      allowDownloads: true,
+    });
+
+    const detail = await api()
+      .get(`/api/client/galleries/${gallery.id}`)
+      .set("Authorization", `Bearer ${clientToken}`)
+      .expect(200);
+    const photoId = detail.body.data.photos[0].id as string;
+
+    await api()
+      .get(`/api/client/galleries/${gallery.id}/photos/${photoId}/download`)
+      .set("Authorization", `Bearer ${clientToken}`)
+      .expect(200);
+  });
+
+  it("does not expose another client's gallery", async () => {
+    const { photographerToken } = await setUpPhotographer("isolation");
+    const { crmClientId } = await setUpLinkedClient(photographerToken, "isolation");
+    const gallery = await createReadyGallery(photographerToken, crmClientId);
+
+    const { clientToken: outsiderToken } = await setUpLinkedClient(
+      photographerToken,
+      "isolation.outsider",
+    );
+
+    await api()
+      .get(`/api/client/galleries/${gallery.id}`)
+      .set("Authorization", `Bearer ${outsiderToken}`)
+      .expect(404);
+  });
+
   it("allows the gallery PIN header through CORS preflight", async () => {
     const response = await api()
       .options("/api/client/galleries/some-id")
