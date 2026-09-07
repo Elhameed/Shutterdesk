@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BOOKINGS_COPY } from "@/constants/photographer-bookings";
 import {
   BOOKING_STATUS_BADGE_STYLES,
@@ -96,27 +96,33 @@ export function BookingsTable({
     <div className="overflow-hidden rounded-md border border-border bg-panel">
       {/* Mobile cards */}
       <ul className="divide-y divide-border md:hidden">
+        {/* The whole card opens the booking, but the row actions are their own
+            buttons. Wrapping the card in a <button> nested those inside it —
+            invalid HTML, and the actions were unreachable by keyboard. A
+            stretched link covers the card instead, with the actions layered
+            above it, so both stay separately focusable. */}
         {bookings.map((booking) => (
-          <li key={booking.id}>
-            <button
-              type="button"
-              onClick={() => openBooking(booking.id)}
-              className="w-full p-4 text-left transition-colors hover:bg-paper-dim"
-            >
+          <li key={booking.id} className="relative transition-colors hover:bg-paper-dim">
+            <div className="p-4">
               <div className="flex items-start justify-between gap-3">
                 <ClientCell booking={booking} />
-                <BookingActions
-                  bookingId={booking.id}
-                  actions={booking.actions}
-                  onActionError={onActionError}
-                />
+                <div className="relative z-10">
+                  <BookingActions
+                    bookingId={booking.id}
+                    actions={booking.actions}
+                    onActionError={onActionError}
+                  />
+                </div>
               </div>
 
               <div className="mt-3 space-y-2">
                 <div>
-                  <p className="text-sm font-semibold text-ink">
+                  <Link
+                    to={ROUTES.photographer.bookingDetail(booking.id)}
+                    className="text-sm font-semibold text-ink before:absolute before:inset-0 before:content-['']"
+                  >
                     {booking.packageName}
-                  </p>
+                  </Link>
                   <p className="text-xs text-ink-soft">{booking.packageDetail}</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -124,12 +130,12 @@ export function BookingsTable({
                     {booking.date} • {booking.time}
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="relative z-10 flex flex-wrap gap-2">
                   <PaymentBadge payment={booking.payment} />
                   <StatusBadge status={booking.status} />
                 </div>
               </div>
-            </button>
+            </div>
           </li>
         ))}
       </ul>

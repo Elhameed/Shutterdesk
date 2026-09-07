@@ -1,4 +1,6 @@
 import { NavLink } from "react-router-dom";
+import { resolveMediaUrl } from "@/lib/media-url";
+import { appAssets } from "@/constants/assets";
 import { useAuth } from "@/app/AuthProvider";
 import { Logo } from "@/components/common/Logo";
 import { NotificationNavBadge } from "@/components/common/NotificationNavBadge";
@@ -69,10 +71,15 @@ export function PhotographerSidebar({
   const { data: dashboard } = usePhotographerDashboard();
   const { data: unreadCount = 0 } = usePhotographerUnreadNotificationCount();
 
-  const sidebarUser = dashboard?.user ?? {
+  // Name and avatar come from useAuth, the same source the client sidebar
+  // uses. Both portals refresh it after a profile save, so reading identity
+  // from the dashboard payload here meant the two sidebars could disagree about
+  // who is signed in. The role label and studio logo are studio data and stay
+  // with the dashboard.
+  const sidebarUser = {
     name: authUser?.fullName ?? "Photographer",
-    role: "Studio Owner",
-    avatar: "",
+    role: dashboard?.user.role ?? "Studio Owner",
+    avatar: resolveMediaUrl(authUser?.avatarUrl, appAssets.userAvatar),
   };
 
   return (
