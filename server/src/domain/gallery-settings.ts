@@ -164,13 +164,6 @@ export function resolveDownloadEnabled(
   return gallery.workflowStatus === "delivered" && settings.allowDownloads;
 }
 
-export function resolveHighResDownloads(
-  gallery: Pick<Gallery, "workflowStatus">,
-  settings: Pick<GalleryStoredSettings, "allowDownloads">,
-): boolean {
-  return resolveDownloadEnabled(gallery, settings);
-}
-
 export function resolveGalleryAccessPin(
   gallery: Pick<Gallery, "delivery" | "settings" | "status" | "workflowStatus" | "title" | "id">,
   settings?: GalleryStoredSettings,

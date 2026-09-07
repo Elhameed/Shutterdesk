@@ -6,7 +6,7 @@ import {
   ClientGalleryCard,
   ClientNewSessionCard,
 } from "@/features/client-galleries/components/ClientGalleryCard";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import {
   useClientGalleries,
 } from "@/hooks/queries/client";
@@ -37,7 +37,7 @@ export function ClientGalleriesView() {
     return (
       <div className="min-w-0 max-w-full p-4 sm:p-6 lg:p-8">
         <p className="text-sm text-bad-fg" role="alert">
-          {getQueryErrorMessage(error, "Unable to load galleries.")}
+          {getApiErrorMessage(error, "Unable to load galleries.")}
         </p>
       </div>
     );

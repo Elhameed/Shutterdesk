@@ -15,7 +15,7 @@ import { LocalTimeBadge } from "@/components/common/LocalTimeBadge";
 import { RecentUpdatesCard } from "@/features/client-dashboard/components/RecentUpdatesCard";
 import { UpcomingSessionCard } from "@/features/client-dashboard/components/UpcomingSessionCard";
 import { formatRwf } from "@/lib/currency";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import {
   useClientDashboard,
 } from "@/hooks/queries/client";
@@ -40,7 +40,7 @@ export function ClientDashboardView() {
     return (
       <div className="min-w-0 max-w-full p-4 sm:p-6 lg:p-8">
         <p className="text-sm text-bad-fg" role="alert">
-          {getQueryErrorMessage(error, "Unable to load your dashboard.")}
+          {getApiErrorMessage(error, "Unable to load your dashboard.")}
         </p>
       </div>
     );

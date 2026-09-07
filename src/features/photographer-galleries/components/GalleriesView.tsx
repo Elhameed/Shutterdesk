@@ -11,7 +11,7 @@ import { GalleriesFilterBar } from "@/features/photographer-galleries/components
 import { GalleriesGrid } from "@/features/photographer-galleries/components/GalleriesGrid";
 import { GalleriesHeader } from "@/features/photographer-galleries/components/GalleriesHeader";
 import { GalleriesSearch } from "@/features/photographer-galleries/components/GalleriesSearch";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import {
   usePhotographerGalleries,
 } from "@/hooks/queries/photographer";
@@ -88,7 +88,7 @@ export function GalleriesView() {
     return (
       <div className="min-w-0 max-w-full p-4 sm:p-6 lg:p-8">
         <p className="text-sm text-bad-fg" role="alert">
-          {getQueryErrorMessage(error, "Unable to load galleries.")}
+          {getApiErrorMessage(error, "Unable to load galleries.")}
         </p>
       </div>
     );

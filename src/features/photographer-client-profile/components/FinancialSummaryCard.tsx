@@ -1,6 +1,6 @@
 import { CLIENT_PROFILE_COPY } from "@/constants/photographer-client-profile";
 import type { ClientProfileDetail } from "@/types/domains/photographer-client";
-import { formatClientCurrency } from "@/features/photographer-clients/lib/client-utils";
+import { formatRwf } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 
 type FinancialSummaryCardProps = {
@@ -17,7 +17,7 @@ export function FinancialSummaryCard({ financial }: FinancialSummaryCardProps) {
       </h2>
 
       <p className="mt-2 text-3xl font-bold text-ink">
-        {formatClientCurrency(financial.totalRevenue)}
+        {formatRwf(financial.totalRevenue)}
       </p>
 
       <div className="mt-4 flex items-center justify-between gap-3 text-sm">
@@ -29,7 +29,7 @@ export function FinancialSummaryCard({ financial }: FinancialSummaryCardProps) {
               financial.balance > 0 ? "text-bad-fg" : "text-ok-fg",
             )}
           >
-            {formatClientCurrency(financial.balance)}
+            {formatRwf(financial.balance)}
           </span>
         </span>
         <span className="text-ink-soft">

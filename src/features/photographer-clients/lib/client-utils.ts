@@ -2,7 +2,6 @@ import type {
   ClientStatusFilter,
   ClientTypeFilter,
 } from "@/constants/photographer-clients";
-import { formatRwf } from "@/lib/currency";
 import type { Client } from "@/types/domains/photographer-client";
 
 export function filterClients(
@@ -29,6 +28,3 @@ export function searchClients(clients: Client[], query: string): Client[] {
   );
 }
 
-export function formatClientCurrency(amount: number): string {
-  return formatRwf(amount);
-}

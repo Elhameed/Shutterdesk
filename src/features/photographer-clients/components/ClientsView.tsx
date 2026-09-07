@@ -17,7 +17,7 @@ import type {
 } from "@/constants/photographer-clients";
 import { CardGridSkeleton, ClientCardSkeleton, TableRowsSkeleton } from "@/components/skeletons";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
-import { getApiErrorMessage, getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { usePhotographerClients } from "@/hooks/queries/photographer";
 import { useAddClient } from "@/hooks/queries/photographer-mutations";
 import type { ClientCategory } from "@/types/domains/photographer-client";
@@ -32,7 +32,7 @@ export function ClientsView() {
   } = usePhotographerClients();
   const showSkeleton = useDelayedLoading(isPending);
   const [actionError, setActionError] = useState<string | null>(null);
-  const error = actionError ?? (loadError ? getQueryErrorMessage(loadError) : null);
+  const error = actionError ?? (loadError ? getApiErrorMessage(loadError) : null);
   const [view, setView] = useState<ClientViewMode>("card");
   const [statusFilter, setStatusFilter] = useState<ClientStatusFilter>("all");
   const [typeFilter, setTypeFilter] = useState<ClientTypeFilter>("all");

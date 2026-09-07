@@ -23,7 +23,7 @@ import {
   type CalendarDate,
   type CalendarViewMode,
 } from "@/features/photographer-calendar/lib/calendar-navigation";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { usePhotographerCalendar } from "@/hooks/queries/photographer";
 import { queryKeys } from "@/lib/query-keys";
 
@@ -48,7 +48,7 @@ export function CalendarView() {
   } = usePhotographerCalendar(month, year);
 
   const error = queryError
-    ? getQueryErrorMessage(queryError, "Unable to load calendar.")
+    ? getApiErrorMessage(queryError, "Unable to load calendar.")
     : null;
 
   useEffect(() => {

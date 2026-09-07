@@ -29,13 +29,6 @@ export function getApiErrorMessage(error: unknown, fallback = "Something went wr
   return fallback;
 }
 
-export function getQueryErrorMessage(
-  error: unknown,
-  fallback = "Something went wrong.",
-) {
-  return getApiErrorMessage(error, fallback);
-}
-
 /**
  * Per-field validation failures from the API, keyed by field name.
  *

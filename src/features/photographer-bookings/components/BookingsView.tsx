@@ -10,7 +10,7 @@ import {
 } from "@/features/photographer-bookings/lib/booking-utils";
 import type { BookingFilter } from "@/constants/photographer-bookings";
 import { BOOKINGS_PAGE_SIZE } from "@/constants/photographer-bookings";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import {
   usePhotographerBookings,
 } from "@/hooks/queries/photographer";
@@ -50,7 +50,7 @@ export function BookingsView() {
   }, [currentPage, pagination.totalPages]);
 
   const errorMessage = error
-    ? getQueryErrorMessage(error, "Unable to load bookings.")
+    ? getApiErrorMessage(error, "Unable to load bookings.")
     : null;
 
   return (

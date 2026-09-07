@@ -1,4 +1,4 @@
-import { SearchField } from "@/components/photographer/SearchField";
+import { SearchField } from "@/components/common/SearchField";
 import { BOOKINGS_COPY } from "@/constants/photographer-bookings";
 
 type BookingsSearchProps = {

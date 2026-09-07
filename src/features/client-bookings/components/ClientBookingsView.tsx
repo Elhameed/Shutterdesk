@@ -11,7 +11,7 @@ import {
 } from "@/constants/status-colors";
 import { ROUTES } from "@/constants/routes";
 import type { ClientBookingFilter } from "@/constants/client-bookings";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import {
   useClientBookings,
 } from "@/hooks/queries/client";
@@ -58,7 +58,7 @@ export function ClientBookingsView() {
   }, [allBookings, filter, search]);
 
   const errorMessage = error
-    ? getQueryErrorMessage(error, "Unable to load bookings.")
+    ? getApiErrorMessage(error, "Unable to load bookings.")
     : null;
 
   return (
