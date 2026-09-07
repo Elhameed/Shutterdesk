@@ -228,7 +228,8 @@ export async function createPhotographerService(
     },
   });
 
-  return toApiServicePackage(pkg);
+  // A newly created package has no bookings, so no revenue.
+  return toApiServicePackage(pkg, 0);
 }
 
 export async function updatePhotographerService(
@@ -274,7 +275,8 @@ export async function updatePhotographerService(
     },
   });
 
-  return toApiServicePackage(pkg);
+  const revenueMap = await loadStudioServicePackageRevenue(studio.id);
+  return toApiServicePackage(pkg, resolveServicePackageRevenue(pkg.id, revenueMap));
 }
 
 async function buildDuplicateTitle(studioId: string, title: string) {

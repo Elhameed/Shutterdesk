@@ -1,5 +1,4 @@
 import type { Booking, StudioClient, User } from "@prisma/client";
-import { prisma } from "../lib/prisma.js";
 
 type AvatarSources = {
   userAvatarUrl?: string | null;
@@ -55,32 +54,3 @@ const bookingAvatarInclude = {
 } as const;
 
 export { bookingAvatarInclude };
-
-export async function syncClientAvatarAcrossRecords(
-  clientUserId: string,
-  avatarUrl: string,
-) {
-  const user = await prisma.user.findUnique({ where: { id: clientUserId } });
-  if (!user) return;
-
-  const email = user.email.toLowerCase();
-
-  await prisma.$transaction([
-    prisma.studioClient.updateMany({
-      where: {
-        OR: [{ linkedUserId: clientUserId }, { email }],
-      },
-      data: { avatarAssetKey: avatarUrl },
-    }),
-    prisma.booking.updateMany({
-      where: {
-        OR: [{ clientUserId }, { clientEmail: email }],
-      },
-      data: { clientAvatarAssetKey: avatarUrl },
-    }),
-    prisma.paymentVerification.updateMany({
-      where: { clientEmail: email },
-      data: { clientAvatarAssetKey: avatarUrl },
-    }),
-  ]);
-}

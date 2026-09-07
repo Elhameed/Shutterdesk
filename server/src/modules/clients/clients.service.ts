@@ -12,7 +12,11 @@ import {
   type PaginationParams,
 } from "../../lib/pagination.js";
 import { AppError } from "../../middleware/error-handler.js";
-import { toApiClient, toApiClientProfile } from "./clients.mapper.js";
+import {
+  NO_CLIENT_METRICS,
+  toApiClient,
+  toApiClientProfile,
+} from "./clients.mapper.js";
 
 type CreateClientInput = {
   name: string;
@@ -234,6 +238,8 @@ export async function createStudioClient(
       ...client,
       linkedUser: linkedUser?.role === "client" ? linkedUser : null,
     }),
+    // A client created just now has no bookings, so no sessions or revenue.
+    NO_CLIENT_METRICS,
   );
 }
 

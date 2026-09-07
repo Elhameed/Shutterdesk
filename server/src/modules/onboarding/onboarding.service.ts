@@ -5,6 +5,7 @@ import { loadEnv } from "../../config/env.js";
 import { normalizeStoredMediaUrl } from "../../lib/cloudinary.js";
 import { signAccessToken } from "../../lib/jwt.js";
 import { prisma } from "../../lib/prisma.js";
+import { syncStudioNameAcrossRecords } from "../../domain/photographer-identity-sync.js";
 import { slugify } from "../../lib/slug.js";
 import { toPublicUserWithOnboarding } from "../../domain/user-mapper.js";
 
@@ -171,6 +172,12 @@ async function createStudioForPhotographer(
         data: { avatarUrl: avatarKey },
       });
     }
+
+    // Completing onboarding against an existing studio can rename it, and
+    // PaymentRecord copies the studio name. Only the settings panel synced that
+    // before, so a rename through this path left payment history showing the
+    // old name.
+    await syncStudioNameAcrossRecords(userId, name);
 
     return studio;
   }

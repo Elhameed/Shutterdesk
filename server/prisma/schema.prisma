@@ -185,7 +185,6 @@ model ServicePackage {
   isActive       Boolean        @default(true) @map("is_active")
   coverAssetKey  String?        @map("cover_asset_key")
   metadata       Json?
-  totalRevenue   Int            @default(0) @map("total_revenue")
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")
 
@@ -209,9 +208,6 @@ model StudioClient {
   bannerAssetKey  String?        @map("banner_asset_key")
   location        String?
   internalNotes   String?        @map("internal_notes")
-  sessions        Int            @default(0)
-  revenue         Int            @default(0)
-  balance         Int            @default(0)
   reliability     Int            @default(100)
   rating          String         @default("good")
   memberSince     DateTime       @default(now()) @map("member_since")

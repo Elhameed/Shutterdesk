@@ -34,9 +34,6 @@ const CRM_CLIENTS: Array<{
   tier: "vip" | "active" | "new";
   avatarAssetKey: string;
   bannerAssetKey: string;
-  sessions: number;
-  revenue: number;
-  balance: number;
   reliability: number;
   rating: string;
   location: string;
@@ -59,9 +56,6 @@ const CRM_CLIENTS: Array<{
     tier: "vip",
     avatarAssetKey: "landing/testimonials/testimonial-sarah-jenkins-avatar",
     bannerAssetKey: "landing/gallery/wedding/gallery-wedding-couple",
-    sessions: 12,
-    revenue: 2_300_000,
-    balance: 410_000,
     reliability: 98,
     rating: "excellent",
     location: "Kigali, Rwanda",
@@ -173,9 +167,6 @@ const CRM_CLIENTS: Array<{
     tier: "active",
     avatarAssetKey: "landing/testimonials/testimonial-marcus-thorne-avatar",
     bannerAssetKey: "landing/gallery/wedding/gallery-wedding-celebration",
-    sessions: 8,
-    revenue: 1_020_000,
-    balance: 180_000,
     reliability: 92,
     rating: "good",
     location: "Kigali, Rwanda",
@@ -242,9 +233,6 @@ const CRM_CLIENTS: Array<{
     tier: "new",
     avatarAssetKey: "photographer/booking-elena-rodriguez-avatar",
     bannerAssetKey: "landing/gallery/portrait/gallery-portrait-outdoor",
-    sessions: 1,
-    revenue: 65_000,
-    balance: 0,
     reliability: 100,
     rating: "good",
     location: "Kigali, Rwanda",
@@ -310,9 +298,6 @@ const CRM_CLIENTS: Array<{
     tier: "active",
     avatarAssetKey: "app/user-avatar",
     bannerAssetKey: "landing/gallery/portrait/gallery-portrait-creative",
-    sessions: 5,
-    revenue: 480_000,
-    balance: 40_000,
     reliability: 95,
     rating: "good",
     location: "Kigali, Rwanda",
@@ -643,9 +628,6 @@ async function main() {
         tier: crmClient.tier,
         avatarAssetKey: crmClient.avatarAssetKey,
         bannerAssetKey: crmClient.bannerAssetKey,
-        sessions: crmClient.sessions,
-        revenue: crmClient.revenue,
-        balance: crmClient.balance,
         reliability: crmClient.reliability,
         rating: crmClient.rating,
         location: crmClient.location,
@@ -670,9 +652,6 @@ async function main() {
         tier: crmClient.tier,
         avatarAssetKey: crmClient.avatarAssetKey,
         bannerAssetKey: crmClient.bannerAssetKey,
-        sessions: crmClient.sessions,
-        revenue: crmClient.revenue,
-        balance: crmClient.balance,
         reliability: crmClient.reliability,
         rating: crmClient.rating,
         location: crmClient.location,
@@ -712,7 +691,6 @@ async function main() {
       duration: "fullday",
       depositPercent: 50,
       isActive: true,
-      totalRevenue: 5_400_000,
       metadata: {
         badges: ["popular", "public"],
         photographers: 2,
@@ -742,7 +720,6 @@ async function main() {
       duration: "1hr",
       depositPercent: 30,
       isActive: true,
-      totalRevenue: 950_000,
       metadata: {
         badges: ["new", "public"],
         photographers: 1,
@@ -770,7 +747,6 @@ async function main() {
       duration: "fullday",
       depositPercent: 40,
       isActive: false,
-      totalRevenue: 1_780_000,
       metadata: {
         badges: ["featured", "private"],
         photographers: 1,
@@ -798,7 +774,6 @@ async function main() {
       duration: "2hr",
       depositPercent: 25,
       isActive: true,
-      totalRevenue: 2_550_000,
       metadata: {
         badges: ["public"],
         photographers: 1,
@@ -830,7 +805,6 @@ async function main() {
         duration: seedPkg.duration,
         depositPercent: seedPkg.depositPercent,
         isActive: seedPkg.isActive,
-        totalRevenue: seedPkg.totalRevenue,
         metadata: seedPkg.metadata,
       },
       create: {
@@ -844,7 +818,6 @@ async function main() {
         duration: seedPkg.duration,
         depositPercent: seedPkg.depositPercent,
         isActive: seedPkg.isActive,
-        totalRevenue: seedPkg.totalRevenue,
         metadata: seedPkg.metadata,
       },
     });
@@ -864,7 +837,6 @@ async function main() {
       duration: "fullday",
       depositPercent: 40,
       isActive: true,
-      totalRevenue: 1_100_000,
       metadata: {
         badges: ["public", "featured"],
         photographers: 1,
@@ -888,7 +860,6 @@ async function main() {
       duration: "1hr",
       depositPercent: 25,
       isActive: true,
-      totalRevenue: 420_000,
       metadata: {
         badges: ["public", "new"],
         photographers: 1,
@@ -915,7 +886,6 @@ async function main() {
         duration: seedPkg.duration,
         depositPercent: seedPkg.depositPercent,
         isActive: seedPkg.isActive,
-        totalRevenue: seedPkg.totalRevenue,
         metadata: seedPkg.metadata,
       },
       create: {
@@ -929,7 +899,6 @@ async function main() {
         duration: seedPkg.duration,
         depositPercent: seedPkg.depositPercent,
         isActive: seedPkg.isActive,
-        totalRevenue: seedPkg.totalRevenue,
         metadata: seedPkg.metadata,
       },
     });

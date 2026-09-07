@@ -73,7 +73,9 @@ export async function getClientGalleryDetail(
     data: canViewPhotos
       ? {
           isNew: false,
-          views: gallery.views + 1,
+          // Atomic: a read-modify-write loses counts when two viewers
+          // open the gallery at the same time.
+          views: { increment: 1 },
           activities: activities as Prisma.InputJsonValue,
         }
       : { activities: activities as Prisma.InputJsonValue },
@@ -142,7 +144,7 @@ export async function recordClientGalleryDownload(
 
   await prisma.gallery.update({
     where: { id: gallery.id },
-    data: { downloads: gallery.downloads + 1 },
+    data: { downloads: { increment: 1 } },
   });
 
   return {
@@ -184,7 +186,7 @@ export async function getClientPhotoDownloadUrl(
 
   await prisma.gallery.update({
     where: { id: gallery.id },
-    data: { downloads: gallery.downloads + 1 },
+    data: { downloads: { increment: 1 } },
   });
 
   return {
