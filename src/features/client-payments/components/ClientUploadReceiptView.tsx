@@ -18,29 +18,20 @@ import { clientApi } from "@/services/client";
 import { uploadReceiptToCloudinary } from "@/lib/cloudinary-upload";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
+import { useClientPaymentRequests } from "@/hooks/queries/client";
 import { FormSkeleton } from "@/components/skeletons";
-import type { PaymentRequest } from "@/types/domains/booking";
 
 export function ClientUploadReceiptView() {
   const copy = CLIENT_PAYMENTS_COPY.upload;
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [requests, setRequests] = useState<PaymentRequest[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const showSkeleton = useDelayedLoading(isLoading);
+  const { data: requests = [], isPending } = useClientPaymentRequests();
+  const showSkeleton = useDelayedLoading(isPending);
 
   const bookingParam = searchParams.get("booking") ?? "";
   const paymentParam = searchParams.get("payment") ?? "";
   const optionParam = searchParams.get("option");
 
-  useEffect(() => {
-    async function loadRequests() {
-      const data = await clientApi.payments.listRequests();
-      setRequests(data);
-      setIsLoading(false);
-    }
-    void loadRequests();
-  }, []);
 
   const initialRequest = useMemo(() => {
     if (paymentParam) {
@@ -124,7 +115,7 @@ export function ClientUploadReceiptView() {
     return <FormSkeleton fields={4} />;
   }
 
-  if (isLoading) {
+  if (isPending) {
     return null;
   }
 
