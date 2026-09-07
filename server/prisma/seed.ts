@@ -3,6 +3,41 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+/**
+ * An instant offset from the moment the seed runs.
+ *
+ * Demo dates used to be hardcoded ("2026-06-28"), which meant the demo data
+ * expired: some months after they were written every seeded session, payment
+ * and upload sat in the past, so the dashboard showed no upcoming shoots and
+ * RWF 0 revenue. Anchoring to the run instant keeps the demo login the README
+ * advertises looking like a working studio whenever someone seeds it.
+ *
+ * `memberSince` and `createdAt` stay absolute on purpose — "a client since
+ * 2022" reads correctly no matter when you seed.
+ */
+function daysFromNow(offsetDays: number, hour = 12, minute = 0): Date {
+  const at = new Date();
+  at.setDate(at.getDate() + offsetDays);
+  at.setHours(hour, minute, 0, 0);
+  return at;
+}
+
+/**
+ * A recent instant guaranteed to fall inside the current calendar month.
+ *
+ * The dashboard's "Monthly Revenue" tile sums payments in the current month, so
+ * without at least one the demo studio reads RWF 0. A plain `daysFromNow(-3)`
+ * would slip into the previous month when seeding on the 1st or 2nd, so this
+ * clamps to the start of the month instead.
+ */
+function earlierThisMonth(daysBack = 3, hour = 10): Date {
+  const at = daysFromNow(-daysBack, hour);
+  const startOfMonth = new Date();
+  startOfMonth.setDate(1);
+  startOfMonth.setHours(hour, 0, 0, 0);
+  return at < startOfMonth ? startOfMonth : at;
+}
+
 const DEMO_PASSWORD = "password123";
 
 const DEMO_USERS = [
@@ -60,7 +95,7 @@ const CRM_CLIENTS: Array<{
     rating: "excellent",
     location: "Kigali, Rwanda",
     memberSince: new Date("2022-10-01"),
-    lastBookingAt: new Date("2026-06-10"),
+    lastBookingAt: daysFromNow(-11),
     createdAt: new Date("2022-03-14"),
     linkToUserEmail: "immaculee.niyonsaba@gmail.com",
     insights: { retention: "High", favType: "Wedding", avgValue: 190_000 },
@@ -171,7 +206,7 @@ const CRM_CLIENTS: Array<{
     rating: "good",
     location: "Kigali, Rwanda",
     memberSince: new Date("2023-01-01"),
-    lastBookingAt: new Date("2026-05-22"),
+    lastBookingAt: daysFromNow(-38),
     createdAt: new Date("2023-01-20"),
     insights: { retention: "Medium", favType: "Commercial", avgValue: 127_500 },
     preferences: {
@@ -237,7 +272,7 @@ const CRM_CLIENTS: Array<{
     rating: "good",
     location: "Kigali, Rwanda",
     memberSince: new Date("2025-04-01"),
-    lastBookingAt: new Date("2026-05-01"),
+    lastBookingAt: daysFromNow(-60),
     createdAt: new Date("2025-04-15"),
     insights: { retention: "New", favType: "Portrait", avgValue: 65_000 },
     preferences: {
@@ -302,7 +337,7 @@ const CRM_CLIENTS: Array<{
     rating: "good",
     location: "Kigali, Rwanda",
     memberSince: new Date("2023-08-01"),
-    lastBookingAt: new Date("2026-04-18"),
+    lastBookingAt: daysFromNow(-84),
     createdAt: new Date("2023-08-12"),
     insights: { retention: "High", favType: "Editorial", avgValue: 96_000 },
     preferences: {
@@ -906,6 +941,47 @@ async function main() {
 
   console.log(`Seeded Eric service packages: ${ERIC_SERVICE_PACKAGES.length}`);
 
+  /**
+   * Demo session dates are relative to the seed run, not absolute.
+   *
+   * They used to be hardcoded ("2026-06-28"), so a few months after they were
+   * written every seeded session was in the past: the dashboard showed no
+   * upcoming shoots and RWF 0 monthly revenue, and the demo login the README
+   * advertises looked like a broken app. The notification seeds below already
+   * used `hoursAgo`/`daysAgo` for exactly this reason — this applies the same
+   * rule to bookings.
+   *
+   * The label columns are derived from the same instant rather than written out
+   * by hand, so `sessionAt` and `sessionDateLabel` cannot drift apart.
+   */
+  const sessionOn = (offsetDays: number, hour: number, minute = 0) => {
+    const at = new Date();
+    at.setDate(at.getDate() + offsetDays);
+    at.setHours(hour, minute, 0, 0);
+    return {
+      sessionAt: at,
+      sessionDateLabel: at.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      }),
+      sessionTime: at.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }),
+    };
+  };
+
+  /** A "Jun 10, 2026 • 09:14 AM" style stamp, offset from today. */
+  const stampOn = (offsetDays: number, hour: number, minute = 0) => {
+    const { sessionDateLabel, sessionTime } = sessionOn(offsetDays, hour, minute);
+    return `${sessionDateLabel} • ${sessionTime}`;
+  };
+
+  /** Just the date half of the above. */
+  const dateOn = (offsetDays: number) => sessionOn(offsetDays, 12).sessionDateLabel;
+
   const BOOKING_SEEDS = [
     {
       reference: "BK-7742",
@@ -913,9 +989,7 @@ async function main() {
       packageName: "Premium Wedding Package",
       packageDetail: "Full Day + Album",
       packagePrice: 650_000,
-      sessionAt: new Date("2026-06-28T10:00:00"),
-      sessionDateLabel: "Jun 28, 2026",
-      sessionTime: "10:00 AM",
+      ...sessionOn(21, 10),
       timeWindow: "10:00 AM - 6:00 PM (8 Hours)",
       venue: "Kigali Convention Centre, Main Hall",
       status: "confirmed" as const,
@@ -930,14 +1004,14 @@ async function main() {
         receiptAssetKey: "photographer/booking-receipt-preview",
         amountPaid: 325_000,
         transactionRef: "BK-7742-XP",
-        paymentDate: "Jun 12, 2026",
+        paymentDate: dateOn(-9),
         verificationStatus: "pending",
         note: "MoMo receipt uploaded — awaiting studio verification.",
       },
       timeline: [
-        { id: "1", title: "Booking Requested", timestamp: "Jun 10, 2026 • 09:14 AM", state: "completed" },
-        { id: "2", title: "Package Selected", timestamp: "Jun 10, 2026 • 09:45 AM", state: "completed" },
-        { id: "3", title: "Receipt Uploaded", timestamp: "Jun 12, 2026 • 02:30 PM", state: "completed", note: "Here is the MoMo slip for the 50% deposit. Thank you!" },
+        { id: "1", title: "Booking Requested", timestamp: stampOn(-11, 9, 14), state: "completed" },
+        { id: "2", title: "Package Selected", timestamp: stampOn(-11, 9, 45), state: "completed" },
+        { id: "3", title: "Receipt Uploaded", timestamp: stampOn(-9, 14, 30), state: "completed", note: "Here is the MoMo slip for the 50% deposit. Thank you!" },
         { id: "4", title: "Awaiting Verification", timestamp: "Current Status", state: "current" },
         { id: "5", title: "Confirmed", timestamp: "Upcoming", state: "upcoming" },
       ],
@@ -949,9 +1023,7 @@ async function main() {
       packageName: "Editorial Portrait Session",
       packageDetail: "4 Hours Studio",
       packagePrice: 340_000,
-      sessionAt: new Date("2026-07-02T14:00:00"),
-      sessionDateLabel: "Jul 02, 2026",
-      sessionTime: "02:00 PM",
+      ...sessionOn(7, 14),
       status: "pending" as const,
       paymentStatus: "partial" as const,
       detailStatus: "pending",
@@ -962,7 +1034,7 @@ async function main() {
         receiptAssetKey: "photographer/booking-receipt-preview",
         amountPaid: 170_000,
         transactionRef: "BK-7743-XP",
-        paymentDate: "Jun 18, 2026",
+        paymentDate: dateOn(-3),
         verificationStatus: "pending",
       },
       depositRequest: { amount: 170_000, status: "unpaid" as const },
@@ -973,9 +1045,7 @@ async function main() {
       packageName: "Family Legacy Shoot",
       packageDetail: "Outdoor Location",
       packagePrice: 65_000,
-      sessionAt: new Date("2026-05-01T16:30:00"),
-      sessionDateLabel: "May 01, 2026",
-      sessionTime: "04:30 PM",
+      ...sessionOn(-60, 16, 30),
       status: "completed" as const,
       paymentStatus: "paid" as const,
       detailStatus: "completed",
@@ -987,7 +1057,7 @@ async function main() {
         receiptAssetKey: "photographer/booking-receipt-preview",
         amountPaid: 65_000,
         transactionRef: "BK-7744-XP",
-        paymentDate: "May 01, 2026",
+        paymentDate: dateOn(-60),
         verificationStatus: "verified",
       },
     },
@@ -997,9 +1067,7 @@ async function main() {
       packageName: "Headshot Mini-Session",
       packageDetail: "In-Studio Express",
       packagePrice: 65_000,
-      sessionAt: new Date("2026-06-18T09:00:00"),
-      sessionDateLabel: "Jun 18, 2026",
-      sessionTime: "09:00 AM",
+      ...sessionOn(3, 9),
       status: "pending" as const,
       paymentStatus: "unpaid" as const,
       detailStatus: "pending",
@@ -1099,7 +1167,7 @@ async function main() {
           seed.packageDetail,
           "Edited digital gallery",
         ],
-        requestedAt: new Date("2026-06-10T09:00:00"),
+        requestedAt: daysFromNow(-11, 9),
       },
     });
 
@@ -1157,7 +1225,7 @@ async function main() {
           receiptAssetKey: "photographer/booking-receipt-preview",
           status: "pending",
           highPriority: true,
-          submittedAt: new Date("2026-06-12T14:30:00"),
+          submittedAt: daysFromNow(-9, 14, 30),
         },
         create: {
           id: "seed-verification-BK-7742",
@@ -1175,7 +1243,7 @@ async function main() {
           receiptAssetKey: "photographer/booking-receipt-preview",
           status: "pending",
           highPriority: true,
-          submittedAt: new Date("2026-06-12T14:30:00"),
+          submittedAt: daysFromNow(-9, 14, 30),
         },
       });
     }
@@ -1188,7 +1256,7 @@ async function main() {
         type: "balance",
         amount: 325_000,
         status: "unpaid",
-        dueDate: new Date("2026-06-30T00:00:00"),
+        dueDate: daysFromNow(19, 0),
         invoiceRef: "INV-2026-089",
         bookingReference: "BK-7742",
         bookingTitle: "Premium Wedding Session",
@@ -1200,7 +1268,7 @@ async function main() {
         type: "balance",
         amount: 325_000,
         status: "unpaid",
-        dueDate: new Date("2026-06-30T00:00:00"),
+        dueDate: daysFromNow(19, 0),
         invoiceRef: "INV-2026-089",
         bookingReference: "BK-7742",
         bookingTitle: "Premium Wedding Session",
@@ -1212,14 +1280,14 @@ async function main() {
         id: "seed-record-immaculee-1",
         bookingTitle: "Family Portrait Session",
         amount: 85_000,
-        paidAt: new Date("2026-05-10T10:00:00"),
+        paidAt: earlierThisMonth(),
         status: "approved" as const,
       },
       {
         id: "seed-record-immaculee-2",
         bookingTitle: "Engagement Mini Session",
         amount: 120_000,
-        paidAt: new Date("2026-03-02T14:00:00"),
+        paidAt: daysFromNow(-121, 14),
         status: "approved" as const,
       },
     ];
@@ -1265,7 +1333,7 @@ async function main() {
         studioName: studio.name,
         bookingTitle: "Family Legacy Shoot",
         amount: 65_000,
-        paidAt: new Date("2026-05-01T16:30:00"),
+        paidAt: daysFromNow(-60, 16, 30),
         status: "approved",
         receiptAssetKey: "photographer/booking-receipt-preview",
       },
@@ -1277,7 +1345,7 @@ async function main() {
         studioName: studio.name,
         bookingTitle: "Family Legacy Shoot",
         amount: 65_000,
-        paidAt: new Date("2026-05-01T16:30:00"),
+        paidAt: daysFromNow(-60, 16, 30),
         status: "approved",
         receiptAssetKey: "photographer/booking-receipt-preview",
       },
@@ -1356,7 +1424,7 @@ async function main() {
         storageUsedGb: 4.8,
         storageTotalGb: 10,
         isNew: true,
-        uploadedAt: new Date("2026-05-15T10:00:00"),
+        uploadedAt: daysFromNow(-47, 10),
         delivery: {
           accessPin: "4827",
           expiresAt: "June 30, 2026",
@@ -1399,7 +1467,7 @@ async function main() {
         storageUsedGb: 4.8,
         storageTotalGb: 10,
         isNew: true,
-        uploadedAt: new Date("2026-05-15T10:00:00"),
+        uploadedAt: daysFromNow(-47, 10),
         delivery: {
           accessPin: "4827",
           expiresAt: "June 30, 2026",
@@ -1445,7 +1513,7 @@ async function main() {
         shootDate: "Apr 02, 2026",
         location: "Kigali, Rwanda",
         storageUsedGb: 1.2,
-        uploadedAt: new Date("2026-04-02T14:00:00"),
+        uploadedAt: daysFromNow(-90, 14),
       },
       create: {
         id: "seed-gallery-immaculee-portrait",
@@ -1465,7 +1533,7 @@ async function main() {
         shootDate: "Apr 02, 2026",
         location: "Kigali, Rwanda",
         storageUsedGb: 1.2,
-        uploadedAt: new Date("2026-04-02T14:00:00"),
+        uploadedAt: daysFromNow(-90, 14),
       },
     });
 
@@ -1497,7 +1565,7 @@ async function main() {
         shootDate: "June 14, 2026",
         location: "Kigali Convention Centre, Kigali",
         storageUsedGb: 1.5,
-        uploadedAt: new Date("2026-05-22T09:00:00"),
+        uploadedAt: daysFromNow(-38, 9),
       },
       create: {
         id: "seed-gallery-mugisha-wedding",
@@ -1517,7 +1585,7 @@ async function main() {
         shootDate: "June 14, 2026",
         location: "Kigali Convention Centre, Kigali",
         storageUsedGb: 1.5,
-        uploadedAt: new Date("2026-05-22T09:00:00"),
+        uploadedAt: daysFromNow(-38, 9),
       },
     });
 
