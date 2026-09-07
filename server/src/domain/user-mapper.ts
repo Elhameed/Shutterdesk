@@ -1,15 +1,10 @@
 import type { User } from "@prisma/client";
 import { resolveNeedsOnboarding } from "./onboarding-status.js";
 
-export type PublicUser = {
-  userId: string;
-  fullName: string;
-  email: string;
-  role: User["role"];
-  phone: string | null;
-  avatarUrl: string | null;
-  needsOnboarding: boolean;
-};
+import type { ApiUser } from "../contracts/user.js";
+
+/** The server's historic name for the shared `ApiUser` contract. */
+export type PublicUser = ApiUser;
 
 export function toPublicUser(
   user: User,

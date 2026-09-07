@@ -31,6 +31,10 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
+        // The API contract, declared once under the server and consumed here.
+        // Type-only, so nothing from the server reaches the bundle — see
+        // server/src/contracts/README.md.
+        "@contracts": path.resolve(__dirname, "./server/src/contracts"),
       },
     },
   };

@@ -1,5 +1,28 @@
-export type BookingPaymentStatus = "paid" | "partial" | "unpaid";
-export type BookingStatus = "confirmed" | "pending" | "completed" | "cancelled";
+import type {
+  ApiBooking,
+  ApiBookingDetail,
+  ApiPaymentRequest,
+  BookingActions,
+  BookingDetailStatus,
+  BookingLifecycleStage,
+  BookingPaymentStatus,
+  BookingPrimaryAction,
+  BookingStatus,
+} from "@contracts/index.js";
+
+// The wire types come from the shared contract; re-exported here so the
+// existing `@/types/domains/booking` imports across the app keep working.
+export type {
+  ApiBooking,
+  ApiBookingDetail,
+  ApiPaymentRequest,
+  BookingActions,
+  BookingDetailStatus,
+  BookingLifecycleStage,
+  BookingPaymentStatus,
+  BookingPrimaryAction,
+  BookingStatus,
+};
 
 export type Booking = {
   id: string;
@@ -13,43 +36,8 @@ export type Booking = {
   time: string;
   payment: BookingPaymentStatus;
   status: BookingStatus;
-  actions: {
-    canView: boolean;
-    canConfirm: boolean;
-    canCancel: boolean;
-    confirmDisabled?: boolean;
-  };
+  actions: BookingActions;
 };
-
-export type BookingLifecycleStage =
-  | "awaiting_deposit"
-  | "awaiting_verification"
-  | "confirmed"
-  | "awaiting_balance"
-  | "session_scheduled"
-  | "session_completed"
-  | "gallery_delivery"
-  | "cancelled";
-
-export type BookingPrimaryAction =
-  | {
-      type: "link";
-      label: string;
-      href: string;
-      variant: "default" | "outline";
-    }
-  | {
-      type: "markComplete";
-      label: string;
-      variant: "default" | "outline";
-    };
-
-export type BookingDetailStatus =
-  | "pendingVerification"
-  | "confirmed"
-  | "pending"
-  | "completed"
-  | "cancelled";
 
 export type TimelineStep = {
   id: string;
@@ -132,34 +120,6 @@ export type PaymentRequest = {
   amountPaid: number;
   /** Remaining amount to settle the booking in full. */
   fullAmount: number;
-};
-
-export type ApiBooking = {
-  id: string;
-  studioId: string;
-  clientName: string;
-  email: string;
-  avatarAssetKey: string | null;
-  packageName: string;
-  packageDetail: string;
-  date: string;
-  time: string;
-  payment: BookingPaymentStatus;
-  status: BookingStatus;
-  actions: Booking["actions"];
-};
-
-export type ApiBookingDetail = Omit<BookingDetail, "payment" | "client" | "package"> & {
-  client: Omit<BookingDetail["client"], "avatar"> & {
-    avatarAssetKey: string | null;
-  };
-  package: Omit<BookingDetail["package"], "coverImage"> & {
-    coverAssetKey: string;
-  };
-  payment: Omit<BookingDetail["payment"], "receiptImage"> & {
-    receiptAssetKey: string | null;
-    outstandingDue: number;
-  };
 };
 
 export const BOOKING_PROGRESS_STEP_COUNT = 7;

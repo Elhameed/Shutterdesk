@@ -1,27 +1,14 @@
-export type UserRole = "photographer" | "client";
+import type {
+  ApiErrorBody,
+  ApiFieldError,
+  ApiUser,
+  UserRole,
+} from "@contracts/index.js";
 
-export type User = {
-  userId: string;
-  fullName: string;
-  email: string;
-  role: UserRole;
-  phone?: string | null;
-  avatarUrl?: string | null;
-  needsOnboarding?: boolean;
-};
+export type { ApiFieldError, UserRole };
 
-export type ApiFieldError = {
-  field: string;
-  message: string;
-};
+/** The API's error body. Named `ApiError` here for the existing call sites. */
+export type ApiError = ApiErrorBody;
 
-export type ApiError = {
-  message: string;
-  statusCode?: number;
-  /**
-   * Per-field validation failures. The API returns these from every zod-guarded
-   * route; they were previously absent from this type and read nowhere, so
-   * every validation failure collapsed into one generic banner message.
-   */
-  errors?: ApiFieldError[];
-};
+/** The authenticated user. The server calls this `ApiUser`. */
+export type User = ApiUser;

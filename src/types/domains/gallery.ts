@@ -1,17 +1,47 @@
 import type {
+  ApiGallery,
+  ApiGalleryDetailMeta,
+  ApiGalleryPhoto,
+  GalleryActivity,
+  GalleryActivityType,
+  GalleryAnalyticsData,
+  GalleryCategory,
+  GalleryDeliveryData,
+  GalleryDeliveryStep,
+  GalleryDeliveryStepStatus,
+  GallerySettingsData,
+  GalleryStatus,
+  GalleryVisibility,
+  GalleryWorkflowStatus,
+} from "@contracts/index.js";
+
+// Wire types come from the shared contract; re-exported so existing
+// `@/types/domains/gallery` imports keep working.
+export type {
+  ApiGallery,
+  ApiGalleryPhoto,
+  GalleryActivity,
+  GalleryActivityType,
+  GalleryAnalyticsData,
+  GalleryCategory,
+  GalleryDeliveryData,
+  GalleryDeliveryStep,
+  GalleryDeliveryStepStatus,
+  GallerySettingsData,
+  GalleryStatus,
+  GalleryVisibility,
+  GalleryWorkflowStatus,
+};
+
+/** The server calls this `ApiGalleryDetailMeta`. */
+export type GalleryDetailMeta = ApiGalleryDetailMeta;
+
+import type {
   GalleryCategoryFilter,
   GallerySortOption,
   GalleryStatusFilter,
 } from "@/constants/photographer-galleries";
 
-export type GalleryCategory =
-  | "wedding"
-  | "portrait"
-  | "graduation"
-  | "commercial";
-
-export type GalleryStatus = "published" | "draft" | "archived";
-export type GalleryWorkflowStatus = "delivered" | "ready" | "editing";
 
 export type PhotographerGallery = {
   id: string;
@@ -39,38 +69,7 @@ export type GalleryPhoto = {
   alt: string;
 };
 
-export type GalleryActivityType = "favorite" | "share" | "download" | "view";
 
-export type GalleryActivity = {
-  id: string;
-  type: GalleryActivityType;
-  description: string;
-  timestamp: string;
-};
-
-export type GalleryDeliveryStepStatus = "completed" | "current" | "upcoming";
-
-export type GalleryDeliveryStep = {
-  id: string;
-  label: string;
-  date?: string;
-  status: GalleryDeliveryStepStatus;
-};
-
-export type GalleryDeliveryData = {
-  privateLink: string;
-  accessPin?: string;
-  pinRequired?: boolean;
-  pinVerified?: boolean;
-  expired?: boolean;
-  expiresAt: string;
-  downloadEnabled: boolean;
-  highResDownloads: boolean;
-  watermarkEnabled: boolean;
-  clientNotified: boolean;
-  deliveryNotes: string;
-  steps: GalleryDeliveryStep[];
-};
 
 /**
  * Only what the API actually measures. Unique visitors, session duration,
@@ -78,68 +77,11 @@ export type GalleryDeliveryData = {
  * from formulas rather than tracked, and have been removed rather than shown as
  * if they were real.
  */
-export type GalleryAnalyticsData = {
-  totalViews: number;
-  totalDownloads: number;
-};
-
-export type GalleryVisibility = "public" | "private" | "password";
-
-export type GallerySettingsData = {
-  visibility: GalleryVisibility;
-  allowSharing: boolean;
-  allowFavorites: boolean;
-  allowDownloads: boolean;
-  showPhotographerCredit: boolean;
-  emailNotifications: boolean;
-  /** `null` means the gallery never expires. */
-  expirationDate: string | null;
-  slug: string;
-  accessPin?: string;
-};
-
-export type GalleryDetailMeta = {
-  clientId: string;
-  clientEmail: string;
-  clientInitials: string;
-  shootDate: string;
-  location: string;
-  activities: GalleryActivity[];
-  delivery: GalleryDeliveryData;
-  analytics: GalleryAnalyticsData;
-  settings: GallerySettingsData;
-};
 
 export type GalleryDetail = {
   gallery: PhotographerGallery;
   meta: GalleryDetailMeta;
   photos: GalleryPhoto[];
-};
-
-export type ApiGallery = {
-  id: string;
-  title: string;
-  clientName: string;
-  category: GalleryCategory;
-  status: GalleryStatus;
-  workflowStatus: GalleryWorkflowStatus;
-  photoCount: number;
-  coverAssetKey: string | null;
-  uploadedDate: string;
-  uploadedAt: string;
-  views: number;
-  downloads: number;
-  description: string | null;
-  clientId: string;
-  relatedBookingId: string | null;
-  isNew: boolean;
-};
-
-export type ApiGalleryPhoto = {
-  id: string;
-  assetKey: string;
-  thumbnailAssetKey: string | null;
-  alt: string;
 };
 
 export const GALLERY_LIST_PAGE_SIZE = 6;

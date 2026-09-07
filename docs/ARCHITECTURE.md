@@ -119,6 +119,9 @@ server/
 │  │                      audiences exist the service is split the same way the
 │  │                      routes are: photographer-*.service.ts,
 │  │                      client-*.service.ts, and a *.shared.ts for the rest.
+│  ├─ contracts/          The API wire format, declared once. The SPA imports
+│  │                      these through `@contracts/*`. Types only — see the
+│  │                      README in that folder
 │  ├─ domain/             Business rules — booking lifecycle, gallery release,
 │  │                      payment obligations, availability. The real brain (§7)
 │  ├─ format/             Presentation helpers — currency, dates, status labels

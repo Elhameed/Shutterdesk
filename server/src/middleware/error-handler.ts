@@ -3,11 +3,9 @@ import { Prisma } from "@prisma/client";
 import { captureException } from "../lib/monitoring.js";
 import { logger } from "../lib/logger.js";
 
-export type ApiErrorBody = {
-  message: string;
-  statusCode: number;
-  errors?: Array<{ field: string; message: string }>;
-};
+import type { ApiErrorBody } from "../contracts/error.js";
+
+export type { ApiErrorBody };
 
 export class AppError extends Error {
   statusCode: number;

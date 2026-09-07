@@ -1,5 +1,14 @@
 import type { Gallery, GalleryPhoto, GalleryWorkflowStatus } from "@prisma/client";
 import { z } from "zod";
+import { readGalleryActivities } from "../../domain/gallery-activity.js";
+import type {
+  ApiGallery,
+  ApiGalleryDetailMeta,
+  ApiGalleryPhoto,
+  GalleryDeliveryStepStatus,
+} from "../../contracts/gallery.js";
+
+export type { ApiGallery, ApiGalleryDetailMeta, ApiGalleryPhoto };
 import { formatDisplayDate } from "../../format/date-format.js";
 import {
   buildPrivateGalleryLink,
@@ -15,44 +24,6 @@ export type GalleryWithBooking = Gallery & {
   booking?: { id: string } | null;
 };
 
-export type ApiGallery = {
-  id: string;
-  title: string;
-  clientName: string;
-  category: string;
-  status: string;
-  workflowStatus: string;
-  photoCount: number;
-  coverAssetKey: string | null;
-  uploadedDate: string;
-  uploadedAt: string;
-  views: number;
-  downloads: number;
-  description: string | null;
-  clientId: string;
-  relatedBookingId: string | null;
-  isNew: boolean;
-};
-
-export type ApiGalleryPhoto = {
-  id: string;
-  assetKey: string;
-  thumbnailAssetKey: string | null;
-  alt: string;
-};
-
-export type ApiGalleryDetailMeta = {
-  clientId: string;
-  clientEmail: string;
-  clientInitials: string;
-  shootDate: string;
-  location: string;
-  activities: unknown[];
-  delivery: Record<string, unknown>;
-  analytics: Record<string, unknown>;
-  settings: Record<string, unknown>;
-};
-
 function getInitials(name: string) {
   return name
     .split(/[\s&]+/)
@@ -64,12 +35,15 @@ function getInitials(name: string) {
 
 function buildDeliverySteps(gallery: Gallery) {
   const status = gallery.workflowStatus;
-  const stepStatuses =
+  // `as const` so these keep their literal types and satisfy
+  // GalleryDeliveryStepStatus rather than widening to string.
+  const stepStatuses = (
     status === "editing"
       ? ["completed", "current", "upcoming", "upcoming"]
       : status === "ready"
         ? ["completed", "completed", "current", "upcoming"]
-        : ["completed", "completed", "completed", "completed"];
+        : ["completed", "completed", "completed", "completed"]
+  ) as readonly GalleryDeliveryStepStatus[];
 
   const uploadedDate = formatDisplayDate(gallery.uploadedAt);
 
@@ -231,7 +205,9 @@ export function toApiGalleryDetailMeta(
   audience: "photographer" | "client" = "photographer",
   access?: { pinRequired?: boolean; pinVerified?: boolean; expired?: boolean },
 ): ApiGalleryDetailMeta {
-  const activities = Array.isArray(gallery.activities) ? gallery.activities : [];
+  // readGalleryActivities validates each entry; this used to pass the raw
+  // JSON column straight through as unknown[].
+  const activities = readGalleryActivities(gallery.activities);
 
   return {
     clientId: gallery.clientId,

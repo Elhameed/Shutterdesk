@@ -1,14 +1,12 @@
+import type {
+  BookingLifecycleStage,
+  LifecyclePrimaryAction,
+} from "../contracts/booking.js";
+
+export type { BookingLifecycleStage, LifecyclePrimaryAction };
+
 import type { Booking } from "@prisma/client";
 
-export type BookingLifecycleStage =
-  | "awaiting_deposit"
-  | "awaiting_verification"
-  | "confirmed"
-  | "awaiting_balance"
-  | "session_scheduled"
-  | "session_completed"
-  | "gallery_delivery"
-  | "cancelled";
 
 export type UnpaidRequestSnapshot = {
   type: string;
@@ -21,18 +19,6 @@ export type LifecycleContext = {
   unpaidRequests: UnpaidRequestSnapshot[];
 };
 
-export type LifecyclePrimaryAction =
-  | {
-      type: "link";
-      label: string;
-      href: string;
-      variant: "default" | "outline";
-    }
-  | {
-      type: "markComplete";
-      label: string;
-      variant: "default" | "outline";
-    };
 
 function firstUnpaid(
   requests: UnpaidRequestSnapshot[],
