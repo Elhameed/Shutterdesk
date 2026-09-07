@@ -9,7 +9,7 @@ import {
   getAvailablePaymentMethods,
   getDefaultPaymentMethod,
   type ClientPaymentMethod,
-} from "@/features/client-payments/utils/payment-methods";
+} from "@/features/client-payments/lib/payment-methods";
 import { useStudioPaymentProfile } from "@/hooks/queries/client";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";

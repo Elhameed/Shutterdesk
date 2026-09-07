@@ -7,7 +7,7 @@ import { ROUTES } from "@/constants/routes";
 import {
   resolveBookingDetailHeaderActions,
   type BookingDetailHeaderAction,
-} from "@/features/photographer-booking-detail/utils/booking-detail-actions";
+} from "@/features/photographer-booking-detail/lib/booking-detail-actions";
 import type { BookingDetail } from "@/types/domains/booking";
 import { cn } from "@/lib/utils";
 

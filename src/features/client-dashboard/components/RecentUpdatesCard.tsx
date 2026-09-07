@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { CLIENT_DASHBOARD_COPY } from "@/constants/client-dashboard";
 import { ROUTES } from "@/constants/routes";
-import { getClientDashboardNotificationIcon } from "@/features/client-notifications/utils/category-icon";
+import { getClientDashboardNotificationIcon } from "@/features/client-notifications/lib/category-icon";
 import {
   useClientNotificationMutations,
   useClientNotifications,
