@@ -27,6 +27,7 @@ import {
 } from "@/features/photographer-gallery-detail/components/GalleryTabShared";
 import { photographerApi } from "@/services/photographer";
 import {
+  usePhotographerBookingDetail,
   usePhotographerBookings,
   usePhotographerClients,
 } from "@/hooks/queries/photographer";
@@ -85,7 +86,6 @@ export function GalleryFormView({
   const [savedGalleryId, setSavedGalleryId] = useState<string | undefined>(galleryId);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [isApplyingBooking, setIsApplyingBooking] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
   const totalPhotoCount = isEdit
@@ -102,32 +102,27 @@ export function GalleryFormView({
     setClientId((current) => current || clients[0].id);
   }, [clients, initialValues.clientId]);
 
+  // Picking a related booking fills the form from it. The query is disabled
+  // until one is chosen, and Query cancels a stale request when the selection
+  // changes — which is what the manual `cancelled` flag was for.
+  const { data: relatedBooking, isFetching: isApplyingBooking } =
+    usePhotographerBookingDetail(relatedBookingId || undefined);
+
   useEffect(() => {
-    if (!relatedBookingId) return;
+    if (!relatedBooking) return;
 
-    let cancelled = false;
-    setIsApplyingBooking(true);
-
-    void photographerApi.bookings.getDetail(relatedBookingId).then((detail) => {
-      if (cancelled || !detail) {
-        if (!cancelled) setIsApplyingBooking(false);
-        return;
-      }
-
-      setGalleryName(`${detail.package.title} — ${detail.event.date}`);
-      if (detail.clientId) {
-        setClientId(detail.clientId);
-      }
-      if (!description.trim() && detail.package.subtitle) {
-        setDescription(detail.package.subtitle);
-      }
-      setIsApplyingBooking(false);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [relatedBookingId]);
+    setGalleryName(`${relatedBooking.package.title} — ${relatedBooking.event.date}`);
+    if (relatedBooking.clientId) {
+      setClientId(relatedBooking.clientId);
+    }
+    // Functional form so this doesn't have to read `description` from the
+    // closure — the previous version left it out of the dependency array.
+    if (relatedBooking.package.subtitle) {
+      setDescription((current) =>
+        current.trim() ? current : relatedBooking.package.subtitle,
+      );
+    }
+  }, [relatedBooking]);
 
 
   const selectedClient = clients.find((client) => client.id === clientId);
