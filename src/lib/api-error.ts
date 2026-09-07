@@ -14,7 +14,25 @@ export function isNotFoundError(error: unknown): boolean {
   return axios.isAxiosError(error) && error.response?.status === 404;
 }
 
+/**
+ * The message to show a user for a failed request.
+ *
+ * When the API rejected a submission on validation, it returns both a generic
+ * `message` ("Validation failed") and a list of per-field errors. The field
+ * error is the useful one — "Enter a valid email address" rather than
+ * "Validation failed" — so it wins.
+ *
+ * Doing this here rather than at each call site means every form that already
+ * calls this gets the specific message, instead of the same unwrapping being
+ * copied into fourteen of them. Forms that want to mark individual inputs still
+ * use `getApiFieldErrors` for the full map.
+ */
 export function getApiErrorMessage(error: unknown, fallback = "Something went wrong") {
+  const [firstFieldError] = Object.values(getApiFieldErrors(error));
+  if (firstFieldError) {
+    return firstFieldError;
+  }
+
   if (axios.isAxiosError(error)) {
     const data = error.response?.data as ApiError | undefined;
     if (data?.message) {
