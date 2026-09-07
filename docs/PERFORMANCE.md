@@ -16,37 +16,32 @@ queries in sequence.
   typically ~1–5 ms vs. 100–300 ms across regions.
 - Check: Render dashboard → service → *Region*. Neon console → project → *Region*.
 
-## 2. Use Neon's pooled connection endpoint
+## 2. Pooled for the app, direct for migrations
 
-The current `DATABASE_URL` uses Neon's **direct** endpoint (`ep-...neon.tech`). For a
-serverless Postgres, use the **pooled** endpoint (PgBouncer) for the app runtime — it
-avoids per-connection setup cost:
-
-```
-# runtime (app) — pooled endpoint, note the "-pooler" in the host
-DATABASE_URL="postgresql://USER:PASSWORD@ep-YOUR-ENDPOINT-pooler.REGION.aws.neon.tech/neondb?sslmode=require"
-```
-
-Grab the pooled string from the Neon console (*Connection Details → Pooled connection*).
-
-### Optional: split runtime vs. migration URLs
-
-PgBouncer (pooled) doesn't support the statements Prisma Migrate needs, so keep a direct
-URL for migrations. Prisma supports this with `directUrl`:
+The schema splits the two connections, so both variables must be set wherever the API
+runs or migrates:
 
 ```prisma
 // server/prisma/schema.prisma
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")   // pooled — used by the running app
-  directUrl = env("DIRECT_URL")     // direct  — used by prisma migrate/introspect
+  url       = env("DATABASE_URL")          // pooled — the running app
+  directUrl = env("DIRECT_DATABASE_URL")   // unpooled — prisma migrate only
 }
 ```
 
-Then set both `DATABASE_URL` (pooled) and `DIRECT_URL` (direct) in the environment.
-⚠️ If you add `directUrl`, `DIRECT_URL` becomes **required** for `prisma migrate` — set it
-everywhere migrations run (local, CI, Render build), or migrations will fail. This change is
-documented but not applied by default to avoid breaking existing setups.
+`DATABASE_URL` should be Neon's **pooled** endpoint (the host contains `-pooler`), taken
+from the Neon console under *Connection Details → Pooled connection*. PgBouncer avoids
+per-connection setup cost and keeps a small instance from exhausting Postgres connections.
+
+`DIRECT_DATABASE_URL` is the same host **without** `-pooler`. Migrations serialise
+themselves with a session-scoped advisory lock, and under transaction pooling consecutive
+statements can land on different backends, so that lock can never be held — `migrate
+deploy` then fails with `P1002`. Running migrations over the direct connection avoids it.
+
+Where there is no pooler (local Postgres, CI) both variables take the same value. See
+[DEPLOYMENT.md](DEPLOYMENT.md) step 0 for the Render/Neon setup and for how to clear an
+advisory lock that has already leaked.
 
 ## 3. Neon autosuspend cold starts (the 3–7s spikes)
 

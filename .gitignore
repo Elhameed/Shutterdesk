@@ -35,8 +35,8 @@ test-results/
 playwright-report/
 playwright/.cache/
 
-# Local redesign working documents — context for the visual redesign,
-# not part of the shipped project.
+# Local working documents — planning notes kept on the machine, not part of
+# the shipped project.
 roadmap.md
 shutterdesk-redesign-handoff.md
 shutterdesk-redesign-comparison.html

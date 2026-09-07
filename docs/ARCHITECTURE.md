@@ -33,15 +33,15 @@ There is **no server-side rendering and no BFF**. The SPA is static files; every
 dynamic thing is an `/api/*` call. The API secret for Cloudinary never reaches the
 browser — the browser asks the API to *sign* an upload, then uploads directly.
 
-**Scale:** ~34k lines frontend (≈350 files), ~14k lines server (≈120 files), 92 route
-handlers across 19 modules, 13 Prisma models.
+**Scale:** ~35k lines frontend (≈445 files), ~14k lines server (≈110 files), 87 route
+handlers across 15 modules, 13 Prisma models.
 
 ---
 
 ## 2. Running locally from scratch
 
-The working tree currently has **no `node_modules` and no `.env` files** — they are
-gitignored. Full cold start:
+`node_modules` and `.env` files are gitignored, so a fresh clone needs both. Full cold
+start:
 
 ```bash
 # 1. Dependencies (two separate package.json files)
@@ -74,10 +74,8 @@ as-is locally. Cloudinary vars are optional; leave them blank until you need upl
 
 Health check: `curl http://localhost:5000/api/health` → `{"status":"ok","database":"connected"}`.
 
-Steps 1 and the two builds are **verified working on Node 22 / npm 10** as of this writing
-(259 frontend + 359 server packages, `npm run build` and `npm run build --prefix server`
-both clean). Note `prisma generate` does *not* need a reachable database, so the server
-compiles before you've configured `DATABASE_URL` — the failure surfaces at boot instead.
+Note `prisma generate` does *not* need a reachable database, so the server compiles before
+you've configured `DATABASE_URL` — the failure surfaces at boot instead.
 
 **Kill switch to know about:** [`src/constants/site-access.ts`](../src/constants/site-access.ts)
 exports `SITE_PUBLICLY_ACCESSIBLE`. When `false`, the router discards every real route
@@ -102,14 +100,14 @@ src/                      Frontend
 │  ├─ photographer/http/  One file per API module
 │  ├─ client/http/
 │  └─ *-mapper.ts         API shape → domain shape
-├─ hooks/queries/         TanStack Query hooks (partial coverage — see §9)
+├─ hooks/queries/         TanStack Query hooks — the only way views fetch
 ├─ lib/                   apiClient, query config, currency, media URLs, downloads
-├─ constants/             34 files — route paths + all UI copy
+├─ constants/             33 files — route paths + all UI copy
 └─ types/domains/         Domain types shared across features
 
 server/
 ├─ src/
-│  ├─ app.ts              Middleware + mounts all 19 routers
+│  ├─ app.ts              Middleware + mounts all 23 routers
 │  ├─ index.ts            Boot, listen, graceful shutdown
 │  ├─ config/env.ts       Zod-validated env (throws on bad config)
 │  ├─ middleware/         auth, cors, error-handler, rate-limit, request-logger,
@@ -289,8 +287,8 @@ Notification → User
    `Gallery.settings/delivery/analytics/activities`, `StudioClient.preferences/insights/
    timeline/projects/invoices/galleries`, and six `Json` settings blobs on `Studio`.
    This keeps reads to one query and lets the UI shape change without migrations — but
-   those columns are **untyped and unvalidated at the DB layer**, and it's the single
-   biggest source of complexity here (see §9).
+   those columns are **unvalidated at the DB layer**, so they are parsed with zod on read
+   instead (see §9).
 
 Money is stored as **integer RWF** (no decimals) throughout. Migrations are SQL files
 under `server/prisma/migrations/` — apply with `prisma migrate deploy`.
@@ -387,66 +385,50 @@ follow: `showSkeleton → <Skeleton/>`, `isLoading → null`, `error → message
 
 ---
 
-## 9. Complexity hotspots — where simplification pays off
+## 9. Design decisions and trade-offs
 
-Observations from reading the code, roughly highest-value first. These are candidates,
-not prescriptions.
+The choices most likely to surprise someone reading the code, and why they were made.
 
-**1. ~~Two competing data-fetching patterns.~~ Done.** Every view reads through the hooks
-in `hooks/queries/`; none fetches inside a `useEffect`. Mutations invalidate rather than
-re-calling a loader, and `lib/query-keys.ts` covers every cached resource with
-hierarchical keys, so invalidating a resource root also drops its cached detail entries.
+**Denormalization is deliberate, and it has a cost.** `Booking` and `Gallery` copy their
+context inline — `clientName`, `packageName`, `packagePrice`, `sessionDateLabel`,
+`sessionTime`, `clientAvatarAssetKey` — rather than joining. Reads stay a single query and
+a booking keeps the package price it was made at, even after the package is repriced. The
+price is that renames have to be propagated: hence `domain/client-profile-sync.ts`,
+`photographer-identity-sync.ts`, and `sync-booking-gallery-progress.ts`. Anything that
+changes a client's or studio's identity must call the matching sync helper.
 
-**2. `Json` columns doing schema's job.** ~24 untyped `Json` columns across `Booking`,
-`Gallery`, `StudioClient`, and `Studio`. `StudioClient` alone carries `preferences`,
-`insights`, `timeline`, `projects`, `invoices`, and `galleries` as JSON — several of which
-duplicate data that already exists relationally in `Booking`/`Gallery`/`PaymentRecord`.
-Promoting the ones that are really relational into columns or tables would remove whole
-categories of sync bugs; the settings blobs on `Studio` are a more reasonable use.
-Gallery `settings` and `delivery` now parse through zod schemas rather than hand-written
-`typeof` ladders — see [domain/json-column.ts](../server/src/domain/json-column.ts) for the
-convention the remaining columns should follow.
+**`clientEmail` is an ownership key.** A client can be invited before they have an account,
+so identity is matched by email in ~15 `OR: [{ clientUserId }, { clientEmail }]` predicates.
+Nothing currently syncs `clientEmail`, which is safe only because there is no
+change-email endpoint. Adding one means backfilling those rows in the same transaction.
 
-**3. Denormalized booking fields need manual syncing.** `Booking` stores `clientName`,
-`clientEmail`, `packageName`, `packagePrice`, `sessionDateLabel`, `sessionTime`,
-`clientAvatarAssetKey` inline. That's why `domain/` contains `client-profile-sync.ts`,
-`photographer-identity-sync.ts`, and `sync-booking-gallery-progress.ts` — files that exist
-purely to keep copies consistent. Fewer copies means fewer sync files.
+**`Json` columns for UI-shaped data.** `Studio`'s settings blobs, `Booking.timeline`, and
+`Gallery.settings`/`delivery` are stored as JSON so the UI shape can change without a
+migration. They are validated on read with zod rather than trusted — see
+[`domain/json-column.ts`](../server/src/domain/json-column.ts) for the convention: one
+schema per column, `.catch(defaults)` so a malformed blob degrades instead of throwing.
+`StudioClient`'s `timeline`/`projects`/`invoices`/`galleries` blobs duplicate data that
+also exists relationally; they are the columns most worth promoting to real tables.
 
-**4. ~~Very large service files.~~ Done.** `bookings.service.ts` and `galleries.service.ts`
-are split along the photographer/client seam the routes already used, with a `*.shared.ts`
-for what both need. Payment-obligation logic moved out of bookings into
-`booking-obligations.service.ts`.
+**One stored counter, one owner.** Every counter is either always-computed or
+stored-and-incremented, never both. `views`/`downloads` are stored and use atomic
+`{ increment: 1 }`; gallery photo stats go through a single `syncGalleryPhotoStats` that
+preserves a manually chosen cover; client and package revenue are computed on read. The
+rule matters because the earlier mix of both produced create responses that disagreed with
+list responses.
 
-**5. Constants sprawl.** 34 files / 2,740 lines in `src/constants/`, mostly UI copy
-extracted into per-page objects (`PHOTOGRAPHER_DASHBOARD_COPY` etc.). It's consistent, but
-it means every text change is a two-file edit and the indirection is not buying i18n or
-reuse today. Reviewed and deliberately kept — churning it buys nothing until there is i18n.
+**Per-request auth costs a round trip.** Every authenticated request loads the user to
+check `tokenVersion`, which is what makes logout-everywhere and deactivation take effect
+immediately. On a remote database that is a round trip on all 87 endpoints — see
+[PERFORMANCE.md](PERFORMANCE.md) before assuming the app is slow.
 
-**6. Small duplication to clean up.**
-- Two `SearchField` components — [`components/common/SearchField.tsx`](../src/components/common/SearchField.tsx) (38 lines, 3 importers) and [`components/photographer/SearchField.tsx`](../src/components/photographer/SearchField.tsx) (a 1-line re-export, 1 importer) — *plus* five per-feature `*Search.tsx` wrappers. All of `components/photographer/` is re-export shims.
-- `src/mocks/personas.ts` is production-imported by `constants/landing.ts` for testimonials; it reads as leftover scaffolding.
+**UI copy lives in `src/constants/`.** 33 files of per-page copy objects. It means a text
+change touches two files and buys no i18n today; it was reviewed and kept because churning
+it has no payoff until there is a second language.
 
-**7. Per-request DB round trip for auth.** Every authenticated request loads the user to
-check `tokenVersion`. Correct, but on a remote database it adds a round trip to all 92
-endpoints — relevant given the latency notes in [PERFORMANCE.md](PERFORMANCE.md).
-
-**8. Fabricated metrics.** `galleries.mapper.ts` synthesises gallery analytics from
-formulas rather than measurement: `uniqueVisitors = views × 0.42`, a fixed-ratio weekly
-chart, hardcoded top-photo captions, and an `engagementRate` that is always exactly 24
-because `Gallery.likes` is never written anywhere. `storageUsedGb` is `photoCount × 0.025`.
-Slated for removal in favour of honest empty states.
-
-**9. Stored counters with two sources of truth.** `StudioClient.sessions/revenue/balance`
-and `ServicePackage.totalRevenue` are written once at create and never updated; reads
-recompute them, except on the create and update responses, which return the stale column.
-`Gallery.photoCount` is incremented on upload but recomputed on delete, and the two paths
-disagree about `coverAssetKey` — deleting a photo silently overwrites a chosen cover.
-`views`/`downloads` use non-atomic read-modify-write.
-
-**10. Two deprecations to clear while you're rebuilding.**
-- Prisma warns that `package.json#prisma` (the `seed` config) is **removed in Prisma 7** — migrate to a `prisma.config.ts`. You're on 6.19.
-- The main frontend chunk is **498 kB (150 kB gzipped)** despite every page being lazy-loaded, so the weight is in shared vendor code, not routes. Worth a look if bundle size matters.
+**No websockets.** Notifications are polled through TanStack Query. For a studio tool where
+the client and photographer are rarely on the screen at the same moment, polling is enough
+and removes a whole class of connection-state handling.
 
 ---
 
@@ -454,7 +436,7 @@ disagree about `coverAssetKey` — deleting a photo silently overwrites a chosen
 
 | Layer | Tool | Location | Command |
 |---|---|---|---|
-| Server unit + integration | Vitest + Supertest | `server/tests/` (24 files) | `npm run test:api` |
+| Server unit + integration | Vitest + Supertest | `server/tests/` (34 files) | `npm run test:api` |
 | End-to-end | Playwright | `e2e/` (2 specs) | `npm run test:e2e` |
 | Lint | ESLint 9 flat config | both halves | `npm run lint` |
 | Types + build | `tsc -b && vite build` | — | `npm run build` |
