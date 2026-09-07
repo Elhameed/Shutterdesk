@@ -1,8 +1,6 @@
 /**
  * Central image asset registry.
  * Uses assetUrl() so uploaded .png files are used automatically (over .svg placeholders).
- *
- * @see docs/ASSETS.md
  */
 
 import { assetUrl } from "@/lib/asset-url";
@@ -103,7 +101,12 @@ export const appAssets = {
   /** `src/assets/images/landing/app-logo-black.png` */
   logoBlack: assetUrl("landing/app-logo-black"),
   logo: assetUrl("app-logo"),
-  userAvatar: assetUrl("user-avatar"),
+  // Keyed "app/user-avatar" to match the sentinel the API stores in
+  // avatarAssetKey when a user has not uploaded a photo (see
+  // server/src/domain/photographer-profile-completion.ts). The file used to
+  // live at images/user-avatar.png, so that sentinel resolved to "" and every
+  // fallback avatar rendered as a broken image.
+  userAvatar: assetUrl("app/user-avatar"),
 } as const;
 
 /** Onboarding screens */
