@@ -181,3 +181,20 @@ export function useDeleteService() {
     },
   });
 }
+
+export function useSetGalleryReleaseOverride() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, enabled }: { id: string; enabled: boolean }) =>
+      photographerApi.bookings.setGalleryReleaseOverride(id, enabled),
+    onSuccess: async (_result, { id }) => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.photographer.bookingDetail(id),
+        }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.photographer.bookings }),
+      ]);
+    },
+  });
+}

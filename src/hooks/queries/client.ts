@@ -77,6 +77,15 @@ export function useClientGalleries() {
   });
 }
 
+export function useClientBooking(id: string | undefined) {
+  return useQuery({
+    queryKey: [...queryKeys.client.bookingDetail(id ?? ""), "summary"],
+    queryFn: () => clientApi.bookings.getById(id as string),
+    enabled: Boolean(id),
+    meta: { errorMessage: "Unable to load this booking." },
+  });
+}
+
 export function useClientBookingDetail(id: string | undefined) {
   return useQuery({
     queryKey: queryKeys.client.bookingDetail(id ?? ""),

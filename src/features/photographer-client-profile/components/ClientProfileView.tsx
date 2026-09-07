@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ClientActivityTabs } from "@/features/photographer-client-profile/components/ClientActivityTabs";
 import { ClientProfileBreadcrumbs } from "@/features/photographer-client-profile/components/ClientProfileBreadcrumbs";
@@ -10,11 +9,10 @@ import { PreferencesCard } from "@/features/photographer-client-profile/componen
 import { QuickActionsCard } from "@/features/photographer-client-profile/components/QuickActionsCard";
 import { CLIENT_PROFILE_COPY } from "@/constants/photographer-client-profile";
 import { ROUTES } from "@/constants/routes";
-import { getApiErrorMessage } from "@/lib/api-error";
-import { photographerApi } from "@/services/photographer";
+import { getQueryErrorMessage } from "@/lib/api-error";
+import { usePhotographerClientProfile } from "@/hooks/queries/photographer";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 import { DetailPageSkeleton } from "@/components/skeletons";
-import type { ClientProfileDetail } from "@/types/domains/photographer-client";
 
 type ClientProfileViewProps = {
   clientId: string;
@@ -22,47 +20,22 @@ type ClientProfileViewProps = {
 
 export function ClientProfileView({ clientId }: ClientProfileViewProps) {
   const copy = CLIENT_PROFILE_COPY;
-  const [profile, setProfile] = useState<ClientProfileDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const showSkeleton = useDelayedLoading(isLoading);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: profile,
+    isPending,
+    error: queryError,
+  } = usePhotographerClientProfile(clientId);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadProfile() {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const data = await photographerApi.clients.getProfile(clientId);
-        if (!cancelled) {
-          setProfile(data);
-        }
-      } catch (loadError) {
-        if (!cancelled) {
-          setError(getApiErrorMessage(loadError, "Unable to load client profile."));
-          setProfile(null);
-        }
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    void loadProfile();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [clientId]);
+  const showSkeleton = useDelayedLoading(isPending);
+  const error = queryError
+    ? getQueryErrorMessage(queryError, "Unable to load client profile.")
+    : null;
 
   if (showSkeleton) {
     return <DetailPageSkeleton sidebar="narrow" />;
   }
 
-  if (isLoading) {
+  if (isPending) {
     return null;
   }
 
@@ -123,11 +96,6 @@ export function ClientProfileView({ clientId }: ClientProfileViewProps) {
           <InternalMemoCard
             clientId={profile.id}
             initialNotes={profile.internalNotes}
-            onSaved={(notes) =>
-              setProfile((current) =>
-                current ? { ...current, internalNotes: notes } : current,
-              )
-            }
           />
         </div>
       </div>

@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { ClientNotFoundState } from "@/components/common/ClientNotFoundState";
 import { ClientBookingDetailHeader } from "@/features/client-booking-detail/components/ClientBookingDetailHeader";
 import { ClientBookingProfileCard } from "@/features/client-booking-detail/components/ClientBookingProfileCard";
@@ -9,11 +8,13 @@ import { ClientSessionDetailsCard } from "@/features/client-booking-detail/compo
 import { ClientVenueHeroCard } from "@/features/client-booking-detail/components/ClientVenueHeroCard";
 import { CLIENT_BOOKINGS_COPY } from "@/constants/client-bookings";
 import { ROUTES } from "@/constants/routes";
-import { getApiErrorMessage } from "@/lib/api-error";
-import { clientApi } from "@/services/client";
+import { getQueryErrorMessage } from "@/lib/api-error";
+import {
+  useClientBooking,
+  useClientBookingDetail,
+} from "@/hooks/queries/client";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 import { DetailPageSkeleton } from "@/components/skeletons";
-import type { Booking, BookingDetail } from "@/types/domains/booking";
 
 type ClientBookingDetailViewProps = {
   bookingId: string;
@@ -23,49 +24,25 @@ export function ClientBookingDetailView({
   bookingId,
 }: ClientBookingDetailViewProps) {
   const copy = CLIENT_BOOKINGS_COPY;
-  const [booking, setBooking] = useState<Booking | null>(null);
-  const [detail, setDetail] = useState<BookingDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const showSkeleton = useDelayedLoading(isLoading);
-  const [error, setError] = useState<string | null>(null);
+  // Two queries rather than one combined fetch: they cache and invalidate
+  // independently, and Query runs them in parallel just as Promise.all did.
+  const bookingQuery = useClientBooking(bookingId);
+  const detailQuery = useClientBookingDetail(bookingId);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadDetail() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const [bookingData, detailData] = await Promise.all([
-          clientApi.bookings.getById(bookingId),
-          clientApi.bookings.getDetail(bookingId),
-        ]);
-        if (!cancelled) {
-          setBooking(bookingData ?? null);
-          setDetail(detailData ?? null);
-        }
-      } catch (loadError) {
-        if (!cancelled) {
-          setError(getApiErrorMessage(loadError, "Unable to load booking."));
-        }
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    void loadDetail();
-    return () => {
-      cancelled = true;
-    };
-  }, [bookingId]);
+  const booking = bookingQuery.data ?? null;
+  const detail = detailQuery.data ?? null;
+  const isPending = bookingQuery.isPending || detailQuery.isPending;
+  const showSkeleton = useDelayedLoading(isPending);
+  const loadError = bookingQuery.error ?? detailQuery.error;
+  const error = loadError
+    ? getQueryErrorMessage(loadError, "Unable to load booking.")
+    : null;
 
   if (showSkeleton) {
     return <DetailPageSkeleton />;
   }
 
-  if (isLoading) {
+  if (isPending) {
     return null;
   }
 

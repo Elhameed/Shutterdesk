@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { BookingDetailHeader } from "@/features/photographer-booking-detail/components/BookingDetailHeader";
 import { BookingProgressBar } from "@/features/photographer-booking-detail/components/BookingProgressBar";
@@ -12,11 +12,15 @@ import { PackageSelectionCard } from "@/features/photographer-booking-detail/com
 import { PaymentVerificationCard } from "@/features/photographer-booking-detail/components/PaymentVerificationCard";
 import { BOOKING_DETAIL_COPY } from "@/constants/photographer-booking-detail";
 import { ROUTES } from "@/constants/routes";
-import { getApiErrorMessage } from "@/lib/api-error";
-import { photographerApi } from "@/services/photographer";
+import { getApiErrorMessage, getQueryErrorMessage } from "@/lib/api-error";
+import { usePhotographerBookingDetail } from "@/hooks/queries/photographer";
+import {
+  useSetGalleryReleaseOverride,
+  useUpdateBookingStatus,
+} from "@/hooks/queries/photographer-mutations";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 import { DetailPageSkeleton } from "@/components/skeletons";
-import type { BookingDetail, BookingStatus } from "@/types/domains/booking";
+import type { BookingStatus } from "@/types/domains/booking";
 
 type BookingDetailViewProps = {
   bookingId: string;
@@ -24,69 +28,44 @@ type BookingDetailViewProps = {
 
 export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
   const copy = BOOKING_DETAIL_COPY;
-  const [booking, setBooking] = useState<BookingDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const showSkeleton = useDelayedLoading(isLoading);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: booking,
+    isPending,
+    error: queryError,
+  } = usePhotographerBookingDetail(bookingId);
 
-  const loadBooking = async (options?: { showLoading?: boolean; cancelled?: () => boolean }) => {
-    if (options?.showLoading !== false) {
-      setIsLoading(true);
-    }
-    setError(null);
-    try {
-      const detail = await photographerApi.bookings.getDetail(bookingId);
-      if (!options?.cancelled?.()) {
-        setBooking(detail ?? null);
-      }
-    } catch (loadError) {
-      if (!options?.cancelled?.()) {
-        setError(getApiErrorMessage(loadError, "Unable to load booking."));
-        setBooking(null);
-      }
-    } finally {
-      if (!options?.cancelled?.()) {
-        setIsLoading(false);
-      }
-    }
-  };
+  const updateStatus = useUpdateBookingStatus();
+  const setReleaseOverride = useSetGalleryReleaseOverride();
 
-  useEffect(() => {
-    let cancelled = false;
-    void loadBooking({ cancelled: () => cancelled });
-    return () => {
-      cancelled = true;
-    };
-  }, [bookingId]);
+  const showSkeleton = useDelayedLoading(isPending);
+  const isUpdating = updateStatus.isPending || setReleaseOverride.isPending;
+  const [actionError, setActionError] = useState<string | null>(null);
+  const error =
+    actionError ??
+    (queryError ? getQueryErrorMessage(queryError, "Unable to load booking.") : null);
+
 
   const handleStatusUpdate = async (status: BookingStatus) => {
     if (!booking || isUpdating) return;
 
-    setIsUpdating(true);
-    setError(null);
+    setActionError(null);
     try {
-      await photographerApi.bookings.updateStatus(booking.id, status);
-      await loadBooking({ showLoading: false });
+      await updateStatus.mutateAsync({ id: booking.id, status });
     } catch (updateError) {
-      setError(getApiErrorMessage(updateError, "Unable to update booking."));
-    } finally {
-      setIsUpdating(false);
+      setActionError(getApiErrorMessage(updateError, "Unable to update booking."));
     }
   };
 
   const handleGalleryReleaseOverride = async () => {
     if (!booking || isUpdating) return;
 
-    setIsUpdating(true);
-    setError(null);
+    setActionError(null);
     try {
-      await photographerApi.bookings.setGalleryReleaseOverride(booking.id, true);
-      await loadBooking({ showLoading: false });
+      await setReleaseOverride.mutateAsync({ id: booking.id, enabled: true });
     } catch (updateError) {
-      setError(getApiErrorMessage(updateError, "Unable to update gallery release settings."));
-    } finally {
-      setIsUpdating(false);
+      setActionError(
+        getApiErrorMessage(updateError, "Unable to update gallery release settings."),
+      );
     }
   };
 
@@ -94,7 +73,7 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
     return <DetailPageSkeleton />;
   }
 
-  if (isLoading) {
+  if (isPending) {
     return null;
   }
 
