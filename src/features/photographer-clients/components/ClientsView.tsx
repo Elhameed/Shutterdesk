@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { AddClientModal } from "@/features/photographer-clients/components/AddClientModal";
 import { ClientsFilterBar } from "@/features/photographer-clients/components/ClientsFilterBar";
 import { ClientsGrid } from "@/features/photographer-clients/components/ClientsGrid";
@@ -17,7 +18,7 @@ import type {
 } from "@/constants/photographer-clients";
 import { CardGridSkeleton, ClientCardSkeleton, TableRowsSkeleton } from "@/components/skeletons";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
-import { getApiErrorMessage, getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { usePhotographerClients } from "@/hooks/queries/photographer";
 import { useAddClient } from "@/hooks/queries/photographer-mutations";
 import type { ClientCategory } from "@/types/domains/photographer-client";
@@ -32,7 +33,7 @@ export function ClientsView() {
   } = usePhotographerClients();
   const showSkeleton = useDelayedLoading(isPending);
   const [actionError, setActionError] = useState<string | null>(null);
-  const error = actionError ?? (loadError ? getQueryErrorMessage(loadError) : null);
+  const error = actionError ?? (loadError ? getApiErrorMessage(loadError) : null);
   const [view, setView] = useState<ClientViewMode>("card");
   const [statusFilter, setStatusFilter] = useState<ClientStatusFilter>("all");
   const [typeFilter, setTypeFilter] = useState<ClientTypeFilter>("all");
@@ -117,9 +118,9 @@ export function ClientsView() {
       </div>
 
       {error && (
-        <p className="mt-4 rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
+        <InlineAlert className="mt-4">
           {error}
-        </p>
+        </InlineAlert>
       )}
 
       <div className="mt-5">

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { Bell, Shield, User } from "lucide-react";
 import { useAuth } from "@/app/AuthProvider";
 import { Button } from "@/components/ui/button";
@@ -403,7 +404,7 @@ export function ClientSettingsView({ onClose, onDirtyChange }: ClientSettingsVie
       )}
 
       {error ? (
-        <p className="rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">{error}</p>
+        <InlineAlert>{error}</InlineAlert>
       ) : null}
 
       <div className="sticky bottom-0 -mx-1 flex justify-end gap-2 border-t border-border bg-panel px-1 pt-4">

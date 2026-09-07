@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { PhotographerPageHeader } from "@/components/photographer/PhotographerPageHeader";
+import { PortalPageHeader } from "@/components/common/PortalPageHeader";
 import { BOOKINGS_COPY } from "@/constants/photographer-bookings";
 import { ROUTES } from "@/constants/routes";
 
@@ -9,7 +9,7 @@ export function BookingsHeader() {
   const copy = BOOKINGS_COPY;
 
   return (
-    <PhotographerPageHeader
+    <PortalPageHeader
       title={copy.title}
       subtitle={copy.subtitle}
       actions={

@@ -1,6 +1,6 @@
 import { CLIENT_PROFILE_COPY } from "@/constants/photographer-client-profile";
 import type { ClientProfileDetail } from "@/types/domains/photographer-client";
-import { formatClientCurrency } from "@/features/photographer-clients/lib/client-utils";
+import { formatRwf } from "@/lib/currency";
 
 type InsightsCardProps = {
   insights: ClientProfileDetail["insights"];
@@ -12,7 +12,7 @@ export function InsightsCard({ insights }: InsightsCardProps) {
   const rows = [
     { label: copy.retention, value: insights.retention },
     { label: copy.favType, value: insights.favType },
-    { label: copy.avgValue, value: formatClientCurrency(insights.avgValue) },
+    { label: copy.avgValue, value: formatRwf(insights.avgValue) },
   ];
 
   return (

@@ -1,7 +1,7 @@
 import { ClientManagementActions } from "@/features/photographer-clients/components/ClientManagementActions";
 import { CLIENTS_COPY } from "@/constants/photographer-clients";
 import { CLIENT_TIER_BADGE_STYLES } from "@/constants/status-colors";
-import { formatClientCurrency } from "@/features/photographer-clients/lib/client-utils";
+import { formatRwf } from "@/lib/currency";
 import type { Client } from "@/types/domains/photographer-client";
 import { cn } from "@/lib/utils";
 
@@ -123,7 +123,7 @@ export function ClientsList({ clients }: ClientsListProps) {
               <div>
                 <dt className="text-ink-faint">{copy.totalRevenue}</dt>
                 <dd className="font-bold text-ink">
-                  {formatClientCurrency(client.revenue)}
+                  {formatRwf(client.revenue)}
                 </dd>
               </div>
               <div>
@@ -134,7 +134,7 @@ export function ClientsList({ clients }: ClientsListProps) {
                     client.balance > 0 ? "text-bad-fg" : "text-ink",
                   )}
                 >
-                  {formatClientCurrency(client.balance)}
+                  {formatRwf(client.balance)}
                 </dd>
               </div>
               <div>
@@ -204,7 +204,7 @@ export function ClientsList({ clients }: ClientsListProps) {
                   {client.sessions}
                 </td>
                 <td className="px-5 py-4 align-top text-sm font-bold text-ink">
-                  {formatClientCurrency(client.revenue)}
+                  {formatRwf(client.revenue)}
                 </td>
                 <td
                   className={cn(
@@ -212,7 +212,7 @@ export function ClientsList({ clients }: ClientsListProps) {
                     client.balance > 0 ? "text-bad-fg" : "text-ink",
                   )}
                 >
-                  {formatClientCurrency(client.balance)}
+                  {formatRwf(client.balance)}
                 </td>
                 <td className="px-5 py-4 align-top text-sm text-ink">
                   {client.lastBooking}

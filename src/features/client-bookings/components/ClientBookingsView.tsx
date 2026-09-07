@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { useNavigate } from "react-router-dom";
 import { PortalPageHeader } from "@/components/common/PortalPageHeader";
 import { SearchField } from "@/components/common/SearchField";
@@ -11,7 +12,7 @@ import {
 } from "@/constants/status-colors";
 import { ROUTES } from "@/constants/routes";
 import type { ClientBookingFilter } from "@/constants/client-bookings";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import {
   useClientBookings,
 } from "@/hooks/queries/client";
@@ -58,7 +59,7 @@ export function ClientBookingsView() {
   }, [allBookings, filter, search]);
 
   const errorMessage = error
-    ? getQueryErrorMessage(error, "Unable to load bookings.")
+    ? getApiErrorMessage(error, "Unable to load bookings.")
     : null;
 
   return (
@@ -101,9 +102,9 @@ export function ClientBookingsView() {
       </div>
 
       {errorMessage && (
-        <p className="mt-4 rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
+        <InlineAlert className="mt-4">
           {errorMessage}
-        </p>
+        </InlineAlert>
       )}
 
       <div className="mt-4">

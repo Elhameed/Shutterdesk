@@ -17,7 +17,6 @@ import {
   readStoredGallerySettings,
   resolveDownloadEnabled,
   resolveGalleryAccessPin,
-  resolveHighResDownloads,
 } from "../../domain/gallery-settings.js";
 
 export type GalleryWithBooking = Gallery & {
@@ -109,7 +108,7 @@ function buildDeliveryData(
     expiresAt: stored.expiresAt ?? formatExpirationLabel(settings.expirationDate),
     downloadEnabled,
     highResDownloads:
-      stored.highResDownloads ?? resolveHighResDownloads(gallery, settings),
+      stored.highResDownloads ?? downloadEnabled,
     watermarkEnabled: stored.watermarkEnabled ?? !downloadEnabled,
     clientNotified: stored.clientNotified ?? gallery.workflowStatus !== "editing",
     deliveryNotes: stored.deliveryNotes ?? defaultDeliveryNotes(gallery, downloadEnabled),

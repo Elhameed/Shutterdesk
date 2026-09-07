@@ -1,5 +1,5 @@
 import { Calendar, ChevronDown } from "lucide-react";
-import { PhotographerPageHeader } from "@/components/photographer/PhotographerPageHeader";
+import { PortalPageHeader } from "@/components/common/PortalPageHeader";
 import { ANALYTICS_COPY } from "@/constants/photographer-analytics";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +15,7 @@ export function AnalyticsHeader({
   const copy = ANALYTICS_COPY;
 
   return (
-    <PhotographerPageHeader
+    <PortalPageHeader
       title={copy.title}
       subtitle={copy.subtitle}
       actions={

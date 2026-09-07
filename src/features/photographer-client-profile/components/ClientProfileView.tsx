@@ -9,7 +9,7 @@ import { PreferencesCard } from "@/features/photographer-client-profile/componen
 import { QuickActionsCard } from "@/features/photographer-client-profile/components/QuickActionsCard";
 import { CLIENT_PROFILE_COPY } from "@/constants/photographer-client-profile";
 import { ROUTES } from "@/constants/routes";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { usePhotographerClientProfile } from "@/hooks/queries/photographer";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 import { DetailPageSkeleton } from "@/components/skeletons";
@@ -28,7 +28,7 @@ export function ClientProfileView({ clientId }: ClientProfileViewProps) {
 
   const showSkeleton = useDelayedLoading(isPending);
   const error = queryError
-    ? getQueryErrorMessage(queryError, "Unable to load client profile.")
+    ? getApiErrorMessage(queryError, "Unable to load client profile.")
     : null;
 
   if (showSkeleton) {

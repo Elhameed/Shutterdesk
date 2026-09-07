@@ -1,7 +1,7 @@
 import { CLIENT_PROFILE_COPY } from "@/constants/photographer-client-profile";
 import { INVOICE_STATUS_BADGE_STYLES } from "@/constants/status-colors";
 import type { ClientInvoice } from "@/types/domains/photographer-client";
-import { formatClientCurrency } from "@/features/photographer-clients/lib/client-utils";
+import { formatRwf } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 
 type ClientInvoicesTabProps = {
@@ -42,7 +42,7 @@ export function ClientInvoicesTab({ invoices }: ClientInvoicesTabProps) {
             <div className="mt-2 flex items-center justify-between text-xs">
               <span className="text-ink-soft">{invoice.date}</span>
               <span className="font-bold text-ink">
-                {formatClientCurrency(invoice.amount)}
+                {formatRwf(invoice.amount)}
               </span>
             </div>
           </li>
@@ -91,7 +91,7 @@ export function ClientInvoicesTab({ invoices }: ClientInvoicesTabProps) {
                   {invoice.date}
                 </td>
                 <td className="px-5 py-4 text-sm font-bold text-ink">
-                  {formatClientCurrency(invoice.amount)}
+                  {formatRwf(invoice.amount)}
                 </td>
                 <td className="px-5 py-4">
                   <span

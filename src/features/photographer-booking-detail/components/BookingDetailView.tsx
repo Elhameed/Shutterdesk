@@ -12,7 +12,7 @@ import { PackageSelectionCard } from "@/features/photographer-booking-detail/com
 import { PaymentVerificationCard } from "@/features/photographer-booking-detail/components/PaymentVerificationCard";
 import { BOOKING_DETAIL_COPY } from "@/constants/photographer-booking-detail";
 import { ROUTES } from "@/constants/routes";
-import { getApiErrorMessage, getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { usePhotographerBookingDetail } from "@/hooks/queries/photographer";
 import {
   useSetGalleryReleaseOverride,
@@ -42,7 +42,7 @@ export function BookingDetailView({ bookingId }: BookingDetailViewProps) {
   const [actionError, setActionError] = useState<string | null>(null);
   const error =
     actionError ??
-    (queryError ? getQueryErrorMessage(queryError, "Unable to load booking.") : null);
+    (queryError ? getApiErrorMessage(queryError, "Unable to load booking.") : null);
 
 
   const handleStatusUpdate = async (status: BookingStatus) => {

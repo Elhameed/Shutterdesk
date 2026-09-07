@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { BookingsFilterTabs } from "@/features/photographer-bookings/components/BookingsFilterTabs";
 import { BookingsHeader } from "@/features/photographer-bookings/components/BookingsHeader";
 import { BookingsSearch } from "@/features/photographer-bookings/components/BookingsSearch";
@@ -10,7 +11,7 @@ import {
 } from "@/features/photographer-bookings/lib/booking-utils";
 import type { BookingFilter } from "@/constants/photographer-bookings";
 import { BOOKINGS_PAGE_SIZE } from "@/constants/photographer-bookings";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import {
   usePhotographerBookings,
 } from "@/hooks/queries/photographer";
@@ -50,7 +51,7 @@ export function BookingsView() {
   }, [currentPage, pagination.totalPages]);
 
   const errorMessage = error
-    ? getQueryErrorMessage(error, "Unable to load bookings.")
+    ? getApiErrorMessage(error, "Unable to load bookings.")
     : null;
 
   return (
@@ -70,15 +71,15 @@ export function BookingsView() {
       </div>
 
       {errorMessage && (
-        <p className="mt-4 rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
+        <InlineAlert className="mt-4">
           {errorMessage}
-        </p>
+        </InlineAlert>
       )}
 
       {actionError ? (
-        <p className="mt-4 rounded-sm border border-bad/30 bg-bad-tint px-4 py-3 text-sm text-bad-fg" role="alert">
+        <InlineAlert className="mt-4">
           {actionError}
-        </p>
+        </InlineAlert>
       ) : null}
 
       <div className="mt-4">

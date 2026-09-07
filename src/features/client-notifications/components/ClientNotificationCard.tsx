@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { CLIENT_NOTIFICATIONS_COPY } from "@/constants/client-notifications";
-import { getClientNotificationIcon } from "@/features/client-notifications/utils/category-icon";
+import { getClientNotificationIcon } from "@/features/client-notifications/lib/category-icon";
 import type { ClientNotification } from "@/types/domains/notification";
 import { cn } from "@/lib/utils";
 

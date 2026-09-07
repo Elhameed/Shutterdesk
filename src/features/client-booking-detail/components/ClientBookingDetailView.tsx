@@ -8,7 +8,7 @@ import { ClientSessionDetailsCard } from "@/features/client-booking-detail/compo
 import { ClientVenueHeroCard } from "@/features/client-booking-detail/components/ClientVenueHeroCard";
 import { CLIENT_BOOKINGS_COPY } from "@/constants/client-bookings";
 import { ROUTES } from "@/constants/routes";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import {
   useClientBooking,
   useClientBookingDetail,
@@ -35,7 +35,7 @@ export function ClientBookingDetailView({
   const showSkeleton = useDelayedLoading(isPending);
   const loadError = bookingQuery.error ?? detailQuery.error;
   const error = loadError
-    ? getQueryErrorMessage(loadError, "Unable to load booking.")
+    ? getApiErrorMessage(loadError, "Unable to load booking.")
     : null;
 
   if (showSkeleton) {

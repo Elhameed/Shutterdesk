@@ -10,7 +10,7 @@ import { NotificationsSidebar } from "@/features/photographer-notifications/comp
 import {
   filterNotifications,
   getNotificationCounts,
-} from "@/features/photographer-notifications/utils/notification-filters";
+} from "@/features/photographer-notifications/lib/notification-filters";
 import {
   usePhotographerNotificationMutations,
   usePhotographerNotifications,

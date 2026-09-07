@@ -9,7 +9,7 @@ import {
 import { ROUTES } from "@/constants/routes";
 import { ActivityHistoryFeed } from "@/features/photographer-activity-history/components/ActivityHistoryFeed";
 import { ActivityHistoryFilters } from "@/features/photographer-activity-history/components/ActivityHistoryFilters";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { usePhotographerActivityHistory } from "@/hooks/queries/photographer";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 import { ActivityFeedSkeleton } from "@/components/skeletons";
@@ -36,7 +36,7 @@ export function ActivityHistoryView() {
   const showSkeleton = useDelayedLoading(isPending);
   const activities = data?.pages.flatMap((page) => page.items) ?? [];
   const error = queryError
-    ? getQueryErrorMessage(queryError, "Unable to load activity history.")
+    ? getApiErrorMessage(queryError, "Unable to load activity history.")
     : null;
 
 

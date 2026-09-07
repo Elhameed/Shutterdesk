@@ -30,7 +30,24 @@ const envSchema = z.object({
 
 export type Env = z.infer<typeof envSchema>;
 
+let cached: Env | null = null;
+
+/**
+ * Read and validate the environment.
+ *
+ * Memoised because the result cannot change while the process runs, and a
+ * handful of leaf helpers call this per request — re-parsing and re-validating
+ * every variable each time. Routers still receive `env` by injection; these
+ * call sites are deep helpers where threading it through would mean changing
+ * several service signatures for no behavioural gain.
+ *
+ * `resetEnvCache` exists for tests that deliberately swap the environment.
+ */
 export function loadEnv(): Env {
+  if (cached) {
+    return cached;
+  }
+
   const parsed = envSchema.safeParse(process.env);
 
   if (!parsed.success) {
@@ -46,13 +63,20 @@ export function loadEnv(): Env {
   const env = parsed.data;
 
   if (env.NODE_ENV === "test") {
-    return {
+    cached = {
       ...env,
       CLOUDINARY_CLOUD_NAME: undefined,
       CLOUDINARY_API_KEY: undefined,
       CLOUDINARY_API_SECRET: undefined,
     };
+    return cached;
   }
 
-  return env;
+  cached = env;
+  return cached;
+}
+
+/** Clear the memoised environment. For tests that swap it deliberately. */
+export function resetEnvCache(): void {
+  cached = null;
 }

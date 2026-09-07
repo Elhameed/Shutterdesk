@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ROUTES } from "@/constants/routes";
+import { clearSession, readSessionToken } from "@/lib/session-storage";
 
 // `VITE_*` values are inlined at build time. A deploy built without
 // VITE_API_URL would silently ship pointing at localhost, so vite.config.ts
@@ -15,7 +16,7 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("shutterdesk_token");
+  const token = readSessionToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -31,9 +32,7 @@ apiClient.interceptors.response.use(
         requestUrl.includes("/auth/login") || requestUrl.includes("/auth/register");
 
       if (!isAuthRequest) {
-        localStorage.removeItem("shutterdesk_token");
-        localStorage.removeItem("shutterdesk_role");
-        localStorage.removeItem("shutterdesk_remember");
+        clearSession();
 
         if (window.location.pathname !== ROUTES.login) {
           window.location.assign(ROUTES.login);

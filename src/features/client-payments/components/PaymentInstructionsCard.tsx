@@ -1,5 +1,5 @@
 import { Shield } from "lucide-react";
-import type { ClientPaymentMethod } from "@/features/client-payments/utils/payment-methods";
+import type { ClientPaymentMethod } from "@/features/client-payments/lib/payment-methods";
 import { CLIENT_PAYMENTS_COPY } from "@/constants/client-payments";
 import { cn } from "@/lib/utils";
 

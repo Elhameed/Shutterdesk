@@ -3,8 +3,8 @@ import { Download, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import { CLIENT_GALLERIES_COPY } from "@/constants/client-galleries";
-import { GalleryPhotoLightbox } from "@/features/photographer-gallery-detail/components/GalleryPhotoLightbox";
-import { downloadGalleryPhotoFromUrl } from "@/features/photographer-gallery-detail/lib/download-gallery-photo";
+import { GalleryPhotoLightbox } from "@/components/common/GalleryPhotoLightbox";
+import { downloadGalleryPhotoFromUrl } from "@/lib/download-gallery-photo";
 import { clientApi } from "@/services/client";
 import {
   GALLERY_PHOTOS_PAGE_SIZE,

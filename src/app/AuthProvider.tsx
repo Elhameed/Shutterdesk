@@ -9,11 +9,13 @@ import {
 } from "react";
 import { authService } from "@/services/auth/auth.service";
 import { getApiErrorMessage } from "@/lib/api-error";
+import {
+  clearSession,
+  persistSession,
+  persistSessionRole,
+  readSessionToken,
+} from "@/lib/session-storage";
 import type { User } from "@/types";
-
-const TOKEN_KEY = "shutterdesk_token";
-const ROLE_KEY = "shutterdesk_role";
-const REMEMBER_KEY = "shutterdesk_remember";
 
 type AuthContextValue = {
   user: User | null;
@@ -34,23 +36,6 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function persistSession(token: string, user: User, rememberMe = false) {
-  localStorage.setItem(TOKEN_KEY, token);
-  localStorage.setItem(ROLE_KEY, user.role);
-
-  if (rememberMe) {
-    localStorage.setItem(REMEMBER_KEY, "true");
-  } else {
-    localStorage.removeItem(REMEMBER_KEY);
-  }
-}
-
-function clearSession() {
-  localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(ROLE_KEY);
-  localStorage.removeItem(REMEMBER_KEY);
-}
-
 type AuthProviderProps = {
   children: ReactNode;
 };
@@ -60,7 +45,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   const refreshUser = useCallback(async () => {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = readSessionToken();
     if (!token) {
       setUser(null);
       return null;
@@ -69,7 +54,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const { data } = await authService.me();
       setUser(data.user);
-      localStorage.setItem(ROLE_KEY, data.user.role);
+      persistSessionRole(data.user.role);
       return data.user;
     } catch {
       clearSession();
@@ -86,7 +71,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     async (email: string, password: string, rememberMe = false) => {
       try {
         const { data } = await authService.login(email, password);
-        persistSession(data.token, data.user, rememberMe);
+        persistSession(data.token, data.user.role, rememberMe);
         setUser(data.user);
         return data.user;
       } catch (error) {
@@ -106,7 +91,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }) => {
       try {
         const { data } = await authService.register(payload);
-        persistSession(data.token, data.user);
+        persistSession(data.token, data.user.role);
         setUser(data.user);
         return data.user;
       } catch (error) {
@@ -119,7 +104,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const updateRole = useCallback(async (role: User["role"]) => {
     try {
       const { data } = await authService.updateRole(role);
-      persistSession(data.token, data.user);
+      persistSession(data.token, data.user.role);
       setUser(data.user);
       return data.user;
     } catch (error) {

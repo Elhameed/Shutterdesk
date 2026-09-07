@@ -1,3 +1,5 @@
+import { ToggleSwitch } from "@/components/ui/toggle-switch";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   ChevronRight,
@@ -23,14 +25,15 @@ import {
   type PendingGalleryPhoto,
 } from "@/features/photographer-gallery-create/components/GalleryPendingPhotosField";
 import {
-  ToggleSwitch,
-} from "@/features/photographer-gallery-detail/components/GalleryTabShared";
-import { photographerApi } from "@/services/photographer";
-import {
   usePhotographerBookingDetail,
   usePhotographerBookings,
   usePhotographerClients,
 } from "@/hooks/queries/photographer";
+import {
+  useCreateGallery,
+  useUpdateGallery,
+  useUploadGalleryPhotos,
+} from "@/hooks/queries/photographer-mutations";
 import { getApiErrorMessage } from "@/lib/api-error";
 import {
   type GalleryCategory,
@@ -94,6 +97,10 @@ export function GalleryFormView({
 
   // Clients and bookings populate the two pickers; the rest of the form is
   // local state the photographer is editing.
+  const createGallery = useCreateGallery();
+  const updateGallery = useUpdateGallery();
+  const uploadPhotos = useUploadGalleryPhotos();
+
   const { data: clients = [] } = usePhotographerClients();
   const { data: bookings = [] } = usePhotographerBookings();
 
@@ -177,13 +184,13 @@ export function GalleryFormView({
   const uploadPendingPhotos = async (targetGalleryId: string) => {
     if (pendingPhotos.length === 0) return;
 
-    await photographerApi.galleries.uploadPhotos(
-      targetGalleryId,
-      pendingPhotos.map((photo, index) => ({
+    await uploadPhotos.mutateAsync({
+      galleryId: targetGalleryId,
+      photos: pendingPhotos.map((photo, index) => ({
         assetKey: photo.url,
         alt: photo.name || `Gallery photo ${index + 1}`,
       })),
-    );
+    });
     setPendingPhotos([]);
   };
 
@@ -197,12 +204,12 @@ export function GalleryFormView({
           : null;
 
     if (targetGalleryId) {
-      await photographerApi.galleries.update(targetGalleryId, payload);
+      await updateGallery.mutateAsync({ id: targetGalleryId, input: payload });
       await uploadPendingPhotos(targetGalleryId);
       return targetGalleryId;
     }
 
-    const created = await photographerApi.galleries.create(payload);
+    const created = await createGallery.mutateAsync(payload);
     setSavedGalleryId(created.id);
     await uploadPendingPhotos(created.id);
     return created.id;
@@ -357,9 +364,9 @@ export function GalleryFormView({
       ) : null}
 
       {submitError ? (
-        <p className="mt-4 rounded-sm border border-bad/30 bg-bad-tint px-4 py-3 text-sm text-bad-fg" role="alert">
+        <InlineAlert className="mt-4">
           {submitError}
-        </p>
+        </InlineAlert>
       ) : null}
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">

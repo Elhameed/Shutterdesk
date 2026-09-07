@@ -95,7 +95,7 @@ src/                      Frontend
 ├─ pages/                 Thin — almost every page just renders a feature View
 ├─ features/<domain>/     The actual UI, one folder per screen-domain
 │  ├─ components/         View + its parts
-│  ├─ lib/ utils/         Feature-local logic
+│  ├─ lib/                Feature-local logic
 │  └─ index.ts            Public barrel
 ├─ components/            Shared: ui/ (primitives), layout/, common/, skeletons/
 ├─ services/              API layer — the ONLY place axios is called
@@ -392,13 +392,10 @@ follow: `showSkeleton → <Skeleton/>`, `isLoading → null`, `error → message
 Observations from reading the code, roughly highest-value first. These are candidates,
 not prescriptions.
 
-**1. Two competing data-fetching patterns.** Only **14 files** use the TanStack Query
-hooks in `hooks/queries/`; **33 files** call `photographerApi`/`clientApi` directly inside
-`useEffect` + `useState`, hand-rolling loading/error state each time. That's the largest
-source of repetition in the frontend, and it means most screens get no caching,
-deduplication, or refetch-on-focus despite the library being installed and configured.
-Consolidating on Query hooks would delete a lot of code. Relatedly, `lib/query-keys.ts`
-only defines keys for 8 of the queries that exist.
+**1. ~~Two competing data-fetching patterns.~~ Done.** Every view reads through the hooks
+in `hooks/queries/`; none fetches inside a `useEffect`. Mutations invalidate rather than
+re-calling a loader, and `lib/query-keys.ts` covers every cached resource with
+hierarchical keys, so invalidating a resource root also drops its cached detail entries.
 
 **2. `Json` columns doing schema's job.** ~24 untyped `Json` columns across `Booking`,
 `Gallery`, `StudioClient`, and `Studio`. `StudioClient` alone carries `preferences`,

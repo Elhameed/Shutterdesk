@@ -4,7 +4,6 @@ import { photographerApi } from "@/services/photographer";
 import type { AddClientInput, CreateBookingInput } from "@/services/photographer";
 import type { Booking } from "@/types/domains/booking";
 import type { CreateGalleryInput } from "@/types/domains/gallery";
-import type { CreateServiceInput } from "@/types/domains/service";
 
 /**
  * Write hooks for the photographer portal.
@@ -80,28 +79,6 @@ export function useUpdateBookingStatus() {
   });
 }
 
-export function useRescheduleBooking() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({
-      id,
-      date,
-      time,
-    }: {
-      id: string;
-      date: string;
-      time: string;
-    }) => photographerApi.bookings.reschedule(id, { date, time }),
-    onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.photographer.bookings }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.photographer.all }),
-      ]);
-    },
-  });
-}
-
 export function useCreateGallery() {
   const queryClient = useQueryClient();
 
@@ -124,33 +101,6 @@ export function useUpdateGallery() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.photographer.galleries,
-      });
-    },
-  });
-}
-
-export function useCreateService() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: CreateServiceInput) => photographerApi.services.create(input),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.photographer.services,
-      });
-    },
-  });
-}
-
-export function useUpdateService() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: Partial<CreateServiceInput> }) =>
-      photographerApi.services.update(id, input),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.photographer.services,
       });
     },
   });

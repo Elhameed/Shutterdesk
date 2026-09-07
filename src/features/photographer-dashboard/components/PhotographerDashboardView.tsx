@@ -9,7 +9,7 @@ import { UpcomingShootsTable } from "@/features/photographer-dashboard/component
 import { PHOTOGRAPHER_DASHBOARD_COPY } from "@/constants/photographer-dashboard";
 import { ROUTES } from "@/constants/routes";
 import {
-  getQueryErrorMessage,
+  getApiErrorMessage,
 } from "@/lib/api-error";
 import {
   usePhotographerDashboard,
@@ -36,7 +36,7 @@ export function PhotographerDashboardView() {
     return (
       <div className="flex min-h-[50vh] items-center justify-center p-8">
         <p className="text-bad-fg max-w-md text-center text-sm" role="alert">
-          {getQueryErrorMessage(error, "Unable to load your dashboard.")}
+          {getApiErrorMessage(error, "Unable to load your dashboard.")}
         </p>
       </div>
     );

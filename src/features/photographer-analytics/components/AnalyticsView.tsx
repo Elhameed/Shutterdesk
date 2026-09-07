@@ -7,7 +7,7 @@ import { RevenueChartCard } from "@/features/photographer-analytics/components/R
 import { TopClientsCard } from "@/features/photographer-analytics/components/TopClientsCard";
 import { cn } from "@/lib/utils";
 import { CardSkeleton } from "@/components/ui/skeleton";
-import { getQueryErrorMessage } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { usePhotographerAnalytics } from "@/hooks/queries/photographer";
 
 export function AnalyticsView() {
@@ -26,7 +26,7 @@ export function AnalyticsView() {
 
   const isRefreshing = isFetching && !isPending;
   const error = queryError
-    ? getQueryErrorMessage(queryError, "Could not load analytics")
+    ? getApiErrorMessage(queryError, "Could not load analytics")
     : null;
 
   if (isPending) {

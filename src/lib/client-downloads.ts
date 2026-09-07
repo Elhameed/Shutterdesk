@@ -1,5 +1,5 @@
 import type { GalleryPhoto } from "@/types/domains/gallery";
-import { downloadGalleryPhoto } from "@/features/photographer-gallery-detail/lib/download-gallery-photo";
+import { downloadGalleryPhoto } from "@/lib/download-gallery-photo";
 
 export async function downloadGalleryPhotos(photos: GalleryPhoto[]) {
   for (const photo of photos) {

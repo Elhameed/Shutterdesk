@@ -165,13 +165,6 @@ export function usePhotographerAvailability() {
   });
 }
 
-export function usePhotographerSettings(panel: SettingsPanel) {
-  return useQuery({
-    queryKey: queryKeys.photographer.settings(panel),
-    queryFn: () => photographerApi.settings.getPanel(panel),
-    meta: { errorMessage: "Unable to load settings." },
-  });
-}
 
 const ALL_SETTINGS_PANELS = [
   "profile",
