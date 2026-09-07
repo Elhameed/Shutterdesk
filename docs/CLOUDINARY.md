@@ -120,7 +120,7 @@ Add the same four `CLOUDINARY_*` variables to your Render service environment. N
 
 | Issue | Fix |
 |-------|-----|
-| `Cloudinary is not configured` | Add all three `CLOUDINARY_* creds to `server/.env` and restart API |
+| `Cloudinary is not configured` | Add the `CLOUDINARY_*` variables to `server/.env` and restart the API |
 | `Invalid signature` | Check API secret; ensure server clock is reasonable |
 | `Invalid receipt upload source` | Receipt URL must be from your Cloudinary cloud |
 | CORS on upload | Cloudinary allows browser uploads by default for signed requests |

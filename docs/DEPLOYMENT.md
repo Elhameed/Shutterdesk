@@ -60,8 +60,8 @@ needs to be written to a file or shared.
 > a local Postgres there is no pooler, so both variables take the same value.
 
 You do **not** need to create tables. `start:prod` runs `prisma migrate deploy`
-on every boot, and the 11 migrations in `server/prisma/migrations` build the
-schema on first deploy.
+on every boot, and the migrations in `server/prisma/migrations` build the schema
+on first deploy.
 
 Optional demo data, once the API is up:
 
@@ -236,28 +236,28 @@ npm run dev:all
 
 ## CI
 
-GitHub Actions ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs on push/PR:
+GitHub Actions ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs three
+sequential jobs on push/PR, against a `postgres:16` service container:
 
-- ESLint
-- Frontend production build
-- Server TypeScript build
+1. **build** — ESLint, frontend production build, server TypeScript build
+2. **api-tests** — the Vitest + Supertest integration suite
+3. **e2e** — Playwright against both dev servers
 
 ---
 
-## Phase 8 checklist (remaining optional items)
+## What the deployment includes
 
 | Item | Status |
 |------|--------|
-| Vercel frontend deploy | Ready — follow steps above |
-| Render API deploy | Ready — `render.yaml` + `start:prod` |
-| Neon Postgres | Ready — see step 0 |
-| CORS multi-origin | Implemented |
-| Auth rate limiting | Implemented (30 req / 15 min) |
-| Helmet security headers | Implemented |
-| GitHub Actions CI | Implemented |
-| Sentry monitoring | Not yet — add when needed |
-| Swagger `/api/docs` | Not yet |
-| Custom domain (`app.shutterdesk.rw`) | Vercel + Render dashboard when ready |
+| Vercel frontend deploy | `vercel.json` — follow step 2 |
+| Render API deploy | `render.yaml` blueprint + `start:prod` |
+| Neon Postgres | See step 0 |
+| CORS multi-origin | Comma-separated origins, `*` wildcard for previews |
+| Auth rate limiting | 30 requests / 15 min |
+| Helmet security headers | Enabled |
+| GitHub Actions CI | Lint, build, API tests, e2e |
+| Sentry error reporting | Optional — set `SENTRY_DSN` to enable |
+| Custom domain | Configure in the Vercel and Render dashboards |
 
 ---
 
