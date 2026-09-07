@@ -6,8 +6,12 @@ import { PaymentDetailDrawer } from "@/features/photographer-payments/components
 import { PaymentsHeader } from "@/features/photographer-payments/components/PaymentsHeader";
 import { PaymentsStats } from "@/features/photographer-payments/components/PaymentsStats";
 import { VerificationQueue } from "@/features/photographer-payments/components/VerificationQueue";
-import { photographerApi } from "@/services/photographer";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
+import { usePhotographerVerifications } from "@/hooks/queries/photographer";
+import {
+  useRequestReceiptResubmission,
+  useUpdateVerificationStatus,
+} from "@/hooks/queries/photographer-mutations";
 import {
   PageHeaderSkeleton,
   StatCardGridSkeleton,
@@ -25,23 +29,17 @@ export function PaymentsView() {
   const copy = PAYMENTS_COPY;
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [verifications, setVerifications] = useState<PaymentVerification[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const showSkeleton = useDelayedLoading(isLoading);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: verifications = [], isPending } = usePhotographerVerifications();
+  const showSkeleton = useDelayedLoading(isPending);
+  const updateStatus = useUpdateVerificationStatus();
+  const requestResubmission = useRequestReceiptResubmission();
+  const isSubmitting = updateStatus.isPending || requestResubmission.isPending;
   const [selectedPayment, setSelectedPayment] =
     useState<PaymentVerification | null>(null);
 
   const verificationParam = searchParams.get("verification");
   const bookingParam = searchParams.get("booking");
   const clientQuery = searchParams.get("q");
-
-  useEffect(() => {
-    void photographerApi.payments.list().then((data) => {
-      setVerifications(data);
-      setIsLoading(false);
-    });
-  }, []);
 
   useEffect(() => {
     if (clientQuery) {
@@ -51,7 +49,7 @@ export function PaymentsView() {
   }, [clientQuery]);
 
   useEffect(() => {
-    if (isLoading || verifications.length === 0) return;
+    if (isPending || verifications.length === 0) return;
 
     const matched =
       (verificationParam
@@ -64,7 +62,7 @@ export function PaymentsView() {
     if (matched) {
       setSelectedPayment(matched);
     }
-  }, [bookingParam, isLoading, verificationParam, verifications]);
+  }, [bookingParam, isPending, verificationParam, verifications]);
 
   const handleCloseDrawer = () => {
     setSelectedPayment(null);
@@ -103,30 +101,22 @@ export function PaymentsView() {
     setCurrentPage(1);
   };
 
+  // Only ever called with "approved" or "rejected" — the wider
+  // PaymentVerification["status"] included "pending", which the API rejects.
   const handlePaymentAction = async (
     id: string,
-    status: PaymentVerification["status"],
+    status: "approved" | "rejected",
   ) => {
-    setIsSubmitting(true);
-    try {
-      const updated = await photographerApi.payments.updateStatus(id, status);
-      if (updated) {
-        const nextList = await photographerApi.payments.list();
-        setVerifications(nextList);
-        setSelectedPayment(updated);
-      }
-    } finally {
-      setIsSubmitting(false);
+    const updated = await updateStatus.mutateAsync({ id, status });
+    if (updated) {
+      setSelectedPayment(updated);
     }
   };
 
   const handleRequestResubmission = async (id: string) => {
-    setIsSubmitting(true);
     try {
-      const updated = await photographerApi.payments.requestResubmission(id);
+      const updated = await requestResubmission.mutateAsync(id);
       if (updated) {
-        const nextList = await photographerApi.payments.list();
-        setVerifications(nextList);
         setSelectedPayment(updated);
         push({
           title: copy.detail.requestNewReceiptSuccess,
@@ -139,8 +129,11 @@ export function PaymentsView() {
         title: copy.detail.requestNewReceiptError,
         variant: "error",
       });
-    } finally {
-      setIsSubmitting(false);
+    } catch {
+      push({
+        title: copy.detail.requestNewReceiptError,
+        variant: "error",
+      });
     }
   };
 
@@ -158,7 +151,7 @@ export function PaymentsView() {
     );
   }
 
-  if (isLoading) {
+  if (isPending) {
     return null;
   }
 

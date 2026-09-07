@@ -198,3 +198,33 @@ export function useSetGalleryReleaseOverride() {
     },
   });
 }
+
+export function useUpdateVerificationStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      status,
+    }: {
+      id: string;
+      status: "approved" | "rejected";
+    }) => photographerApi.payments.updateStatus(id, status),
+    onSuccess: async () => {
+      // Approving a payment can also confirm the booking and change the
+      // dashboard totals, so the whole photographer tree is invalidated.
+      await queryClient.invalidateQueries({ queryKey: queryKeys.photographer.all });
+    },
+  });
+}
+
+export function useRequestReceiptResubmission() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => photographerApi.payments.requestResubmission(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.photographer.all });
+    },
+  });
+}
