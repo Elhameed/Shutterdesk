@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ArrowLeft, ArrowRight, Check, Clock, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/skeletons";
@@ -7,8 +7,10 @@ import {
   formatBookSessionDateShort,
 } from "@/constants/client-book-session";
 import { BookSessionCalendar } from "@/features/client-book-session/components/BookSessionCalendar";
-import { clientApi } from "@/services/client";
-import type { AvailabilitySlot } from "@/types/domains/availability";
+import {
+  useClientAvailabilityDates,
+  useClientAvailabilitySlots,
+} from "@/hooks/queries/client";
 import { toDateKey } from "@/types/domains/availability";
 import type { ServicePackage } from "@/types/domains/service";
 import { cn } from "@/lib/utils";
@@ -39,42 +41,23 @@ export function BookSessionScheduleStep({
   onContinue,
 }: BookSessionScheduleStepProps) {
   const copy = CLIENT_BOOK_SESSION_COPY;
-  const [availableDates, setAvailableDates] = useState<string[]>([]);
-  const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
-  const [isLoadingDates, setIsLoadingDates] = useState(true);
-  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+  // Both queries key off what the client has picked, so changing the month or
+  // the date refetches without the component driving it. The slots query stays
+  // disabled until a date is chosen, which is what the early return did.
+  const { data: availableDates = [], isPending: isLoadingDates } =
+    useClientAvailabilityDates({
+      studioSlug,
+      packageId: packageInfo.id,
+      month: month.getMonth() + 1,
+      year: month.getFullYear(),
+    });
 
-  useEffect(() => {
-    if (!studioSlug || !packageInfo.id) return;
-
-    setIsLoadingDates(true);
-    void clientApi.availability
-      .getAvailableDates(
-        studioSlug,
-        packageInfo.id,
-        month.getMonth() + 1,
-        month.getFullYear(),
-      )
-      .then((dates) => {
-        setAvailableDates(dates);
-        setIsLoadingDates(false);
-      });
-  }, [studioSlug, packageInfo.id, month]);
-
-  useEffect(() => {
-    if (!studioSlug || !packageInfo.id || !selectedDate) {
-      setSlots([]);
-      return;
-    }
-
-    setIsLoadingSlots(true);
-    void clientApi.availability
-      .getSlots(studioSlug, packageInfo.id, toDateKey(selectedDate))
-      .then((nextSlots) => {
-        setSlots(nextSlots);
-        setIsLoadingSlots(false);
-      });
-  }, [studioSlug, packageInfo.id, selectedDate]);
+  const { data: slots = [], isFetching: isLoadingSlots } =
+    useClientAvailabilitySlots({
+      studioSlug,
+      packageId: packageInfo.id,
+      date: selectedDate ? toDateKey(selectedDate) : null,
+    });
 
   useEffect(() => {
     if (slots.length === 0) return;

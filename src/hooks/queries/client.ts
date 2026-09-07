@@ -161,3 +161,45 @@ export function useClientSettings() {
     meta: { errorMessage: "Unable to load your settings." },
   });
 }
+
+export function useClientAvailabilityDates(params: {
+  studioSlug: string;
+  packageId: string;
+  month: number;
+  year: number;
+}) {
+  return useQuery({
+    queryKey: queryKeys.client.availabilityDates(params),
+    queryFn: () =>
+      clientApi.availability.getAvailableDates(
+        params.studioSlug,
+        params.packageId,
+        params.month,
+        params.year,
+      ),
+    enabled: Boolean(params.studioSlug && params.packageId),
+    meta: { errorMessage: "Unable to load available dates." },
+  });
+}
+
+export function useClientAvailabilitySlots(params: {
+  studioSlug: string;
+  packageId: string;
+  date: string | null;
+}) {
+  return useQuery({
+    queryKey: queryKeys.client.availabilitySlots({
+      studioSlug: params.studioSlug,
+      packageId: params.packageId,
+      date: params.date ?? "",
+    }),
+    queryFn: () =>
+      clientApi.availability.getSlots(
+        params.studioSlug,
+        params.packageId,
+        params.date as string,
+      ),
+    enabled: Boolean(params.studioSlug && params.packageId && params.date),
+    meta: { errorMessage: "Unable to load times for this date." },
+  });
+}
