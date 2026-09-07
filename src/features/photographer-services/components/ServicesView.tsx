@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/toast";
 import { SERVICES_COPY } from "@/constants/photographer-services";
@@ -6,8 +6,12 @@ import { ServicesGrid } from "@/features/photographer-services/components/Servic
 import { ServicesHeader } from "@/features/photographer-services/components/ServicesHeader";
 import { ServicesSearch } from "@/features/photographer-services/components/ServicesSearch";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { photographerApi } from "@/services/photographer";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
+import { usePhotographerServices } from "@/hooks/queries/photographer";
+import {
+  useDeleteService,
+  useDuplicateService,
+} from "@/hooks/queries/photographer-mutations";
 import { ListPageSkeleton } from "@/components/skeletons";
 import {
   searchServicePackages,
@@ -16,23 +20,15 @@ import {
 
 export function ServicesView() {
   const copy = SERVICES_COPY;
+  const duplicateService = useDuplicateService();
+  const deleteService = useDeleteService();
   const { push } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  const [packages, setPackages] = useState<ServicePackage[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const showSkeleton = useDelayedLoading(isLoading);
+  const { data: packages = [], isPending } = usePhotographerServices();
+  const showSkeleton = useDelayedLoading(isPending);
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ServicePackage | null>(null);
-
-  const refreshPackages = useCallback(async () => {
-    const data = await photographerApi.services.list();
-    setPackages(data);
-  }, []);
-
-  useEffect(() => {
-    void refreshPackages().finally(() => setIsLoading(false));
-  }, [refreshPackages]);
 
   const filteredPackages = useMemo(
     () => searchServicePackages(packages, searchQuery),
@@ -42,8 +38,7 @@ export function ServicesView() {
   const handleDuplicate = async (service: ServicePackage) => {
     setDuplicatingId(service.id);
     try {
-      const duplicated = await photographerApi.services.duplicate(service.id);
-      await refreshPackages();
+      const duplicated = await duplicateService.mutateAsync(service.id);
       push({
         title: copy.duplicateSuccessTitle,
         description: copy.duplicateSuccessDescription(duplicated.title),
@@ -65,8 +60,8 @@ export function ServicesView() {
 
     setDeletingId(deleteTarget.id);
     try {
-      await photographerApi.services.delete(deleteTarget.id);
-      setPackages((current) => current.filter((pkg) => pkg.id !== deleteTarget.id));
+      // The mutation invalidates the services list, so no local removal here.
+      await deleteService.mutateAsync(deleteTarget.id);
       setDeleteTarget(null);
       push({
         title: copy.deleteSuccessTitle,
@@ -88,7 +83,7 @@ export function ServicesView() {
     return <ListPageSkeleton variant="service" />;
   }
 
-  if (isLoading) {
+  if (isPending) {
     return null;
   }
 

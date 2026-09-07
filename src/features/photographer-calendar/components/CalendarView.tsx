@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   AvailabilityManageDrawer,
   AvailabilityManageTrigger,
@@ -22,52 +23,48 @@ import {
   type CalendarDate,
   type CalendarViewMode,
 } from "@/features/photographer-calendar/lib/calendar-navigation";
-import { getApiErrorMessage } from "@/lib/api-error";
-import { photographerApi } from "@/services/photographer";
-import type { CalendarMonthData } from "@/types/domains/calendar";
+import { getQueryErrorMessage } from "@/lib/api-error";
+import { usePhotographerCalendar } from "@/hooks/queries/photographer";
+import { queryKeys } from "@/lib/query-keys";
 
 export function CalendarView() {
   const [view, setView] = useState<CalendarViewMode>("month");
   const [focusDate, setFocusDate] = useState<CalendarDate | null>(null);
-  const [calendarData, setCalendarData] = useState<CalendarMonthData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [availabilityOpen, setAvailabilityOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Before focusDate is known, ask for the current month. Once the response
+  // arrives, focusDate is derived from the server's idea of today — which is
+  // why it comes from the payload rather than the browser clock — and the query
+  // follows it from then on.
+  const now = new Date();
+  const month = focusDate ? focusDate.monthIndex + 1 : now.getMonth() + 1;
+  const year = focusDate ? focusDate.year : now.getFullYear();
+
+  const {
+    data: calendarData,
+    isPending,
+    error: queryError,
+  } = usePhotographerCalendar(month, year);
+
+  const error = queryError
+    ? getQueryErrorMessage(queryError, "Unable to load calendar.")
+    : null;
 
   useEffect(() => {
-    void photographerApi.calendar
-      .getMonth(new Date().getMonth() + 1, new Date().getFullYear())
-      .then((data) => {
-        setCalendarData(data);
-        setFocusDate((current) =>
-          current ?? {
-            year: data.month.year,
-            monthIndex: data.month.monthIndex,
-            day: data.today.day,
-          },
-        );
-        setIsLoading(false);
-      })
-      .catch((fetchError) => {
-        setError(getApiErrorMessage(fetchError, "Unable to load calendar."));
-        setIsLoading(false);
-      });
-  }, []);
+    if (!calendarData || focusDate) return;
+    setFocusDate({
+      year: calendarData.month.year,
+      monthIndex: calendarData.month.monthIndex,
+      day: calendarData.today.day,
+    });
+  }, [calendarData, focusDate]);
 
   const refreshCalendar = () => {
-    if (!focusDate) return;
-    void photographerApi.calendar
-      .getMonth(focusDate.monthIndex + 1, focusDate.year)
-      .then(setCalendarData);
+    void queryClient.invalidateQueries({
+      queryKey: queryKeys.photographer.calendar(month, year),
+    });
   };
-
-  useEffect(() => {
-    if (!focusDate) return;
-
-    void photographerApi.calendar
-      .getMonth(focusDate.monthIndex + 1, focusDate.year)
-      .then(setCalendarData);
-  }, [focusDate?.monthIndex, focusDate?.year]);
 
   const handlePrevious = () => {
     if (!focusDate) return;
@@ -93,7 +90,7 @@ export function CalendarView() {
   };
 
   const showSkeleton = useDelayedLoading(
-    isLoading || !calendarData || !focusDate,
+    isPending || !calendarData || !focusDate,
   );
 
   if (error) {
@@ -110,7 +107,7 @@ export function CalendarView() {
     return <CalendarSkeleton />;
   }
 
-  if (isLoading || !calendarData || !focusDate) {
+  if (isPending || !calendarData || !focusDate) {
     return null;
   }
 

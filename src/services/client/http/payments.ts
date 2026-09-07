@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { isNotFoundError } from "@/lib/api-error";
 import {
   mapApiClientPaymentRecord,
   mapApiPaymentVerification,
@@ -47,8 +48,9 @@ export const clientPaymentsHttp = {
         `/client/payments/requests/${id}`,
       );
       return mapApiPaymentRequest(data.data);
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined;
+      throw error;
     }
   },
 

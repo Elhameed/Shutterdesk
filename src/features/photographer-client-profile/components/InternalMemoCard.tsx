@@ -3,45 +3,31 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import { CLIENT_PROFILE_COPY } from "@/constants/photographer-client-profile";
-import { photographerApi } from "@/services/photographer";
+import { useUpdateClientNotes } from "@/hooks/queries/photographer-mutations";
 
 type InternalMemoCardProps = {
   clientId: string;
   initialNotes: string | null;
-  onSaved?: (notes: string | null) => void;
 };
 
-export function InternalMemoCard({
-  clientId,
-  initialNotes,
-  onSaved,
-}: InternalMemoCardProps) {
+export function InternalMemoCard({ clientId, initialNotes }: InternalMemoCardProps) {
   const copy = CLIENT_PROFILE_COPY;
   const { push } = useToast();
   const [notes, setNotes] = useState(initialNotes ?? "");
-  const [isSaving, setIsSaving] = useState(false);
+  // Saving invalidates the client profile, so the parent re-reads it rather
+  // than being handed the new value through a callback.
+  const updateNotes = useUpdateClientNotes();
 
   useEffect(() => {
     setNotes(initialNotes ?? "");
   }, [initialNotes]);
 
   async function handleSave() {
-    setIsSaving(true);
-
     try {
-      const saved = await photographerApi.clients.updateNotes(clientId, notes);
-      onSaved?.(saved);
-      push({
-        title: copy.memoSaved,
-        variant: "success",
-      });
+      await updateNotes.mutateAsync({ id: clientId, notes });
+      push({ title: copy.memoSaved, variant: "success" });
     } catch {
-      push({
-        title: copy.memoSaveFailed,
-        variant: "error",
-      });
-    } finally {
-      setIsSaving(false);
+      push({ title: copy.memoSaveFailed, variant: "error" });
     }
   }
 
@@ -63,7 +49,7 @@ export function InternalMemoCard({
           variant="default"
           size="sm"
           className="text-xs font-medium"
-          disabled={isSaving}
+          disabled={updateNotes.isPending}
           onClick={() => void handleSave()}
         >
           {copy.save}

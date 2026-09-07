@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { isNotFoundError } from "@/lib/api-error";
 import {
   mapApiClientToClient,
   mapApiProfileToDetail,
@@ -30,8 +31,9 @@ export const photographerClientsHttp = {
     try {
       const { data } = await apiClient.get<ItemResponse>(`/photographer/clients/${id}`);
       return mapApiClientToClient(data.data);
-    } catch {
-      return null;
+    } catch (error) {
+      if (isNotFoundError(error)) return null;
+      throw error;
     }
   },
 
@@ -49,8 +51,9 @@ export const photographerClientsHttp = {
         { notes },
       );
       return data.data.notes;
-    } catch {
-      return null;
+    } catch (error) {
+      if (isNotFoundError(error)) return null;
+      throw error;
     }
   },
 };

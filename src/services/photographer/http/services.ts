@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { isNotFoundError } from "@/lib/api-error";
 import { mapApiServicePackage } from "@/services/service-mapper";
 import type {
   ApiServicePackage,
@@ -19,8 +20,9 @@ export const photographerServicesHttp = {
     try {
       const { data } = await apiClient.get<ItemResponse>(`/photographer/services/${id}`);
       return mapApiServicePackage(data.data);
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined;
+      throw error;
     }
   },
 

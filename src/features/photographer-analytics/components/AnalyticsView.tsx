@@ -1,57 +1,35 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { AnalyticsHeader } from "@/features/photographer-analytics/components/AnalyticsHeader";
 import { AnalyticsKpiCards } from "@/features/photographer-analytics/components/AnalyticsKpiCards";
 import { BookingsVolumeCard } from "@/features/photographer-analytics/components/BookingsVolumeCard";
 import { PopularServicesCard } from "@/features/photographer-analytics/components/PopularServicesCard";
 import { RevenueChartCard } from "@/features/photographer-analytics/components/RevenueChartCard";
 import { TopClientsCard } from "@/features/photographer-analytics/components/TopClientsCard";
-import { photographerApi } from "@/services/photographer";
-import type { PhotographerAnalyticsSummary } from "@/types/domains/analytics";
 import { cn } from "@/lib/utils";
 import { CardSkeleton } from "@/components/ui/skeleton";
-import { getApiErrorMessage } from "@/lib/api-error";
+import { getQueryErrorMessage } from "@/lib/api-error";
+import { usePhotographerAnalytics } from "@/hooks/queries/photographer";
 
 export function AnalyticsView() {
   const [dateRange, setDateRange] = useState("30");
-  const [analytics, setAnalytics] = useState<PhotographerAnalyticsSummary | null>(
-    null,
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const hasLoadedRef = useRef(false);
 
-  useEffect(() => {
-    let cancelled = false;
+  // `placeholderData` keeps the previous range's numbers on screen while a new
+  // range loads, which is what the hand-rolled `hasLoadedRef` was approximating
+  // to tell a first load apart from a refresh. Query also cancels the in-flight
+  // request when the range changes, replacing the manual `cancelled` flag.
+  const {
+    data: analytics,
+    isPending,
+    isFetching,
+    error: queryError,
+  } = usePhotographerAnalytics(dateRange);
 
-    setIsRefreshing(hasLoadedRef.current);
-    if (!hasLoadedRef.current) {
-      setIsLoading(true);
-    }
-    setError(null);
+  const isRefreshing = isFetching && !isPending;
+  const error = queryError
+    ? getQueryErrorMessage(queryError, "Could not load analytics")
+    : null;
 
-    void photographerApi.analytics
-      .getSummary(dateRange)
-      .then((data) => {
-        if (cancelled) return;
-        hasLoadedRef.current = true;
-        setAnalytics(data);
-        setIsLoading(false);
-        setIsRefreshing(false);
-      })
-      .catch((fetchError) => {
-        if (cancelled) return;
-        setError(getApiErrorMessage(fetchError, "Could not load analytics"));
-        setIsLoading(false);
-        setIsRefreshing(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [dateRange]);
-
-  if (isLoading && !analytics) {
+  if (isPending) {
     return (
       <div className="min-w-0 max-w-full space-y-4 p-4 sm:p-6 lg:p-8">
         <CardSkeleton />

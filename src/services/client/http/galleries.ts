@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { isNotFoundError } from "@/lib/api-error";
 import { assetUrl } from "@/lib/asset-url";
 import {
   mapApiGallery,
@@ -49,8 +50,9 @@ export const clientGalleriesHttp = {
     try {
       const detail = await this.getDetail(id);
       return detail?.gallery;
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined;
+      throw error;
     }
   },
 
@@ -64,8 +66,9 @@ export const clientGalleriesHttp = {
         meta: mapApiGalleryDetailMeta(data.data.meta),
         photos: data.data.photos.map(mapApiGalleryPhoto),
       };
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined;
+      throw error;
     }
   },
 
@@ -92,8 +95,9 @@ export const clientGalleriesHttp = {
         src,
         alt: data.data.alt,
       };
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined;
+      throw error;
     }
   },
 
