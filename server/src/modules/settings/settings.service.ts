@@ -7,7 +7,7 @@ import {
   normalizeStoredMediaUrl,
 } from "../../lib/cloudinary.js";
 import { syncClientProfileAcrossRecords } from "../../domain/client-profile-sync.js";
-import { syncPhotographerIdentityAcrossRecords } from "../../domain/photographer-identity-sync.js";
+import { syncStudioNameAcrossRecords } from "../../domain/photographer-identity-sync.js";
 import { getStudioForPhotographer } from "../../lib/studio-context.js";
 import { getOrCreateStudioSchedule } from "../availability/availability.service.js";
 import { AppError } from "../../middleware/error-handler.js";
@@ -292,12 +292,9 @@ export async function updatePhotographerSettingsPanel(
         }),
       ]);
 
-      await syncPhotographerIdentityAcrossRecords(photographerUserId, {
-        ...(typeof payload.fullName === "string"
-          ? { fullName: payload.fullName }
-          : {}),
-        ...(avatarValue ? { avatarUrl: avatarValue } : {}),
-      });
+      // No sync call here: a photographer's name and avatar are not copied
+      // anywhere. The call that used to sit here passed fullName and avatarUrl
+      // to a helper that silently ignored both.
       break;
     }
     case "studio": {
@@ -348,9 +345,7 @@ export async function updatePhotographerSettingsPanel(
         },
       });
 
-      await syncPhotographerIdentityAcrossRecords(photographerUserId, {
-        studioName,
-      });
+      await syncStudioNameAcrossRecords(photographerUserId, studioName);
       break;
     }
     case "payment": {

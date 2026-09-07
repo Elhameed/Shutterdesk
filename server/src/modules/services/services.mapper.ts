@@ -48,9 +48,16 @@ function buildDetails(pkg: ServicePackage, meta: ServiceMetadata) {
   ] as const;
 }
 
+/**
+ * `totalRevenue` is required rather than optional because it is always
+ * computed — the ServicePackage.totalRevenue column was never written by any
+ * code path. When it was optional, the create, update and duplicate responses
+ * omitted it and fell back to the column, so renaming a package made its
+ * revenue appear to drop to zero.
+ */
 export function toApiServicePackage(
   pkg: ServicePackage,
-  totalRevenue?: number,
+  totalRevenue: number,
 ): ApiServicePackage {
   const meta = readMetadata(pkg);
 
@@ -65,7 +72,7 @@ export function toApiServicePackage(
       { icon: string; label: string },
       { icon: string; label: string },
     ],
-    totalRevenue: totalRevenue ?? pkg.totalRevenue,
+    totalRevenue,
     category: pkg.category,
     isActive: pkg.isActive,
     depositPercent: pkg.depositPercent,

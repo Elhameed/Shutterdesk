@@ -123,15 +123,26 @@ function parseJsonArrayOf<S extends z.ZodType>(
   });
 }
 
+/**
+ * `metrics` is required rather than optional because sessions, revenue and
+ * balance are always computed from the client's bookings — the columns of the
+ * same name on StudioClient were written once at create and never updated.
+ * Making it optional let call sites silently fall back to those stale zeroes.
+ */
+/** A client with no bookings yet. */
+export const NO_CLIENT_METRICS: ClientMetrics = {
+  sessions: 0,
+  revenue: 0,
+  balance: 0,
+  lastBookingAt: null,
+};
+
 export function toApiClient(
   client: StudioClient,
-  avatarAssetKey?: string | null,
-  metrics?: ClientMetrics,
+  avatarAssetKey: string | null | undefined,
+  metrics: ClientMetrics,
 ): ApiClient {
-  const sessions = metrics?.sessions ?? client.sessions;
-  const revenue = metrics?.revenue ?? client.revenue;
-  const balance = metrics?.balance ?? client.balance;
-  const lastBookingAt = metrics?.lastBookingAt ?? client.lastBookingAt;
+  const { sessions, revenue, balance, lastBookingAt } = metrics;
 
   return {
     id: client.id,
@@ -152,14 +163,14 @@ export function toApiClient(
 
 export function toApiClientProfile(
   client: StudioClient,
-  avatarAssetKey?: string | null,
-  metrics?: ClientMetrics,
+  avatarAssetKey: string | null | undefined,
+  metrics: ClientMetrics,
   activity?: ClientProfileActivity,
 ): ApiClientProfile {
   const base = toApiClient(client, avatarAssetKey, metrics);
-  const reliability =
-    activity?.reliability ??
-    (metrics?.balance === 0 ? client.reliability : client.reliability);
+  // Was `metrics?.balance === 0 ? client.reliability : client.reliability` —
+  // both branches were the same value.
+  const reliability = activity?.reliability ?? client.reliability;
 
   return {
     ...base,

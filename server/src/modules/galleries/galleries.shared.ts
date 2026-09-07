@@ -77,17 +77,35 @@ export async function unlinkGalleryFromBookings(galleryId: string) {
   });
 }
 
+/**
+ * Recompute a gallery's photo counters after its photo set changes, as a
+ * pending Prisma operation so the caller can commit it alongside the change
+ * that caused it.
+ *
+ * This used to set the cover to the first remaining photo unconditionally, so
+ * deleting or reordering a photo silently discarded a cover the photographer
+ * had chosen. A cover is usually its own uploaded image rather than one of the
+ * photos, so "is it still in the list" is the wrong question — the cover is
+ * only reassigned when there isn't one, or when the photo being removed *was*
+ * the cover.
+ */
 export function galleryPhotoStatsUpdate(
   galleryId: string,
   photos: Array<{ assetKey: string }>,
+  currentCoverAssetKey: string | null,
+  removedAssetKeys: string[] = [],
 ) {
-  const photoCount = photos.length;
+  const coverWasRemoved =
+    currentCoverAssetKey !== null && removedAssetKeys.includes(currentCoverAssetKey);
+  const needsNewCover = currentCoverAssetKey === null || coverWasRemoved;
 
   return prisma.gallery.update({
     where: { id: galleryId },
     data: {
-      photoCount,
-      coverAssetKey: photos[0]?.assetKey ?? null,
+      photoCount: photos.length,
+      coverAssetKey: needsNewCover
+        ? (photos[0]?.assetKey ?? null)
+        : currentCoverAssetKey,
     },
   });
 }
@@ -95,8 +113,15 @@ export function galleryPhotoStatsUpdate(
 export async function syncGalleryPhotoStats(
   galleryId: string,
   photos: Array<{ assetKey: string }>,
+  currentCoverAssetKey: string | null,
+  removedAssetKeys: string[] = [],
 ) {
-  await galleryPhotoStatsUpdate(galleryId, photos);
+  await galleryPhotoStatsUpdate(
+    galleryId,
+    photos,
+    currentCoverAssetKey,
+    removedAssetKeys,
+  );
 }
 
 export function buildGalleryDetailResponse(

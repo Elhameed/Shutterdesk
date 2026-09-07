@@ -211,7 +211,7 @@ describe("photographer galleries", () => {
     expect(response.body.data).toBeTruthy();
   });
 
-  it("documents what happens to a chosen cover when photos change", async () => {
+  it("keeps a chosen cover when photos change", async () => {
     const gallery = await createGallery({
       coverAssetKey: "galleries/chosen-cover",
     });
@@ -221,15 +221,26 @@ describe("photographer galleries", () => {
       "galleries/chosen-cover",
     );
 
-    // Upload preserves the chosen cover, but delete and reorder recompute it
-    // from the first remaining photo. That divergence is a known defect; this
-    // pins the current behaviour so the fix is visible when it lands.
+    // Delete and reorder used to recompute the cover from the first remaining
+    // photo, discarding the photographer's choice. It is now only reassigned
+    // when the removed photo *was* the cover.
     await studio()
       .delete(`/api/photographer/galleries/${gallery.id}/photos/${photos[0].id}`)
       .expect(200);
 
-    const afterDelete = (await readDetail(gallery.id)).gallery.coverAssetKey;
-    expect(afterDelete).toBe("galleries/coverage-1");
+    expect((await readDetail(gallery.id)).gallery.coverAssetKey).toBe(
+      "galleries/chosen-cover",
+    );
+
+    const remaining = (await readDetail(gallery.id)).photos;
+    await studio()
+      .patch(`/api/photographer/galleries/${gallery.id}/photos/reorder`)
+      .send({ photoIds: [...remaining].reverse().map((photo) => photo.id) })
+      .expect(200);
+
+    expect((await readDetail(gallery.id)).gallery.coverAssetKey).toBe(
+      "galleries/chosen-cover",
+    );
   });
 
   it("refuses to touch another studio's gallery", async () => {

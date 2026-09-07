@@ -385,7 +385,9 @@ export async function deleteGalleryPhoto(
   // photo that no longer exists.
   await prisma.$transaction([
     prisma.galleryPhoto.delete({ where: { id: photoId } }),
-    galleryPhotoStatsUpdate(gallery.id, remainingPhotos),
+    galleryPhotoStatsUpdate(gallery.id, remainingPhotos, gallery.coverAssetKey, [
+      photo.assetKey,
+    ]),
   ]);
 
   const refreshed = await getOwnedGalleryOrThrow(photographerUserId, galleryId);
@@ -454,6 +456,7 @@ export async function reorderGalleryPhotos(
   await syncGalleryPhotoStats(
     gallery.id,
     refreshed.photos.map((photo) => ({ assetKey: photo.assetKey })),
+    gallery.coverAssetKey,
   );
 
   const synced = await getOwnedGalleryOrThrow(photographerUserId, galleryId);
