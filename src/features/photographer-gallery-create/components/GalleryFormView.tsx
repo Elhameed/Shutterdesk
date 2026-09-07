@@ -26,9 +26,11 @@ import {
   ToggleSwitch,
 } from "@/features/photographer-gallery-detail/components/GalleryTabShared";
 import { photographerApi } from "@/services/photographer";
+import {
+  usePhotographerBookings,
+  usePhotographerClients,
+} from "@/hooks/queries/photographer";
 import { getApiErrorMessage } from "@/lib/api-error";
-import type { Booking } from "@/types/domains/booking";
-import type { Client } from "@/types/domains/photographer-client";
 import {
   type GalleryCategory,
   type GalleryFormValues,
@@ -80,8 +82,6 @@ export function GalleryFormView({
   const [accessPin, setAccessPin] = useState(initialValues.accessPin ?? "");
   const [coverUrl, setCoverUrl] = useState<string | null>(coverImage ?? null);
   const [pendingPhotos, setPendingPhotos] = useState<PendingGalleryPhoto[]>([]);
-  const [clients, setClients] = useState<Client[]>([]);
-  const [bookings, setBookings] = useState<Booking[]>([]);
   const [savedGalleryId, setSavedGalleryId] = useState<string | undefined>(galleryId);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -92,18 +92,15 @@ export function GalleryFormView({
     ? initialValues.photoCount + pendingPhotos.length
     : pendingPhotos.length;
 
+  // Clients and bookings populate the two pickers; the rest of the form is
+  // local state the photographer is editing.
+  const { data: clients = [] } = usePhotographerClients();
+  const { data: bookings = [] } = usePhotographerBookings();
+
   useEffect(() => {
-    void Promise.all([
-      photographerApi.clients.list(),
-      photographerApi.bookings.list(),
-    ]).then(([clientList, bookingList]) => {
-      setClients(clientList);
-      setBookings(bookingList);
-      if (!initialValues.clientId && clientList[0]) {
-        setClientId(clientList[0].id);
-      }
-    });
-  }, [initialValues.clientId]);
+    if (initialValues.clientId || !clients[0]) return;
+    setClientId((current) => current || clients[0].id);
+  }, [clients, initialValues.clientId]);
 
   useEffect(() => {
     if (!relatedBookingId) return;

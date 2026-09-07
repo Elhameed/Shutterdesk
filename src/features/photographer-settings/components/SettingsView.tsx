@@ -16,6 +16,7 @@ import { SettingsFooter } from "@/features/photographer-settings/components/Sett
 import { SettingsNav } from "@/features/photographer-settings/components/SettingsNav";
 import { StudioSettingsPanel } from "@/features/photographer-settings/components/StudioSettingsPanel";
 import { photographerApi } from "@/services/photographer";
+import { usePhotographerAllSettings } from "@/hooks/queries/photographer";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { queryKeys } from "@/lib/query-keys";
 import type {
@@ -63,54 +64,40 @@ export function SettingsView() {
   const [billingInvoices, setBillingInvoices] = useState<BillingInvoice[]>([]);
   const [savedSettings, setSavedSettings] = useState<SavedSettings | null>(null);
   const [saved, setSaved] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isDeactivating, setIsDeactivating] = useState(false);
 
+  const { data: panels, isPending: loading } = usePhotographerAllSettings();
+
+  // Every panel is an editable form, so the fetched values seed local state
+  // rather than being read straight from the cache. savedSettings is the
+  // snapshot the dirty check compares against.
   useEffect(() => {
-    async function loadSettings() {
-      const [
-        profileData,
-        studioData,
-        paymentData,
-        notificationData,
-        galleryData,
-        bookingData,
-        securityData,
-        billingData,
-      ] = await Promise.all([
-        photographerApi.settings.getPanel("profile"),
-        photographerApi.settings.getPanel("studio"),
-        photographerApi.settings.getPanel("payment"),
-        photographerApi.settings.getPanel("notifications"),
-        photographerApi.settings.getPanel("gallery"),
-        photographerApi.settings.getPanel("booking"),
-        photographerApi.settings.getPanel("security"),
-        photographerApi.settings.getPanel("billing"),
-      ]);
+    if (!panels) return;
 
-      setProfile(profileData);
-      setStudio(studioData);
-      setPayment(paymentData);
-      setNotifications(notificationData);
-      setGallery(galleryData);
-      setBooking(bookingData);
-      setSecurity(securityData);
-      setBillingInvoices(billingData.invoices);
-      setSavedSettings({
-        profile: profileData,
-        studio: studioData,
-        payment: paymentData,
-        notifications: notificationData,
-        gallery: galleryData,
-        booking: bookingData,
-        security: { ...securityData, currentPassword: "", newPassword: "", confirmPassword: "" },
-      });
-      setLoading(false);
-    }
-
-    void loadSettings();
-  }, []);
+    setProfile(panels.profile);
+    setStudio(panels.studio);
+    setPayment(panels.payment);
+    setNotifications(panels.notifications);
+    setGallery(panels.gallery);
+    setBooking(panels.booking);
+    setSecurity(panels.security);
+    setBillingInvoices(panels.billing.invoices);
+    setSavedSettings({
+      profile: panels.profile,
+      studio: panels.studio,
+      payment: panels.payment,
+      notifications: panels.notifications,
+      gallery: panels.gallery,
+      booking: panels.booking,
+      security: {
+        ...panels.security,
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      },
+    });
+  }, [panels]);
 
   const isDirty = useMemo(() => {
     if (!savedSettings) return false;
