@@ -1,47 +1,13 @@
 import type { PaymentRecord, PaymentVerification, Studio } from "@prisma/client";
 import { formatDisplayDate } from "../../format/date-format.js";
 
-export type ApiPaymentVerification = {
-  id: string;
-  studioId: string;
-  bookingId: string;
-  paymentRequestId: string | null;
-  transactionId: string;
-  clientName: string;
-  avatarAssetKey: string | null;
-  bookingTitle: string;
-  packageName: string;
-  bookingDate: string;
-  amount: number;
-  receiptAssetKey: string;
-  status: "pending" | "approved" | "rejected";
-  highPriority: boolean;
-};
+import type {
+  ApiClientPaymentRecord,
+  ApiPaymentVerification,
+  ApiStudioPaymentProfile,
+} from "../../contracts/payment.js";
 
-export type ApiClientPaymentRecord = {
-  id: string;
-  bookingId: string;
-  studioId: string;
-  studioName: string;
-  paymentRequestId: string | null;
-  bookingTitle: string;
-  amount: number;
-  date: string;
-  status: "pending" | "approved" | "rejected";
-  receiptAssetKey: string;
-};
-
-export type ApiStudioPaymentProfile = {
-  provider: string;
-  mobileMoneyEnabled: boolean;
-  merchantCode: string;
-  momoAccountName: string;
-  momoNumber: string;
-  bankTransferEnabled: boolean;
-  accountName: string;
-  accountNumber: string;
-  referenceHint: string;
-};
+export type { ApiClientPaymentRecord, ApiPaymentVerification, ApiStudioPaymentProfile };
 
 export function toApiPaymentVerification(
   verification: PaymentVerification,

@@ -1,4 +1,10 @@
-import type { ClientCategory, ServicePackage } from "@prisma/client";
+import type { ServicePackage } from "@prisma/client";
+
+import type {
+  ApiServicePackage,
+} from "../../contracts/service.js";
+
+export type { ApiServicePackage };
 
 type ServiceMetadata = {
   badges?: string[];
@@ -41,31 +47,6 @@ function buildDetails(pkg: ServicePackage, meta: ServiceMetadata) {
     },
   ] as const;
 }
-
-export type ApiServicePackage = {
-  id: string;
-  title: string;
-  price: number;
-  description: string;
-  coverAssetKey: string | null;
-  badges: string[];
-  details: [{ icon: string; label: string }, { icon: string; label: string }];
-  totalRevenue: number;
-  category: ClientCategory;
-  isActive: boolean;
-  depositPercent: number;
-  currency: "rwf";
-  duration: string;
-  photographers: number;
-  locationType: string;
-  editedPhotos: number;
-  revisions: number;
-  onlineGallery: boolean;
-  printDelivery: boolean;
-  commercialLicense: boolean;
-  includes: string[];
-  additionalNotes: string;
-};
 
 export function toApiServicePackage(
   pkg: ServicePackage,

@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { StudioClient } from "@prisma/client";
 import type { ClientMetrics } from "../../domain/client-metrics.js";
 import type { ClientProfileActivity } from "../../domain/client-profile-activity.js";
@@ -7,49 +8,14 @@ import {
   formatMemberSince,
 } from "../../format/date-format.js";
 
-export type ApiClient = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  avatarAssetKey: string | null;
-  bannerAssetKey: string | null;
-  tier: StudioClient["tier"];
-  category: StudioClient["category"];
-  sessions: number;
-  revenue: number;
-  balance: number;
-  lastBooking: string;
-  dateAdded: string;
-};
+import type {
+  ApiClientProfile,
+  ApiStudioClient,
+} from "../../contracts/client.js";
 
-export type ApiClientProfile = ApiClient & {
-  location: string;
-  rating: "excellent" | "good";
-  financial: {
-    totalRevenue: number;
-    balance: number;
-    sessions: number;
-    reliability: number;
-    memberSince: string;
-  };
-  insights: {
-    retention: string;
-    favType: string;
-    avgValue: number;
-  };
-  preferences: {
-    primaryContact: string;
-    artisticStyles: string[];
-    editingPrefs: string;
-    specialRequirements: string;
-  };
-  internalNotes: string | null;
-  timeline: unknown[];
-  projects: unknown[];
-  invoices: unknown[];
-  galleries: unknown[];
-};
+// The server's historic name for the shared ApiStudioClient contract.
+export type ApiClient = ApiStudioClient;
+export type { ApiStudioClient, ApiClientProfile };
 
 const defaultPreferences = {
   primaryContact: "Email Only",
@@ -96,8 +62,65 @@ function parseInsights(value: unknown) {
   };
 }
 
-function parseJsonArray(value: unknown): unknown[] {
-  return Array.isArray(value) ? value : [];
+/**
+ * These four columns are stored as untyped JSON but the API promises real
+ * shapes for them, so each entry is validated rather than passed through.
+ * Anything that does not match is dropped — the column holds whatever an older
+ * version of the app wrote, and a malformed entry should not break the profile.
+ */
+const clientTimelineSchema = z.object({
+  id: z.string(),
+  type: z.enum(["upcoming", "gallery", "payment", "feedback", "onboarded"]),
+  title: z.string(),
+  subtitle: z.string().optional(),
+  date: z.string(),
+  highlighted: z.boolean().optional(),
+  linkText: z.string().optional(),
+  quote: z.string().optional(),
+  rating: z.number().optional(),
+});
+
+const clientProjectSchema = z.object({
+  id: z.string(),
+  bookingId: z.string().optional(),
+  status: z.enum(["completed", "upcoming"]),
+  category: z.string(),
+  title: z.string(),
+  date: z.string(),
+  photoCount: z.number().optional(),
+  time: z.string().optional(),
+  coverImage: z.string(),
+});
+
+const clientInvoiceSchema = z.object({
+  id: z.string(),
+  number: z.string(),
+  description: z.string(),
+  date: z.string(),
+  amount: z.number(),
+  status: z.enum(["paid", "pending"]),
+});
+
+const clientGallerySchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  itemCount: z.number(),
+  privacy: z.enum(["private", "public"]),
+  coverImage: z.string(),
+});
+
+function parseJsonArrayOf<S extends z.ZodType>(
+  schema: S,
+  value: unknown,
+): z.output<S>[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.flatMap((entry) => {
+    const parsed = schema.safeParse(entry);
+    return parsed.success ? [parsed.data] : [];
+  });
 }
 
 export function toApiClient(
@@ -154,9 +177,13 @@ export function toApiClientProfile(
     insights: activity?.insights ?? parseInsights(client.insights),
     preferences: parsePreferences(client.preferences),
     internalNotes: client.internalNotes,
-    timeline: activity?.timeline ?? parseJsonArray(client.timeline),
-    projects: activity?.projects ?? parseJsonArray(client.projects),
-    invoices: activity?.invoices ?? parseJsonArray(client.invoices),
-    galleries: activity?.galleries ?? parseJsonArray(client.galleries),
+    timeline:
+      activity?.timeline ?? parseJsonArrayOf(clientTimelineSchema, client.timeline),
+    projects:
+      activity?.projects ?? parseJsonArrayOf(clientProjectSchema, client.projects),
+    invoices:
+      activity?.invoices ?? parseJsonArrayOf(clientInvoiceSchema, client.invoices),
+    galleries:
+      activity?.galleries ?? parseJsonArrayOf(clientGallerySchema, client.galleries),
   };
 }

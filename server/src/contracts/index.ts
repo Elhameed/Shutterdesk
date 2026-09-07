@@ -7,7 +7,11 @@
 
 export type * from "./enums.js";
 export type * from "./booking.js";
+export type * from "./client.js";
 export type * from "./error.js";
+export type * from "./gallery.js";
+export type * from "./payment.js";
+export type * from "./service.js";
 export type * from "./user.js";
 
 // The client calls this `BookingPrimaryAction`; the server calls the same shape

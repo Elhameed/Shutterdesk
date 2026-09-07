@@ -1,3 +1,7 @@
+import type { ApiServicePackage } from "@contracts/index.js";
+
+export type { ApiServicePackage };
+
 export type ServiceBadgeType =
   | "popular"
   | "public"
@@ -64,31 +68,6 @@ export type ServicePackage = {
   duration: ServiceDurationKey;
   photographers: number;
   locationType: ServiceLocationType;
-  editedPhotos: number;
-  revisions: number;
-  onlineGallery: boolean;
-  printDelivery: boolean;
-  commercialLicense: boolean;
-  includes: string[];
-  additionalNotes: string;
-};
-
-export type ApiServicePackage = {
-  id: string;
-  title: string;
-  price: number;
-  description: string;
-  coverAssetKey: string | null;
-  badges: string[];
-  details: [{ icon: string; label: string }, { icon: string; label: string }];
-  totalRevenue: number;
-  category: ServiceCategory;
-  isActive: boolean;
-  depositPercent: number;
-  currency: "rwf";
-  duration: string;
-  photographers: number;
-  locationType: string;
   editedPhotos: number;
   revisions: number;
   onlineGallery: boolean;

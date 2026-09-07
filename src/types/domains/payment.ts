@@ -1,4 +1,16 @@
-export type VerificationStatus = "pending" | "approved" | "rejected";
+import type {
+  ApiClientPaymentRecord,
+  ApiPaymentVerification,
+  ApiStudioPaymentProfile,
+  VerificationStatus,
+} from "@contracts/index.js";
+
+export type {
+  ApiClientPaymentRecord,
+  ApiPaymentVerification,
+  ApiStudioPaymentProfile,
+  VerificationStatus,
+};
 
 export type PaymentVerification = {
   id: string;
@@ -40,36 +52,6 @@ export type StudioPaymentProfile = {
   accountName: string;
   accountNumber: string;
   referenceHint: string;
-};
-
-export type ApiPaymentVerification = {
-  id: string;
-  studioId: string;
-  bookingId: string;
-  paymentRequestId: string | null;
-  transactionId: string;
-  clientName: string;
-  avatarAssetKey: string | null;
-  bookingTitle: string;
-  packageName: string;
-  bookingDate: string;
-  amount: number;
-  receiptAssetKey: string;
-  status: VerificationStatus;
-  highPriority: boolean;
-};
-
-export type ApiClientPaymentRecord = {
-  id: string;
-  bookingId: string;
-  studioId: string;
-  studioName: string;
-  paymentRequestId: string | null;
-  bookingTitle: string;
-  amount: number;
-  date: string;
-  status: VerificationStatus;
-  receiptAssetKey: string;
 };
 
 export const PAYMENT_VERIFICATION_PAGE_SIZE = 4;
