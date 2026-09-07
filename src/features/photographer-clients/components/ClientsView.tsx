@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AddClientModal } from "@/features/photographer-clients/components/AddClientModal";
 import { ClientsFilterBar } from "@/features/photographer-clients/components/ClientsFilterBar";
 import { ClientsGrid } from "@/features/photographer-clients/components/ClientsGrid";
@@ -17,17 +17,22 @@ import type {
 } from "@/constants/photographer-clients";
 import { CardGridSkeleton, ClientCardSkeleton, TableRowsSkeleton } from "@/components/skeletons";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
-import { getApiErrorMessage } from "@/lib/api-error";
-import { photographerApi } from "@/services/photographer";
-import type { Client, ClientCategory } from "@/types/domains/photographer-client";
+import { getApiErrorMessage, getQueryErrorMessage } from "@/lib/api-error";
+import { usePhotographerClients } from "@/hooks/queries/photographer";
+import { useAddClient } from "@/hooks/queries/photographer-mutations";
+import type { ClientCategory } from "@/types/domains/photographer-client";
 
 const PAGE_SIZE = 12;
 
 export function ClientsView() {
-  const [clients, setClients] = useState<Client[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const showSkeleton = useDelayedLoading(isLoading);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: clients = [],
+    isPending,
+    error: loadError,
+  } = usePhotographerClients();
+  const showSkeleton = useDelayedLoading(isPending);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const error = actionError ?? (loadError ? getQueryErrorMessage(loadError) : null);
   const [view, setView] = useState<ClientViewMode>("card");
   const [statusFilter, setStatusFilter] = useState<ClientStatusFilter>("all");
   const [typeFilter, setTypeFilter] = useState<ClientTypeFilter>("all");
@@ -35,24 +40,6 @@ export function ClientsView() {
   const [dateFilter, setDateFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [addClientOpen, setAddClientOpen] = useState(false);
-
-  const loadClients = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const data = await photographerApi.clients.list();
-      setClients(data);
-    } catch (loadError) {
-      setError(getApiErrorMessage(loadError, "Unable to load clients."));
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void loadClients();
-  }, [loadClients]);
 
   const filteredClients = useMemo(() => {
     const byFilters = filterClients(clients, statusFilter, typeFilter);
@@ -83,6 +70,8 @@ export function ClientsView() {
     setDateFilter("");
   };
 
+  const addClient = useAddClient();
+
   const handleClientCreated = async (payload: {
     name: string;
     email: string;
@@ -91,11 +80,12 @@ export function ClientsView() {
     location?: string;
     notes?: string;
   }) => {
+    setActionError(null);
+
     try {
-      await photographerApi.clients.add(payload);
-      await loadClients();
+      await addClient.mutateAsync(payload);
     } catch (createError) {
-      setError(getApiErrorMessage(createError, "Unable to add client."));
+      setActionError(getApiErrorMessage(createError, "Unable to add client."));
     }
   };
 
@@ -139,7 +129,7 @@ export function ClientsView() {
           ) : (
             <TableRowsSkeleton rows={8} />
           )
-        ) : isLoading ? null : paginatedClients.length === 0 ? (
+        ) : isPending ? null : paginatedClients.length === 0 ? (
           <div className="flex min-h-48 items-center justify-center rounded-md border border-border bg-panel">
             <p className="text-sm text-ink-soft">No clients match your filters.</p>
           </div>
