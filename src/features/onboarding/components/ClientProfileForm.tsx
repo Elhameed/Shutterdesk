@@ -13,7 +13,7 @@ import {
   ONBOARDING_COPY,
 } from "@/constants/onboarding";
 import { ROUTES } from "@/constants/routes";
-import { getApiErrorMessage, getApiFieldErrors } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { uploadAvatarToCloudinary } from "@/lib/cloudinary-upload";
 import { clientApi } from "@/services/client";
 import { onboardingService } from "@/services/onboarding/onboarding.service";
@@ -82,13 +82,8 @@ export function ClientProfileForm() {
       await refreshUser();
       navigate(ROUTES.client.dashboard);
     } catch (submitError) {
-      // The API returns per-field errors for a failed validation; showing the
-      // first one names the field rather than saying "something went wrong".
-      const fields = getApiFieldErrors(submitError);
-      const firstFieldError = Object.values(fields)[0];
       setError(
-        firstFieldError ??
-          getApiErrorMessage(submitError, "Unable to complete setup. Please try again."),
+        getApiErrorMessage(submitError, "Unable to complete setup. Please try again."),
       );
     } finally {
       setIsSubmitting(false);

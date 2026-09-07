@@ -24,9 +24,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "dependencies": {
     "@prisma/client": "^6.9.0",
     "@sentry/node": "^9.30.0",

@@ -28,6 +28,42 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), tailwindcss()],
+    build: {
+      rollupOptions: {
+        output: {
+          /**
+           * Split the libraries that every route needs into their own chunks.
+           *
+           * This does not reduce first-load bytes — the same code is still
+           * downloaded — but app code changes on every deploy while these
+           * change a few times a year, so returning visitors stop re-fetching
+           * ~140 kB of React and friends each time.
+           *
+           * Anything not named here falls through to Vite's own chunking on
+           * purpose. jszip in particular is only pulled in by the client
+           * gallery download, and Vite already isolates it to that route;
+           * sweeping all of node_modules into one vendor chunk would drag it
+           * into the initial load and make things worse.
+           */
+          manualChunks(id) {
+            if (!id.includes("node_modules")) return undefined;
+            // Match the package directory itself so react-router and other
+            // packages merely containing "react" in their name don't land here.
+            const normalized = id.replace(/\\/g, "/");
+            if (/\/node_modules\/(react|react-dom|scheduler)\//.test(normalized)) {
+              return "vendor-react";
+            }
+            if (normalized.includes("/node_modules/react-router")) {
+              return "vendor-router";
+            }
+            if (normalized.includes("/node_modules/@tanstack/")) {
+              return "vendor-query";
+            }
+            return undefined;
+          },
+        },
+      },
+    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
