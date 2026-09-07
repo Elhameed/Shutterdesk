@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { isNotFoundError } from "@/lib/api-error";
 import {
   mapApiBooking,
   mapApiBookingDetail,
@@ -26,8 +27,9 @@ export const photographerBookingsHttp = {
     try {
       const { data } = await apiClient.get<ItemResponse>(`/photographer/bookings/${id}`);
       return mapApiBooking(data.data);
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined;
+      throw error;
     }
   },
 
@@ -37,8 +39,9 @@ export const photographerBookingsHttp = {
         `/photographer/bookings/${id}/detail`,
       );
       return mapApiBookingDetail(data.data);
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined;
+      throw error;
     }
   },
 

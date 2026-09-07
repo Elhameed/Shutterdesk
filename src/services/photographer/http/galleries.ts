@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { isNotFoundError } from "@/lib/api-error";
 import {
   mapApiGallery,
   mapApiGalleryDetailMeta,
@@ -33,8 +34,9 @@ export const photographerGalleriesHttp = {
     try {
       const detail = await this.getDetail(id);
       return detail?.gallery;
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined;
+      throw error;
     }
   },
 
@@ -46,8 +48,9 @@ export const photographerGalleriesHttp = {
         meta: mapApiGalleryDetailMeta(data.data.meta),
         photos: data.data.photos.map(mapApiGalleryPhoto),
       };
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined;
+      throw error;
     }
   },
 

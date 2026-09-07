@@ -1,6 +1,19 @@
 import axios from "axios";
 import type { ApiError, ApiFieldError } from "@/types";
 
+/**
+ * Whether the API said this resource does not exist.
+ *
+ * Several service methods used to `catch { return undefined }`, which collapsed
+ * a 500, a network failure and a genuine 404 into the same answer — so during
+ * an outage the UI confidently reported "not found". Callers that legitimately
+ * treat a missing resource as `undefined` now check for it, and let everything
+ * else propagate.
+ */
+export function isNotFoundError(error: unknown): boolean {
+  return axios.isAxiosError(error) && error.response?.status === 404;
+}
+
 export function getApiErrorMessage(error: unknown, fallback = "Something went wrong") {
   if (axios.isAxiosError(error)) {
     const data = error.response?.data as ApiError | undefined;

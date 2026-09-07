@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { isNotFoundError } from "@/lib/api-error";
 import { mapApiPaymentVerification } from "@/services/payment-mapper";
 import type {
   ApiPaymentVerification,
@@ -27,8 +28,9 @@ export const photographerPaymentsHttp = {
         { status },
       );
       return mapApiPaymentVerification(data.data);
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined;
+      throw error;
     }
   },
 
@@ -38,8 +40,9 @@ export const photographerPaymentsHttp = {
         `/photographer/payments/verifications/${id}/request-resubmission`,
       );
       return mapApiPaymentVerification(data.data);
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined;
+      throw error;
     }
   },
 };
