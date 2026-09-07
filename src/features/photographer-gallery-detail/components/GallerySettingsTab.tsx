@@ -9,9 +9,8 @@ import {
   ToggleSwitch,
 } from "@/features/photographer-gallery-detail/components/GalleryTabShared";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { photographerApi } from "@/services/photographer";
+import { useUpdateGallery } from "@/hooks/queries/photographer-mutations";
 import type {
-  GalleryDetail,
   GallerySettingsData,
   GalleryVisibility,
   PhotographerGallery,
@@ -20,19 +19,18 @@ import type {
 type GallerySettingsTabProps = {
   gallery: PhotographerGallery;
   settings: GallerySettingsData;
-  onUpdated?: (detail: GalleryDetail) => void;
 };
 
 export function GallerySettingsTab({
   gallery,
   settings: initialSettings,
-  onUpdated,
 }: GallerySettingsTabProps) {
   const panel = GALLERIES_COPY.detail.tabPanels.settings;
   const [settings, setSettings] = useState(initialSettings);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
+  const updateGallery = useUpdateGallery();
+  const isSaving = updateGallery.isPending;
 
   useEffect(() => {
     setSettings({
@@ -51,33 +49,31 @@ export function GallerySettingsTab({
   };
 
   const handleSave = async () => {
-    setIsSaving(true);
     setSaveError(null);
 
     try {
-      await photographerApi.galleries.update(gallery.id, {
-        visibility: settings.visibility,
-        socialSharing: settings.allowSharing,
-        allowFavorites: settings.allowFavorites,
-        allowDownloads: settings.allowDownloads,
-        showPhotographerCredit: settings.showPhotographerCredit,
-        emailNotifications: settings.emailNotifications,
-        // This panel always submits the whole form, so an empty field is a
-        // deliberate "no expiry" rather than "leave unchanged".
-        expirationDate: settings.expirationDate ?? "",
-        slug: settings.slug,
-        accessPin: settings.accessPin,
+      // Saving invalidates the gallery detail, so the parent and the other tabs
+      // re-read it rather than being handed a fresh copy through a callback.
+      await updateGallery.mutateAsync({
+        id: gallery.id,
+        input: {
+          visibility: settings.visibility,
+          socialSharing: settings.allowSharing,
+          allowFavorites: settings.allowFavorites,
+          allowDownloads: settings.allowDownloads,
+          showPhotographerCredit: settings.showPhotographerCredit,
+          emailNotifications: settings.emailNotifications,
+          // This panel always submits the whole form, so an empty field is a
+          // deliberate "no expiry" rather than "leave unchanged".
+          expirationDate: settings.expirationDate ?? "",
+          slug: settings.slug,
+          accessPin: settings.accessPin,
+        },
       });
-      const detail = await photographerApi.galleries.getDetail(gallery.id);
-      if (detail) {
-        onUpdated?.(detail);
-      }
       setSaved(true);
       window.setTimeout(() => setSaved(false), 2000);
     } catch (error) {
       setSaveError(getApiErrorMessage(error, "Unable to save gallery settings."));
-    } finally {
-      setIsSaving(false);
     }
   };
 
