@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { Download } from "lucide-react";
 import { ClientNotFoundState } from "@/components/common/ClientNotFoundState";
 import { PortalBreadcrumbs } from "@/components/common/PortalBreadcrumbs";
@@ -17,9 +17,9 @@ import {
 } from "@/lib/gallery-access-session";
 import { downloadGalleryAsZip } from "@/lib/download-gallery-zip";
 import { clientApi } from "@/services/client";
+import { useClientGalleryDetail } from "@/hooks/queries/client";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 import { Skeleton } from "@/components/skeletons";
-import type { GalleryDetail } from "@/types/domains/gallery";
 
 type ClientGalleryDetailViewProps = {
   galleryId: string;
@@ -29,33 +29,22 @@ export function ClientGalleryDetailView({
   galleryId,
 }: ClientGalleryDetailViewProps) {
   const copy = CLIENT_GALLERIES_COPY;
-  const [detail, setDetail] = useState<GalleryDetail | null>(null);
   const [accessPin, setAccessPin] = useState<string | undefined>(() =>
     getStoredGalleryAccessPin(galleryId),
   );
-  const [isLoading, setIsLoading] = useState(true);
-  const showSkeleton = useDelayedLoading(isLoading);
+  // The PIN is part of the key, so entering one refetches the gallery with it
+  // rather than the view calling a loader again by hand.
+  const { data: detail = null, isPending } = useClientGalleryDetail(
+    galleryId,
+    accessPin,
+  );
+  const showSkeleton = useDelayedLoading(isPending);
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState<{
     completed: number;
     total: number;
   } | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
-
-  const loadDetail = useCallback(
-    async (pin?: string) => {
-      setIsLoading(true);
-      const data = await clientApi.galleries.getDetail(galleryId, pin);
-      setDetail(data ?? null);
-      setIsLoading(false);
-      return data ?? null;
-    },
-    [galleryId],
-  );
-
-  useEffect(() => {
-    void loadDetail(accessPin);
-  }, [accessPin, loadDetail]);
 
   if (showSkeleton) {
     return (
@@ -79,7 +68,7 @@ export function ClientGalleryDetailView({
     );
   }
 
-  if (isLoading) {
+  if (isPending) {
     return null;
   }
 
