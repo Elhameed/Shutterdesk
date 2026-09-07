@@ -4,7 +4,20 @@
 Rwanda and beyond to manage bookings, clients, galleries, payments, and studio settings in
 one place.
 
+**[Live demo →](https://shutterdesk.vercel.app/)**
+
 [![CI](https://github.com/Elhameed/Shutterdesk/actions/workflows/ci.yml/badge.svg)](https://github.com/Elhameed/Shutterdesk/actions/workflows/ci.yml)
+
+Sign in with either demo account to explore both sides of the product:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Photographer | `imani.uwase@shutterdesk.rw` | `password123` |
+| Client | `immaculee.niyonsaba@gmail.com` | `password123` |
+
+> The API runs on Render's free tier and the database on Neon, both of which sleep when
+> idle. The first request after a quiet period can take ~30 seconds while they wake — after
+> that it responds normally.
 
 ---
 
@@ -142,10 +155,8 @@ Open **http://localhost:5173**.
 
 ### Demo login (after seeding)
 
-| Role | Email | Password |
-|------|-------|----------|
-| Photographer | `imani.uwase@shutterdesk.rw` | `password123` |
-| Client | `immaculee.niyonsaba@gmail.com` | `password123` |
+The same two accounts as the [live demo](#shutterdesk) — `imani.uwase@shutterdesk.rw`
+(photographer) and `immaculee.niyonsaba@gmail.com` (client), both `password123`.
 
 Seeded dates are relative to when you run the seed, so the demo studio always has upcoming
 shoots. For a blank database instead, run `npm run db:reset:clean --prefix server` and
