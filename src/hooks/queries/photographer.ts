@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query-keys";
 import { photographerApi } from "@/services/photographer";
 import type { SettingsPanel } from "@/types/domains/settings";
@@ -24,15 +24,31 @@ export function usePhotographerDashboard() {
   });
 }
 
-export function usePhotographerActivity(filters?: {
-  type?: string;
-  range?: string;
-  page?: number;
-}) {
-  return useQuery({
+/**
+ * The activity feed is "load more" rather than paged, so it accumulates pages
+ * instead of replacing them. `useInfiniteQuery` owns that accumulation — the
+ * view previously concatenated onto a `useState` array by hand and tracked
+ * `page`, `totalPages` and a separate `isLoadingMore` flag alongside it.
+ */
+export function usePhotographerActivityHistory(
+  filters: { type?: string; range?: string },
+  pageSize: number,
+) {
+  return useInfiniteQuery({
     queryKey: queryKeys.photographer.activity(filters),
-    queryFn: () => photographerApi.activity.list(filters),
-    meta: { errorMessage: "Unable to load activity." },
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) =>
+      photographerApi.activity.list({
+        page: pageParam,
+        limit: pageSize,
+        type: filters.type,
+        range: filters.range,
+      }),
+    getNextPageParam: (lastPage) =>
+      lastPage.pagination.page < lastPage.pagination.totalPages
+        ? lastPage.pagination.page + 1
+        : undefined,
+    meta: { errorMessage: "Unable to load activity history." },
   });
 }
 
@@ -40,6 +56,9 @@ export function usePhotographerAnalytics(range?: string) {
   return useQuery({
     queryKey: queryKeys.photographer.analytics(range),
     queryFn: () => photographerApi.analytics.getSummary(range),
+    // Keep the previous range's figures on screen while a new range loads, so
+    // changing the date filter doesn't blank the page.
+    placeholderData: (previous) => previous,
     meta: { errorMessage: "Unable to load analytics." },
   });
 }
