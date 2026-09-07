@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { useNavigate } from "react-router-dom";
 import { PortalPageHeader } from "@/components/common/PortalPageHeader";
 import { SearchField } from "@/components/common/SearchField";
@@ -101,9 +102,9 @@ export function ClientBookingsView() {
       </div>
 
       {errorMessage && (
-        <p className="mt-4 rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
+        <InlineAlert className="mt-4">
           {errorMessage}
-        </p>
+        </InlineAlert>
       )}
 
       <div className="mt-4">

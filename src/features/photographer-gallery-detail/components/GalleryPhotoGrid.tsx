@@ -14,8 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tooltip } from "@/components/ui/tooltip";
 import { GALLERIES_COPY } from "@/constants/photographer-galleries";
-import { GalleryPhotoLightbox } from "@/features/photographer-gallery-detail/components/GalleryPhotoLightbox";
-import { downloadGalleryPhoto } from "@/features/photographer-gallery-detail/lib/download-gallery-photo";
+import { GalleryPhotoLightbox } from "@/components/common/GalleryPhotoLightbox";
+import { downloadGalleryPhoto } from "@/lib/download-gallery-photo";
 import { uploadGalleryPhotoToCloudinary } from "@/lib/cloudinary-upload";
 import type { GalleryPhoto } from "@/types/domains/gallery";
 

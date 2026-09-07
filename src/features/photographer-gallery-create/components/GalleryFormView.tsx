@@ -1,3 +1,5 @@
+import { ToggleSwitch } from "@/components/ui/toggle-switch";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   ChevronRight,
@@ -22,9 +24,6 @@ import {
   GalleryPendingPhotosField,
   type PendingGalleryPhoto,
 } from "@/features/photographer-gallery-create/components/GalleryPendingPhotosField";
-import {
-  ToggleSwitch,
-} from "@/features/photographer-gallery-detail/components/GalleryTabShared";
 import { photographerApi } from "@/services/photographer";
 import {
   usePhotographerBookingDetail,
@@ -357,9 +356,9 @@ export function GalleryFormView({
       ) : null}
 
       {submitError ? (
-        <p className="mt-4 rounded-sm border border-bad/30 bg-bad-tint px-4 py-3 text-sm text-bad-fg" role="alert">
+        <InlineAlert className="mt-4">
           {submitError}
-        </p>
+        </InlineAlert>
       ) : null}
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { AddClientModal } from "@/features/photographer-clients/components/AddClientModal";
 import { ClientsFilterBar } from "@/features/photographer-clients/components/ClientsFilterBar";
 import { ClientsGrid } from "@/features/photographer-clients/components/ClientsGrid";
@@ -117,9 +118,9 @@ export function ClientsView() {
       </div>
 
       {error && (
-        <p className="mt-4 rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
+        <InlineAlert className="mt-4">
           {error}
-        </p>
+        </InlineAlert>
       )}
 
       <div className="mt-5">

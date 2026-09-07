@@ -1,4 +1,5 @@
 import { useRef, useState, type FormEvent } from "react";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Banknote, Lock, QrCode, User } from "lucide-react";
@@ -298,9 +299,9 @@ export function PhotographerProfileForm() {
         </div>
 
         {error && (
-          <p className="rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
+          <InlineAlert>
             {error}
-          </p>
+        </InlineAlert>
         )}
 
         <div className="flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">

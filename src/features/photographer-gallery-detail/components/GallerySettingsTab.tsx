@@ -1,3 +1,4 @@
+import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,6 @@ import { Select } from "@/components/ui/select";
 import { GALLERIES_COPY } from "@/constants/photographer-galleries";
 import {
   GalleryTabSection,
-  ToggleSwitch,
 } from "@/features/photographer-gallery-detail/components/GalleryTabShared";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { useUpdateGallery } from "@/hooks/queries/photographer-mutations";

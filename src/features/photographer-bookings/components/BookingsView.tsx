@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { BookingsFilterTabs } from "@/features/photographer-bookings/components/BookingsFilterTabs";
 import { BookingsHeader } from "@/features/photographer-bookings/components/BookingsHeader";
 import { BookingsSearch } from "@/features/photographer-bookings/components/BookingsSearch";
@@ -70,15 +71,15 @@ export function BookingsView() {
       </div>
 
       {errorMessage && (
-        <p className="mt-4 rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
+        <InlineAlert className="mt-4">
           {errorMessage}
-        </p>
+        </InlineAlert>
       )}
 
       {actionError ? (
-        <p className="mt-4 rounded-sm border border-bad/30 bg-bad-tint px-4 py-3 text-sm text-bad-fg" role="alert">
+        <InlineAlert className="mt-4">
           {actionError}
-        </p>
+        </InlineAlert>
       ) : null}
 
       <div className="mt-4">

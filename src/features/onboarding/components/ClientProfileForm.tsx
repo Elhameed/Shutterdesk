@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useAuth } from "@/app/AuthProvider";
@@ -164,9 +165,9 @@ export function ClientProfileForm() {
         />
 
         {error ? (
-          <p className="rounded-sm bg-bad-tint px-4 py-3 text-sm text-bad-fg">
+          <InlineAlert>
             {error}
-          </p>
+        </InlineAlert>
         ) : null}
 
         <div className="flex flex-col items-center gap-2">

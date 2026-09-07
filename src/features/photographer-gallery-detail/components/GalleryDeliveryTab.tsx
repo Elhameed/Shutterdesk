@@ -1,3 +1,4 @@
+import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { useEffect, useState } from "react";
 import { Check, Copy, Hourglass, Lightbulb, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,6 @@ import {
 } from "@/constants/status-colors";
 import {
   GalleryTabSection,
-  ToggleSwitch,
 } from "@/features/photographer-gallery-detail/components/GalleryTabShared";
 import {
   useDeliverGallery,

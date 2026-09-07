@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { Download } from "lucide-react";
 import { ClientNotFoundState } from "@/components/common/ClientNotFoundState";
 import { PortalBreadcrumbs } from "@/components/common/PortalBreadcrumbs";
@@ -188,12 +189,7 @@ export function ClientGalleryDetailView({
       </div>
 
       {downloadError ? (
-        <p
-          className="mt-4 rounded-sm border border-bad/30 bg-bad-tint px-4 py-3 text-sm text-bad-fg"
-          role="alert"
-        >
-          {downloadError}
-        </p>
+        <InlineAlert className="mt-4">{downloadError}</InlineAlert>
       ) : null}
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2 lg:items-stretch">

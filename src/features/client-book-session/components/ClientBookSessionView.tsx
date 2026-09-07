@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { InlineAlert } from "@/components/common/InlineAlert";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/app/AuthProvider";
@@ -121,9 +122,9 @@ export function ClientBookSessionView() {
     <div className="min-w-0 max-w-full p-4 sm:p-6 lg:p-8">
       <BookSessionStepper current={step} />
       {submitError ? (
-        <p className="mb-4 rounded-sm border border-bad/30 bg-bad-tint px-4 py-3 text-sm text-bad-fg" role="alert">
+        <InlineAlert className="mb-4">
           {submitError}
-        </p>
+        </InlineAlert>
       ) : null}
 
       <div className="overflow-hidden rounded-md border border-border bg-panel">
