@@ -10,8 +10,7 @@ import {
   getDefaultPaymentMethod,
   type ClientPaymentMethod,
 } from "@/features/client-payments/utils/payment-methods";
-import { clientApi } from "@/services/client";
-import type { StudioPaymentProfile } from "@/types/domains/payment";
+import { useStudioPaymentProfile } from "@/hooks/queries/client";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 import { Skeleton } from "@/components/skeletons";
@@ -37,33 +36,36 @@ export function PaymentMethodPanel({
 }: PaymentMethodPanelProps) {
   const copy = CLIENT_PAYMENTS_COPY;
   const { push } = useToast();
-  const [config, setConfig] = useState<StudioPaymentProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const showSkeleton = useDelayedLoading(isLoading);
+  const {
+    data: config = null,
+    isPending,
+    error: loadError,
+  } = useStudioPaymentProfile(studioId);
+  const showSkeleton = useDelayedLoading(isPending);
+
+  // Which method is chosen is user state, not server state, so it stays local.
+  // It seeds from the profile once that arrives, and resets if the studio
+  // changes.
   const [selectedMethod, setSelectedMethod] = useState<ClientPaymentMethod | null>(
     null,
   );
 
   useEffect(() => {
-    setIsLoading(true);
-    void clientApi.payments
-      .getStudioPaymentProfile(studioId)
-      .then((profile) => {
-        setConfig(profile);
-        const methods = getAvailablePaymentMethods(profile);
-        setSelectedMethod(getDefaultPaymentMethod(methods));
-      })
-      .catch((error) => {
-        setConfig(null);
-        setSelectedMethod(null);
-        push({
-          variant: "error",
-          title: "Unable to load payment methods",
-          description: getApiErrorMessage(error, copy.paymentMethods.noneConfigured),
-        });
-      })
-      .finally(() => setIsLoading(false));
-  }, [studioId]);
+    if (!config) {
+      setSelectedMethod(null);
+      return;
+    }
+    setSelectedMethod(getDefaultPaymentMethod(getAvailablePaymentMethods(config)));
+  }, [config]);
+
+  useEffect(() => {
+    if (!loadError) return;
+    push({
+      variant: "error",
+      title: "Unable to load payment methods",
+      description: getApiErrorMessage(loadError, copy.paymentMethods.noneConfigured),
+    });
+  }, [copy.paymentMethods.noneConfigured, loadError, push]);
 
   const availableMethods = useMemo(
     () => (config ? getAvailablePaymentMethods(config) : []),
@@ -88,7 +90,7 @@ export function PaymentMethodPanel({
     );
   }
 
-  if (isLoading) {
+  if (isPending) {
     return null;
   }
 

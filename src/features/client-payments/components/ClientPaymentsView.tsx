@@ -1,40 +1,35 @@
-import { useEffect, useState } from "react";
 import { PortalPageHeader } from "@/components/common/PortalPageHeader";
 import { CLIENT_PAYMENTS_COPY } from "@/constants/client-payments";
 import { formatRwf } from "@/lib/currency";
 import { PaymentActionRequiredSection } from "@/features/client-payments/components/PaymentActionRequiredSection";
 import { PaymentHistoryTable } from "@/features/client-payments/components/PaymentHistoryTable";
 import { PaymentsPromoCards } from "@/features/client-payments/components/PaymentsPromoCards";
-import { clientApi } from "@/services/client";
+import {
+  useClientOutstandingSummary,
+  useClientPaymentHistory,
+  useClientPaymentRequests,
+} from "@/hooks/queries/client";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 import {
   PageHeaderSkeleton,
   PaymentCardSkeleton,
   TableRowsSkeleton,
 } from "@/components/skeletons";
-import type { PaymentRequest } from "@/types/domains/booking";
-import type { ClientPaymentRecord } from "@/types/domains/payment";
 
 export function ClientPaymentsView() {
   const copy = CLIENT_PAYMENTS_COPY;
-  const [requests, setRequests] = useState<PaymentRequest[]>([]);
-  const [payments, setPayments] = useState<ClientPaymentRecord[]>([]);
-  const [totalBalance, setTotalBalance] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const showSkeleton = useDelayedLoading(isLoading);
+  // Three independent queries rather than one Promise.all, so each caches and
+  // invalidates on its own. Query still runs them in parallel.
+  const requestsQuery = useClientPaymentRequests();
+  const outstandingQuery = useClientOutstandingSummary();
+  const historyQuery = useClientPaymentHistory();
 
-  useEffect(() => {
-    void Promise.all([
-      clientApi.payments.listRequests(),
-      clientApi.payments.getOutstandingSummary(),
-      clientApi.payments.list(),
-    ]).then(([requestList, summary, history]) => {
-      setRequests(requestList);
-      setTotalBalance(summary.totalBalance);
-      setPayments(history);
-      setIsLoading(false);
-    });
-  }, []);
+  const requests = requestsQuery.data ?? [];
+  const payments = historyQuery.data ?? [];
+  const totalBalance = outstandingQuery.data?.totalBalance ?? 0;
+  const isPending =
+    requestsQuery.isPending || outstandingQuery.isPending || historyQuery.isPending;
+  const showSkeleton = useDelayedLoading(isPending);
 
   const unpaid = requests.filter((item) => item.status === "unpaid");
 
@@ -53,7 +48,7 @@ export function ClientPaymentsView() {
     );
   }
 
-  if (isLoading) {
+  if (isPending) {
     return null;
   }
 

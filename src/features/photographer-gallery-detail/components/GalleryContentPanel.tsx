@@ -10,7 +10,6 @@ import { GalleryPhotoGrid } from "@/features/photographer-gallery-detail/compone
 import { GalleryPhotoUploadPanel } from "@/features/photographer-gallery-detail/components/GalleryPhotoUploadPanel";
 import { GallerySettingsTab } from "@/features/photographer-gallery-detail/components/GallerySettingsTab";
 import type {
-  GalleryDetail,
   GalleryDetailMeta,
   GalleryPhoto,
   PhotographerGallery,
@@ -45,7 +44,6 @@ type GalleryContentPanelProps = {
     input: { alt?: string; assetKey?: string },
   ) => Promise<void>;
   onReorderPhotos?: (photoIds: string[]) => Promise<void>;
-  onDetailUpdated?: (detail: GalleryDetail) => void;
 };
 
 export function GalleryContentPanel({
@@ -66,7 +64,6 @@ export function GalleryContentPanel({
   onDeletePhoto,
   onUpdatePhoto,
   onReorderPhotos,
-  onDetailUpdated,
 }: GalleryContentPanelProps) {
   const copy = GALLERIES_COPY.detail;
   return (
@@ -143,7 +140,6 @@ export function GalleryContentPanel({
           <GalleryDeliveryTab
             gallery={gallery}
             delivery={meta.delivery}
-            onUpdated={onDetailUpdated}
           />
         )}
 
@@ -155,11 +151,7 @@ export function GalleryContentPanel({
         )}
 
         {activeTab === "settings" && (
-          <GallerySettingsTab
-            gallery={gallery}
-            settings={meta.settings}
-            onUpdated={onDetailUpdated}
-          />
+          <GallerySettingsTab gallery={gallery} settings={meta.settings} />
         )}
       </div>
     </section>

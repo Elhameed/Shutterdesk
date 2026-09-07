@@ -13,8 +13,12 @@ import { BookSessionStepper } from "@/features/client-book-session/components/Bo
 import { getApiErrorMessage } from "@/lib/api-error";
 import { queryKeys } from "@/lib/query-keys";
 import { clientApi } from "@/services/client";
+import {
+  useClientSettings,
+  useClientStudioServices,
+  useClientStudios,
+} from "@/hooks/queries/client";
 import type { ServicePackage } from "@/types/domains/service";
-import type { ClientStudioSummary } from "@/services/client/http/studios";
 
 type Step = "package" | "schedule" | "details";
 
@@ -31,9 +35,7 @@ export function ClientBookSessionView() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [step, setStep] = useState<Step>("package");
-  const [studios, setStudios] = useState<ClientStudioSummary[]>([]);
   const [studioSlug, setStudioSlug] = useState<string>("");
-  const [bookablePackages, setBookablePackages] = useState<ServicePackage[]>([]);
   const [packageId, setPackageId] = useState("");
   const [calendarMonth, setCalendarMonth] = useState(() => new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -45,45 +47,46 @@ export function ClientBookSessionView() {
   const [notes, setNotes] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Studios, their packages and the client's saved contact details are all
+  // reference data for this form; the answers the client gives stay local.
+  const { data: studios = [] } = useClientStudios();
+  const { data: studioPackages = [] } = useClientStudioServices(studioSlug);
+  const { data: settings } = useClientSettings();
+
+  // A studio's packages have a preferred display order, with anything
+  // unrecognised appended.
+  const bookablePackages = useMemo(() => {
+    const ordered = BOOK_SESSION_PACKAGE_ORDER.map((id) =>
+      studioPackages.find((pkg) => pkg.id === id),
+    ).filter((pkg): pkg is ServicePackage => Boolean(pkg));
+
+    const fallback = studioPackages.filter(
+      (pkg) => !ordered.some((item) => item.id === pkg.id),
+    );
+    return [...ordered, ...fallback];
+  }, [studioPackages]);
+
+  // Each of these only fills a field the client has not set, so a refetch
+  // cannot overwrite something they typed.
   useEffect(() => {
-    void clientApi.studios.list().then((items) => {
-      setStudios(items);
-      if (items[0]) {
-        setStudioSlug(items[0].slug);
-      }
-    });
-  }, []);
+    if (studios[0]) {
+      setStudioSlug((current) => current || studios[0].slug);
+    }
+  }, [studios]);
 
   useEffect(() => {
-    if (!studioSlug) return;
-
-    void clientApi.services.listPublicByStudio(studioSlug).then((packages) => {
-      const ordered = BOOK_SESSION_PACKAGE_ORDER.map((id) =>
-        packages.find((pkg) => pkg.id === id),
-      ).filter((pkg): pkg is ServicePackage => Boolean(pkg));
-
-      const fallback = packages.filter((pkg) => !ordered.find((o) => o.id === pkg.id));
-      const merged = [...ordered, ...fallback];
-
-      setBookablePackages(merged);
-      if (merged[0]) {
-        setPackageId(merged[0].id);
-      }
-    });
-  }, [studioSlug]);
+    if (bookablePackages[0]) {
+      setPackageId((current) => current || bookablePackages[0].id);
+    }
+  }, [bookablePackages]);
 
   useEffect(() => {
     if (!user) return;
-
-    void clientApi.settings.get().then((settings) => {
-      setFullName(user.fullName);
-      setEmail(user.email);
-      setPhone(settings.phone || user.phone || "");
-      if (settings.address) {
-        setLocation(settings.address);
-      }
-    });
-  }, [user]);
+    setFullName((current) => current || user.fullName);
+    setEmail((current) => current || user.email);
+    setPhone((current) => current || settings?.phone || user.phone || "");
+    setLocation((current) => current || settings?.address || "");
+  }, [settings, user]);
 
   const selected = useMemo(
     () => bookablePackages.find((pkg) => pkg.id === packageId),

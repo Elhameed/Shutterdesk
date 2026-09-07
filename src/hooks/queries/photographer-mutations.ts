@@ -228,3 +228,136 @@ export function useRequestReceiptResubmission() {
     },
   });
 }
+
+/**
+ * Gallery photo operations.
+ *
+ * Each of these returns a fresh gallery detail, which the view used to push
+ * into local state. Invalidating the detail key instead means the parent and
+ * every tab see the same updated gallery without anything being passed around.
+ */
+export function useUploadGalleryPhotos() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      galleryId,
+      photos,
+    }: {
+      galleryId: string;
+      photos: Array<{ assetKey: string; thumbnailAssetKey?: string; alt?: string }>;
+    }) => photographerApi.galleries.uploadPhotos(galleryId, photos),
+    onSuccess: async (_result, { galleryId }) => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.photographer.galleryDetail(galleryId),
+      });
+    },
+  });
+}
+
+export function useDeleteGalleryPhoto() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ galleryId, photoId }: { galleryId: string; photoId: string }) =>
+      photographerApi.galleries.deletePhoto(galleryId, photoId),
+    onSuccess: async (_result, { galleryId }) => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.photographer.galleryDetail(galleryId),
+      });
+    },
+  });
+}
+
+export function useUpdateGalleryPhoto() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      galleryId,
+      photoId,
+      input,
+    }: {
+      galleryId: string;
+      photoId: string;
+      input: { alt?: string; assetKey?: string };
+    }) => photographerApi.galleries.updatePhoto(galleryId, photoId, input),
+    onSuccess: async (_result, { galleryId }) => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.photographer.galleryDetail(galleryId),
+      });
+    },
+  });
+}
+
+export function useReorderGalleryPhotos() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ galleryId, photoIds }: { galleryId: string; photoIds: string[] }) =>
+      photographerApi.galleries.reorderPhotos(galleryId, photoIds),
+    onSuccess: async (_result, { galleryId }) => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.photographer.galleryDetail(galleryId),
+      });
+    },
+  });
+}
+
+export function useUpdateGalleryDelivery() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      galleryId,
+      input,
+    }: {
+      galleryId: string;
+      input: Parameters<typeof photographerApi.galleries.updateDelivery>[1];
+    }) => photographerApi.galleries.updateDelivery(galleryId, input),
+    onSuccess: async (_result, { galleryId }) => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.photographer.galleryDetail(galleryId),
+      });
+    },
+  });
+}
+
+/** Delivering a gallery also moves the linked booking forward. */
+export function useDeliverGallery() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (galleryId: string) => photographerApi.galleries.deliver(galleryId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.photographer.all });
+    },
+  });
+}
+
+export function useNotifyGalleryClient() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (galleryId: string) =>
+      photographerApi.galleries.notifyClient(galleryId),
+    onSuccess: async (_result, galleryId) => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.photographer.galleryDetail(galleryId),
+      });
+    },
+  });
+}
+
+export function useArchiveGallery() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (galleryId: string) => photographerApi.galleries.archive(galleryId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.photographer.galleries,
+      });
+    },
+  });
+}

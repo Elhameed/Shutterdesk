@@ -12,12 +12,14 @@ import {
   type CalendarDate,
 } from "@/features/photographer-calendar/lib/calendar-navigation";
 import { photographerApi } from "@/services/photographer";
+import { useQueryClient } from "@tanstack/react-query";
+import { usePhotographerAvailability } from "@/hooks/queries/photographer";
+import { queryKeys } from "@/lib/query-keys";
 import {
   DEFAULT_WEEKLY_RULES,
   findFullDayBlock,
   isFullDayBlock,
   toDateKey,
-  type AvailabilityBlock,
   type StudioSchedule,
   type WeeklyRule,
 } from "@/types/domains/availability";
@@ -37,34 +39,38 @@ export function AvailabilityManageForm({
   const copy = CALENDAR_COPY;
   const calendarData = useCalendarData();
   const { push } = useToast();
-  const [schedule, setSchedule] = useState<StudioSchedule | null>(null);
-  const [blocks, setBlocks] = useState<AvailabilityBlock[]>([]);
   const [weeklyRules, setWeeklyRules] = useState<WeeklyRule[]>(DEFAULT_WEEKLY_RULES);
-  const [isLoading, setIsLoading] = useState(true);
+  // The schedule fields are edited in place before saving, so they are form
+  // state seeded from the query rather than read straight from the cache.
+  const [schedule, setSchedule] = useState<StudioSchedule | null>(null);
+  const queryClient = useQueryClient();
   const [isSaving, setIsSaving] = useState(false);
   const [isBlocking, setIsBlocking] = useState(false);
   const [isUnblocking, setIsUnblocking] = useState(false);
   const [unblockingBlockId, setUnblockingBlockId] = useState<string | null>(null);
 
-  const loadSchedule = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const data = await photographerApi.availability.getSchedule();
-      setSchedule(data.schedule);
-      setBlocks(data.blocks);
-      setWeeklyRules(
-        Array.isArray(data.schedule.weeklyRules)
-          ? (data.schedule.weeklyRules as WeeklyRule[])
-          : DEFAULT_WEEKLY_RULES,
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const { data: availability, isPending: isLoading } = usePhotographerAvailability();
+  // Memoised because `?? []` would be a new array each render, and blocks
+  // feeds a downstream useMemo.
+  const blocks = useMemo(() => availability?.blocks ?? [], [availability]);
 
+  const loadSchedule = useCallback(async () => {
+    await queryClient.invalidateQueries({
+      queryKey: queryKeys.photographer.availability,
+    });
+  }, [queryClient]);
+
+  // Seed the editable copy whenever the server version changes — on first load
+  // and after a save invalidates it.
   useEffect(() => {
-    void loadSchedule();
-  }, [loadSchedule]);
+    if (!availability) return;
+    setSchedule(availability.schedule);
+    setWeeklyRules(
+      Array.isArray(availability.schedule.weeklyRules)
+        ? (availability.schedule.weeklyRules as WeeklyRule[])
+        : DEFAULT_WEEKLY_RULES,
+    );
+  }, [availability]);
 
   const focusDateKey = focusDate
     ? toDateKey(new Date(focusDate.year, focusDate.monthIndex, focusDate.day))

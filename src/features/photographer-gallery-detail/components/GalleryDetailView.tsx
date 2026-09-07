@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { CardSkeleton } from "@/components/ui/skeleton";
@@ -14,10 +14,18 @@ import { GalleryDetailHero } from "@/features/photographer-gallery-detail/compon
 import { GalleryDetailSidebar } from "@/features/photographer-gallery-detail/components/GalleryDetailSidebar";
 import { downloadGalleryReportFile } from "@/features/photographer-gallery-detail/lib/download-gallery-report";
 import { photographerApi } from "@/services/photographer";
+import { usePhotographerGalleryDetail } from "@/hooks/queries/photographer";
+import {
+  useArchiveGallery,
+  useDeleteGalleryPhoto,
+  useNotifyGalleryClient,
+  useReorderGalleryPhotos,
+  useUpdateGalleryPhoto,
+  useUploadGalleryPhotos,
+} from "@/hooks/queries/photographer-mutations";
 import { getApiErrorMessage } from "@/lib/api-error";
 import {
   GALLERY_PHOTOS_PAGE_SIZE,
-  type GalleryDetail,
 } from "@/types/domains/gallery";
 
 type GalleryDetailViewProps = {
@@ -28,49 +36,40 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
   const copy = GALLERIES_COPY.detail;
   const sidebarCopy = copy.sidebar;
   const { push } = useToast();
-  const [detail, setDetail] = useState<GalleryDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(GALLERY_PHOTOS_PAGE_SIZE);
-  const [isUploadingPhotos, setIsUploadingPhotos] = useState(false);
+  const { data: detail = null, isPending } = usePhotographerGalleryDetail(galleryId);
+
+  const uploadPhotos = useUploadGalleryPhotos();
+  const deletePhoto = useDeleteGalleryPhoto();
+  const updatePhoto = useUpdateGalleryPhoto();
+  const reorderPhotos = useReorderGalleryPhotos();
+
+  const [requestedCount, setRequestedCount] = useState(GALLERY_PHOTOS_PAGE_SIZE);
+  // Derived rather than clamped in a setter: when photos are deleted the count
+  // has to shrink, and deriving it means there is no stale value to correct.
+  const visibleCount = Math.min(requestedCount, detail?.photos.length ?? 0);
+  const isUploadingPhotos = uploadPhotos.isPending;
   const [activeTab, setActiveTab] = useState<GalleryDetailTab>("photos");
-  const [isNotifyLoading, setIsNotifyLoading] = useState(false);
+  const notifyClient = useNotifyGalleryClient();
+  const archiveGallery = useArchiveGallery();
   const [isExportLoading, setIsExportLoading] = useState(false);
-  const [isArchiveLoading, setIsArchiveLoading] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
-  const [isPhotoActionLoading, setIsPhotoActionLoading] = useState(false);
+  const isPhotoActionLoading =
+    deletePhoto.isPending || updatePhoto.isPending || reorderPhotos.isPending;
   const uploadPanelRef = useRef<HTMLDivElement>(null);
-
-  const applyDetailUpdate = useCallback((updated: GalleryDetail) => {
-    setDetail(updated);
-    setVisibleCount((count) => Math.min(count, updated.photos.length));
-  }, []);
-
-  const loadDetail = useCallback(async () => {
-    const data = await photographerApi.galleries.getDetail(galleryId);
-    setDetail(data ?? null);
-    setIsLoading(false);
-    return data;
-  }, [galleryId]);
-
-  useEffect(() => {
-    void loadDetail();
-  }, [loadDetail]);
 
   const handlePhotosUploaded = useCallback(
     async (secureUrls: string[]) => {
-      setIsUploadingPhotos(true);
       try {
-        await photographerApi.galleries.uploadPhotos(
+        const result = await uploadPhotos.mutateAsync({
           galleryId,
-          secureUrls.map((assetKey, index) => ({
+          photos: secureUrls.map((assetKey, index) => ({
             assetKey,
             alt: `Gallery photo ${index + 1}`,
           })),
-        );
-        const refreshed = await loadDetail();
-        if (refreshed) {
-          setVisibleCount(refreshed.photos.length);
-        }
+        });
+        // Show the newly uploaded photos rather than leaving them behind the
+        // "load more" boundary.
+        setRequestedCount(result.photos.length);
         push({
           variant: "success",
           title: "Photos uploaded",
@@ -82,22 +81,15 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
           title: "Upload failed",
           description: getApiErrorMessage(error, "Please try again."),
         });
-      } finally {
-        setIsUploadingPhotos(false);
       }
     },
-    [galleryId, loadDetail, push],
+    [galleryId, push, uploadPhotos],
   );
 
   const handleDeletePhoto = useCallback(
     async (photoId: string) => {
-      setIsPhotoActionLoading(true);
       try {
-        const refreshed = await photographerApi.galleries.deletePhoto(
-          galleryId,
-          photoId,
-        );
-        applyDetailUpdate(refreshed);
+        await deletePhoto.mutateAsync({ galleryId, photoId });
         push({
           variant: "success",
           title: copy.photos.deleted,
@@ -108,23 +100,15 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
           title: "Unable to delete photo",
           description: getApiErrorMessage(error, "Please try again."),
         });
-      } finally {
-        setIsPhotoActionLoading(false);
       }
     },
-    [applyDetailUpdate, copy.photos.deleted, galleryId, push],
+    [copy.photos.deleted, deletePhoto, galleryId, push],
   );
 
   const handleUpdatePhoto = useCallback(
     async (photoId: string, input: { alt?: string; assetKey?: string }) => {
-      setIsPhotoActionLoading(true);
       try {
-        const refreshed = await photographerApi.galleries.updatePhoto(
-          galleryId,
-          photoId,
-          input,
-        );
-        applyDetailUpdate(refreshed);
+        await updatePhoto.mutateAsync({ galleryId, photoId, input });
         push({
           variant: "success",
           title: copy.photos.updated,
@@ -135,22 +119,15 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
           title: "Unable to update photo",
           description: getApiErrorMessage(error, "Please try again."),
         });
-      } finally {
-        setIsPhotoActionLoading(false);
       }
     },
-    [applyDetailUpdate, copy.photos.updated, galleryId, push],
+    [copy.photos.updated, galleryId, push, updatePhoto],
   );
 
   const handleReorderPhotos = useCallback(
     async (photoIds: string[]) => {
-      setIsPhotoActionLoading(true);
       try {
-        const refreshed = await photographerApi.galleries.reorderPhotos(
-          galleryId,
-          photoIds,
-        );
-        applyDetailUpdate(refreshed);
+        await reorderPhotos.mutateAsync({ galleryId, photoIds });
         push({
           variant: "success",
           title: copy.photos.reordered,
@@ -161,11 +138,9 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
           title: "Unable to reorder photos",
           description: getApiErrorMessage(error, "Please try again."),
         });
-      } finally {
-        setIsPhotoActionLoading(false);
       }
     },
-    [applyDetailUpdate, copy.photos.reordered, galleryId, push],
+    [copy.photos.reordered, galleryId, push, reorderPhotos],
   );
 
   const scrollToUpload = useCallback(() => {
@@ -173,10 +148,8 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
   }, []);
 
   const handleNotifyClient = useCallback(async () => {
-    setIsNotifyLoading(true);
     try {
-      const refreshed = await photographerApi.galleries.notifyClient(galleryId);
-      setDetail(refreshed);
+      await notifyClient.mutateAsync(galleryId);
       push({
         variant: "success",
         title: sidebarCopy.notifySuccess,
@@ -188,10 +161,8 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
         title: "Unable to notify client",
         description: getApiErrorMessage(error, "Please try again."),
       });
-    } finally {
-      setIsNotifyLoading(false);
     }
-  }, [galleryId, push, sidebarCopy]);
+  }, [galleryId, notifyClient, push, sidebarCopy]);
 
   const handleExportReport = useCallback(async () => {
     if (!detail) return;
@@ -229,10 +200,8 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
   }, [detail?.gallery.status, push, sidebarCopy]);
 
   const confirmArchiveGallery = useCallback(async () => {
-    setIsArchiveLoading(true);
     try {
-      const refreshed = await photographerApi.galleries.archive(galleryId);
-      setDetail(refreshed);
+      await archiveGallery.mutateAsync(galleryId);
       setArchiveOpen(false);
       push({
         variant: "success",
@@ -245,10 +214,8 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
         title: "Unable to archive gallery",
         description: getApiErrorMessage(error, "Please try again."),
       });
-    } finally {
-      setIsArchiveLoading(false);
     }
-  }, [galleryId, push, sidebarCopy]);
+  }, [archiveGallery, galleryId, push, sidebarCopy]);
 
   const handleViewAllActivity = useCallback(() => {
     setActiveTab("analytics");
@@ -260,7 +227,7 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
   );
   const hasMore = (detail?.photos.length ?? 0) > visibleCount;
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="min-w-0 max-w-full bg-paper-dim/50 p-4 sm:p-6 lg:p-8">
         <CardSkeleton />
@@ -305,7 +272,7 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
           totalPhotos={detail.photos.length}
           hasMore={hasMore}
           onLoadMore={() =>
-            setVisibleCount((count) => count + GALLERY_PHOTOS_PAGE_SIZE)
+            setRequestedCount((count) => count + GALLERY_PHOTOS_PAGE_SIZE)
           }
           photoCount={gallery.photoCount}
           uploadPanelRef={uploadPanelRef}
@@ -315,7 +282,6 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
           onDeletePhoto={handleDeletePhoto}
           onUpdatePhoto={handleUpdatePhoto}
           onReorderPhotos={handleReorderPhotos}
-          onDetailUpdated={applyDetailUpdate}
           activeTab={activeTab}
           onTabChange={setActiveTab}
         />
@@ -323,9 +289,9 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
         <GalleryDetailSidebar
           gallery={gallery}
           meta={meta}
-          isNotifyLoading={isNotifyLoading}
+          isNotifyLoading={notifyClient.isPending}
           isExportLoading={isExportLoading}
-          isArchiveLoading={isArchiveLoading}
+          isArchiveLoading={archiveGallery.isPending}
           onNotifyClient={() => void handleNotifyClient()}
           onExportReport={() => void handleExportReport()}
           onArchiveGallery={() => void handleArchiveGallery()}
@@ -339,7 +305,7 @@ export function GalleryDetailView({ galleryId }: GalleryDetailViewProps) {
         description={sidebarCopy.archiveConfirm}
         confirmLabel={sidebarCopy.archiveGallery}
         destructive
-        isLoading={isArchiveLoading}
+        isLoading={archiveGallery.isPending}
         onConfirm={() => void confirmArchiveGallery()}
         onCancel={() => setArchiveOpen(false)}
       />

@@ -1,7 +1,17 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueries, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query-keys";
 import { photographerApi } from "@/services/photographer";
-import type { SettingsPanel } from "@/types/domains/settings";
+import type {
+  BillingSettings,
+  BookingSettings,
+  GallerySettings,
+  NotificationSettings,
+  PaymentSettings,
+  ProfileSettings,
+  SecuritySettings,
+  SettingsPanel,
+  StudioSettings,
+} from "@/types/domains/settings";
 
 /**
  * Read hooks for the photographer portal.
@@ -160,5 +170,51 @@ export function usePhotographerSettings(panel: SettingsPanel) {
     queryKey: queryKeys.photographer.settings(panel),
     queryFn: () => photographerApi.settings.getPanel(panel),
     meta: { errorMessage: "Unable to load settings." },
+  });
+}
+
+const ALL_SETTINGS_PANELS = [
+  "profile",
+  "studio",
+  "payment",
+  "notifications",
+  "gallery",
+  "booking",
+  "security",
+  "billing",
+] as const satisfies readonly SettingsPanel[];
+
+/**
+ * Every settings panel at once.
+ *
+ * The settings screen edits all eight together, so it needs them all before it
+ * can render. They stay eight cache entries rather than one combined blob, so
+ * saving a single panel can invalidate just that panel.
+ */
+export function usePhotographerAllSettings() {
+  return useQueries({
+    queries: ALL_SETTINGS_PANELS.map((panel) => ({
+      queryKey: queryKeys.photographer.settings(panel),
+      queryFn: () => photographerApi.settings.getPanel(panel),
+      meta: { errorMessage: "Unable to load settings." },
+    })),
+    combine: (results) => ({
+      isPending: results.some((result) => result.isPending),
+      error: results.find((result) => result.error)?.error ?? null,
+      // `getPanel` returns a union of every panel shape, so the specific type
+      // per slot comes from ALL_SETTINGS_PANELS' order rather than inference.
+      data: results.every((result) => result.data)
+        ? {
+            profile: results[0].data as ProfileSettings,
+            studio: results[1].data as StudioSettings,
+            payment: results[2].data as PaymentSettings,
+            notifications: results[3].data as NotificationSettings,
+            gallery: results[4].data as GallerySettings,
+            booking: results[5].data as BookingSettings,
+            security: results[6].data as SecuritySettings,
+            billing: results[7].data as BillingSettings,
+          }
+        : undefined,
+    }),
   });
 }

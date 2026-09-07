@@ -26,9 +26,12 @@ import {
   ToggleSwitch,
 } from "@/features/photographer-gallery-detail/components/GalleryTabShared";
 import { photographerApi } from "@/services/photographer";
+import {
+  usePhotographerBookingDetail,
+  usePhotographerBookings,
+  usePhotographerClients,
+} from "@/hooks/queries/photographer";
 import { getApiErrorMessage } from "@/lib/api-error";
-import type { Booking } from "@/types/domains/booking";
-import type { Client } from "@/types/domains/photographer-client";
 import {
   type GalleryCategory,
   type GalleryFormValues,
@@ -80,57 +83,46 @@ export function GalleryFormView({
   const [accessPin, setAccessPin] = useState(initialValues.accessPin ?? "");
   const [coverUrl, setCoverUrl] = useState<string | null>(coverImage ?? null);
   const [pendingPhotos, setPendingPhotos] = useState<PendingGalleryPhoto[]>([]);
-  const [clients, setClients] = useState<Client[]>([]);
-  const [bookings, setBookings] = useState<Booking[]>([]);
   const [savedGalleryId, setSavedGalleryId] = useState<string | undefined>(galleryId);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [isApplyingBooking, setIsApplyingBooking] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
   const totalPhotoCount = isEdit
     ? initialValues.photoCount + pendingPhotos.length
     : pendingPhotos.length;
 
-  useEffect(() => {
-    void Promise.all([
-      photographerApi.clients.list(),
-      photographerApi.bookings.list(),
-    ]).then(([clientList, bookingList]) => {
-      setClients(clientList);
-      setBookings(bookingList);
-      if (!initialValues.clientId && clientList[0]) {
-        setClientId(clientList[0].id);
-      }
-    });
-  }, [initialValues.clientId]);
+  // Clients and bookings populate the two pickers; the rest of the form is
+  // local state the photographer is editing.
+  const { data: clients = [] } = usePhotographerClients();
+  const { data: bookings = [] } = usePhotographerBookings();
 
   useEffect(() => {
-    if (!relatedBookingId) return;
+    if (initialValues.clientId || !clients[0]) return;
+    setClientId((current) => current || clients[0].id);
+  }, [clients, initialValues.clientId]);
 
-    let cancelled = false;
-    setIsApplyingBooking(true);
+  // Picking a related booking fills the form from it. The query is disabled
+  // until one is chosen, and Query cancels a stale request when the selection
+  // changes — which is what the manual `cancelled` flag was for.
+  const { data: relatedBooking, isFetching: isApplyingBooking } =
+    usePhotographerBookingDetail(relatedBookingId || undefined);
 
-    void photographerApi.bookings.getDetail(relatedBookingId).then((detail) => {
-      if (cancelled || !detail) {
-        if (!cancelled) setIsApplyingBooking(false);
-        return;
-      }
+  useEffect(() => {
+    if (!relatedBooking) return;
 
-      setGalleryName(`${detail.package.title} — ${detail.event.date}`);
-      if (detail.clientId) {
-        setClientId(detail.clientId);
-      }
-      if (!description.trim() && detail.package.subtitle) {
-        setDescription(detail.package.subtitle);
-      }
-      setIsApplyingBooking(false);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [relatedBookingId]);
+    setGalleryName(`${relatedBooking.package.title} — ${relatedBooking.event.date}`);
+    if (relatedBooking.clientId) {
+      setClientId(relatedBooking.clientId);
+    }
+    // Functional form so this doesn't have to read `description` from the
+    // closure — the previous version left it out of the dependency array.
+    if (relatedBooking.package.subtitle) {
+      setDescription((current) =>
+        current.trim() ? current : relatedBooking.package.subtitle,
+      );
+    }
+  }, [relatedBooking]);
 
 
   const selectedClient = clients.find((client) => client.id === clientId);

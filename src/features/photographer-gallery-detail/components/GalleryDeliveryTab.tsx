@@ -12,11 +12,13 @@ import {
   GalleryTabSection,
   ToggleSwitch,
 } from "@/features/photographer-gallery-detail/components/GalleryTabShared";
-import { photographerApi } from "@/services/photographer";
+import {
+  useDeliverGallery,
+  useUpdateGalleryDelivery,
+} from "@/hooks/queries/photographer-mutations";
 import { getApiErrorMessage } from "@/lib/api-error";
 import type {
   GalleryDeliveryData,
-  GalleryDetail,
   PhotographerGallery,
 } from "@/types/domains/gallery";
 import { cn } from "@/lib/utils";
@@ -24,23 +26,21 @@ import { cn } from "@/lib/utils";
 type GalleryDeliveryTabProps = {
   gallery: PhotographerGallery;
   delivery: GalleryDeliveryData;
-  onDelivered?: (gallery: PhotographerGallery) => void;
-  onUpdated?: (detail: GalleryDetail) => void;
 };
 
 export function GalleryDeliveryTab({
   gallery,
   delivery: initialDelivery,
-  onDelivered,
-  onUpdated,
 }: GalleryDeliveryTabProps) {
   const copy = GALLERIES_COPY;
   const panel = GALLERIES_COPY.detail.tabPanels.delivery;
 
   const [delivery, setDelivery] = useState(initialDelivery);
   const [copied, setCopied] = useState(false);
-  const [isDelivering, setIsDelivering] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const deliverGallery = useDeliverGallery();
+  const saveDelivery = useUpdateGalleryDelivery();
+  const isDelivering = deliverGallery.isPending;
+  const isSaving = saveDelivery.isPending;
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
@@ -59,18 +59,9 @@ export function GalleryDeliveryTab({
   };
 
   const handleDeliver = async () => {
-    setIsDelivering(true);
-    try {
-      await photographerApi.galleries.deliver(gallery.id);
-      const detail = await photographerApi.galleries.getDetail(gallery.id);
-      if (detail) {
-        setDelivery(detail.meta.delivery);
-        onUpdated?.(detail);
-        onDelivered?.(detail.gallery);
-      }
-    } finally {
-      setIsDelivering(false);
-    }
+    // Delivering invalidates the gallery, so the panel re-renders from the
+    // refreshed detail rather than this tab pushing a copy back up.
+    await deliverGallery.mutateAsync(gallery.id);
   };
 
   const updateDelivery = <K extends keyof GalleryDeliveryData>(
@@ -83,27 +74,25 @@ export function GalleryDeliveryTab({
   };
 
   const handleSave = async () => {
-    setIsSaving(true);
     setSaveError(null);
 
     try {
-      const detail = await photographerApi.galleries.updateDelivery(gallery.id, {
-        allowDownloads: delivery.downloadEnabled,
-        highResDownloads: delivery.highResDownloads,
-        watermarkEnabled: delivery.watermarkEnabled,
-        clientNotified: delivery.clientNotified,
-        deliveryNotes: delivery.deliveryNotes,
-        accessPin: delivery.accessPin,
-        expiresAt: delivery.expiresAt,
+      await saveDelivery.mutateAsync({
+        galleryId: gallery.id,
+        input: {
+          allowDownloads: delivery.downloadEnabled,
+          highResDownloads: delivery.highResDownloads,
+          watermarkEnabled: delivery.watermarkEnabled,
+          clientNotified: delivery.clientNotified,
+          deliveryNotes: delivery.deliveryNotes,
+          accessPin: delivery.accessPin,
+          expiresAt: delivery.expiresAt,
+        },
       });
-      setDelivery(detail.meta.delivery);
-      onUpdated?.(detail);
       setSaved(true);
       window.setTimeout(() => setSaved(false), 2000);
     } catch (error) {
       setSaveError(getApiErrorMessage(error, "Unable to save delivery settings."));
-    } finally {
-      setIsSaving(false);
     }
   };
 

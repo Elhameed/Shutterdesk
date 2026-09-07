@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import {
   Calendar,
   Camera,
@@ -23,9 +22,14 @@ import { ROUTES } from "@/constants/routes";
 import { AddClientModal } from "@/features/photographer-clients/components/AddClientModal";
 import { BookingSummarySidebar } from "@/features/photographer-booking-create/components/BookingSummarySidebar";
 import { PAYMENT_METHOD_OPTIONS } from "@/lib/booking-calculations";
-import { photographerApi } from "@/services/photographer";
-import { queryKeys } from "@/lib/query-keys";
-import type { Client } from "@/types/domains/photographer-client";
+import {
+  usePhotographerClients,
+  usePhotographerServices,
+} from "@/hooks/queries/photographer";
+import {
+  useAddClient,
+  useCreateBooking,
+} from "@/hooks/queries/photographer-mutations";
 import {
   isBookableServicePackage,
   type ServicePackage,
@@ -37,12 +41,10 @@ import { cn } from "@/lib/utils";
 export function NewBookingView() {
   const copy = NEW_BOOKING_COPY;
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const presetClientId = searchParams.get("client") ?? "";
 
   const [clientId, setClientId] = useState(presetClientId);
-  const [servicePackages, setServicePackages] = useState<ServicePackage[]>([]);
   const [selectedPackageId, setSelectedPackageId] = useState("");
   const [shootDate, setShootDate] = useState("2026-07-15");
   const [startTime, setStartTime] = useState("10:00");
@@ -55,29 +57,42 @@ export function NewBookingView() {
   const [applyTax, setApplyTax] = useState(false);
   const [sessionNotes, setSessionNotes] = useState("");
   const [addClientOpen, setAddClientOpen] = useState(false);
-  const [crmClients, setCrmClients] = useState<Client[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // The client list and the bookable packages are reference data for the two
+  // pickers, so they come from the cache. Everything the photographer types
+  // stays local.
+  const { data: crmClients = [] } = usePhotographerClients();
+  const { data: allPackages = [] } = usePhotographerServices();
+  const servicePackages = useMemo(
+    () => allPackages.filter(isBookableServicePackage),
+    [allPackages],
+  );
+
+  const createBooking = useCreateBooking();
+  const addClient = useAddClient();
+  const isSubmitting = createBooking.isPending;
+
+  // Seed the pickers once their options arrive: the preset client from the URL,
+  // and the first bookable package with its derived price and deposit.
   useEffect(() => {
-    void photographerApi.clients.list().then((clients) => {
-      setCrmClients(clients);
-      if (presetClientId && clients.some((client) => client.id === presetClientId)) {
-        setClientId(presetClientId);
-      }
-    });
-    void photographerApi.services.list().then((packages) => {
-      const bookable = packages.filter(isBookableServicePackage);
-      setServicePackages(bookable);
-      if (bookable[0]) {
-        setSelectedPackageId(bookable[0].id);
-        setBasePrice(String(bookable[0].price));
-        setDeposit(
-          String(Math.round(bookable[0].price * (bookable[0].depositPercent / 100))),
-        );
-      }
-    });
-  }, [presetClientId]);
+    if (!presetClientId) return;
+    if (crmClients.some((client) => client.id === presetClientId)) {
+      setClientId(presetClientId);
+    }
+  }, [crmClients, presetClientId]);
+
+  useEffect(() => {
+    const first = servicePackages[0];
+    if (!first) return;
+    setSelectedPackageId((current) => current || first.id);
+    setBasePrice((current) => current || String(first.price));
+    setDeposit(
+      (current) =>
+        current ||
+        String(Math.round(first.price * (first.depositPercent / 100))),
+    );
+  }, [servicePackages]);
 
   const selectedPackage =
     servicePackages.find((pkg) => pkg.id === selectedPackageId) ??
@@ -110,10 +125,9 @@ export function NewBookingView() {
     const client = crmClients.find((item) => item.id === clientId);
     if (!client || !selectedPackage) return;
 
-    setIsSubmitting(true);
     setSubmitError(null);
     try {
-      const booking = await photographerApi.bookings.create({
+      const booking = await createBooking.mutateAsync({
         clientId: client.id,
         clientName: client.name,
         email: client.email,
@@ -126,17 +140,10 @@ export function NewBookingView() {
         venue: locationName.trim() || undefined,
         locationNotes: sessionNotes.trim() || address.trim() || undefined,
       });
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.photographer.bookings,
-      });
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.photographer.notifications,
-      });
+      // The mutation invalidates bookings, the dashboard and notifications.
       navigate(ROUTES.photographer.bookingDetail(booking.id));
     } catch (error) {
       setSubmitError(getApiErrorMessage(error, "Unable to create booking. Please try again."));
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -403,7 +410,7 @@ export function NewBookingView() {
         open={addClientOpen}
         onClose={() => setAddClientOpen(false)}
         onCreated={async (client) => {
-          const created = await photographerApi.clients.add(client);
+          const created = await addClient.mutateAsync(client);
           setClientId(created.id);
         }}
       />
